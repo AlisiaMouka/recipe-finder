@@ -27,7 +27,7 @@ body {
 }
 
 main {
-  max-width: 860px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 36px 16px 48px;
 }
@@ -189,6 +189,12 @@ h1 em { color: var(--accent); }
 /* Recipe cards */
 #results { display: flex; flex-direction: column; gap: 12px; }
 
+/* Wide screens: two recipes per row. Each card keeps its own height,
+   so opening one card's steps doesn't stretch its neighbor. */
+@media (min-width: 900px) {
+  #results { display: grid; grid-template-columns: 1fr 1fr; align-items: start; }
+}
+
 .card {
   display: flex;
   gap: 16px;
@@ -217,7 +223,6 @@ img.thumb { filter: none; }
 
 .empty { color: var(--muted); }
 
-footer { margin-top: 36px; color: var(--muted); font-size: 0.8rem; }
 
 /* Wide screens: Filters and Find recipes sit beside the "I have" box.
    Narrow screens keep the page order: both boxes first, then the buttons. */

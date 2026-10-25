@@ -38,6 +38,8 @@
 - Sage green background, rose/berry accents ("Mix 2").
 - Elegant serif headings (Cormorant Garamond), clean body text (Jost).
 - Recipe cards with a small rounded thumbnail on the left.
+- Wide screens: page up to 1200px wide, two recipes per row. Phones: one per row.
+- Browser tab icon: a steaming berry bowl (`favicon.svg`).
 
 ## The cook's rule (how recipes are ranked)
 1. Fewest missing ingredients first. (A recipe you can cook right now wins.)

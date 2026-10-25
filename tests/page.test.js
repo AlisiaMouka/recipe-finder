@@ -183,6 +183,36 @@ check("on a phone, unfolded steps use (almost) the full card width", async () =>
   assert.ok(stepsBox.width > cardBox.width * 0.85, `steps are ${Math.round(stepsBox.width)}px in a ${Math.round(cardBox.width)}px card`);
 });
 
+check("on a wide screen, recipes sit two per row", async () => {
+  await openPage(1440);
+  const [first, second] = await page.locator(".card").evaluateAll((cards) =>
+    cards.slice(0, 2).map((card) => card.getBoundingClientRect().top));
+  assert.ok(Math.abs(first - second) < 2, "the first two recipes should be side by side");
+});
+
+check("opening one recipe's steps doesn't stretch the recipe next to it", async () => {
+  await openPage(1440);
+  const before = await page.locator(".card").nth(1).boundingBox();
+  await page.locator(".card").first().getByText("Show steps").click();
+  const after = await page.locator(".card").nth(1).boundingBox();
+  assert.ok(Math.abs(after.height - before.height) < 2, `neighbor grew from ${before.height}px to ${after.height}px`);
+});
+
+check("on a phone, recipes are one per row", async () => {
+  await openPage(390);
+  const [first, second] = await page.locator(".card").evaluateAll((cards) =>
+    cards.slice(0, 2).map((card) => card.getBoundingClientRect().top));
+  assert.ok(second > first + 20, "the second recipe should be below the first");
+});
+
+check("the browser tab shows the food icon (favicon.svg)", async () => {
+  await openPage();
+  const href = await page.getAttribute('link[rel="icon"]', "href");
+  assert.strictEqual(href, "favicon.svg");
+  const loaded = await page.evaluate(async (url) => (await fetch(url)).ok, href).catch(() => false);
+  assert.ok(require("fs").existsSync(require("path").join(ROOT, href)) || loaded, "favicon.svg is missing");
+});
+
 check("no errors happen on the page during any of these checks", async () => {
   await openPage();
   await add("have", "egg, cheddar, tomato");
