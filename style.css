@@ -27,7 +27,7 @@ body {
 }
 
 main {
-  max-width: 860px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 36px 16px 48px;
 }
@@ -189,16 +189,27 @@ h1 em { color: var(--accent); }
 /* Recipe cards */
 #results { display: flex; flex-direction: column; gap: 12px; }
 
+/* Wide screens: two recipes per row, and both cards in a row get the same height.
+   When one card's steps are open, its neighbor keeps its own height instead of
+   stretching (cards pair up as 1+2, 3+4, … so odd and even cards share a row). */
+@media (min-width: 900px) {
+  #results { display: grid; grid-template-columns: 1fr 1fr; align-items: stretch; }
+  .card:has(details[open]),
+  .card:nth-child(odd):has(+ .card details[open]),
+  .card:nth-child(odd):has(details[open]) + .card { align-self: start; }
+}
+
 .card {
   display: flex;
   gap: 16px;
-  align-items: flex-start;
+  align-items: stretch;
   padding: 14px;
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: 16px;
 }
 .thumb {
+  align-self: flex-start;
   flex: 0 0 76px;
   width: 76px;
   height: 76px;
@@ -208,7 +219,8 @@ h1 em { color: var(--accent); }
   filter: hue-rotate(var(--shift, 0deg));
 }
 img.thumb { filter: none; }
-.card-body { flex: 1; min-width: 0; }
+.card-body { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.card-body .steps { margin-top: auto; } /* keeps "Show steps" at the bottom, lined up across a row */
 .card h2 { margin: 0 0 2px; font-family: var(--heading-font); font-weight: 700; font-size: 1.6rem; line-height: 1.15; }
 .card p { margin: 4px 0; font-size: 0.92rem; }
 .card .facts { color: var(--muted); font-size: 0.82rem; margin-bottom: 8px; }
@@ -217,7 +229,6 @@ img.thumb { filter: none; }
 
 .empty { color: var(--muted); }
 
-footer { margin-top: 36px; color: var(--muted); font-size: 0.8rem; }
 
 /* Wide screens: Filters and Find recipes sit beside the "I have" box.
    Narrow screens keep the page order: both boxes first, then the buttons. */
