@@ -1,0 +1,133 @@
+:root {
+  --bg: #faf7f2;
+  --card: #ffffff;
+  --text: #2b2622;
+  --muted: #6f655c;
+  --accent: #c2562b;
+  --accent-text: #ffffff;
+  --border: #e6ddd2;
+  --good: #2f7d4a;
+  --note-bg: #fff3d6;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1d1a17;
+    --card: #282420;
+    --text: #f1ebe4;
+    --muted: #b3a89c;
+    --accent: #e0784b;
+    --accent-text: #1d1a17;
+    --border: #3d3731;
+    --good: #6cc48b;
+    --note-bg: #3a3122;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  line-height: 1.5;
+}
+
+main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 32px 16px;
+}
+
+h1 { margin: 0; font-size: 2rem; }
+.subtitle { margin: 4px 0 24px; color: var(--muted); }
+
+label[for="ingredients"] { font-weight: 600; display: block; margin-bottom: 6px; }
+
+.search-row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+input[type="text"] {
+  flex: 1 1 240px;
+  padding: 10px 12px;
+  font-size: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--text);
+}
+
+button {
+  padding: 10px 18px;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--accent-text);
+  cursor: pointer;
+}
+
+.filters {
+  border: none;
+  padding: 0;
+  margin: 16px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.filters legend { float: left; margin-right: 8px; color: var(--muted); }
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--card);
+  cursor: pointer;
+}
+.chip:has(input:checked) { border-color: var(--accent); }
+
+.hint { color: var(--muted); font-size: 0.875rem; margin: 8px 0 24px; }
+
+.note {
+  background: var(--note-bg);
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin: 0 0 8px;
+}
+
+#count { color: var(--muted); margin: 16px 0 8px; }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+.card h2 { margin: 0 0 4px; font-size: 1.2rem; }
+.card p { margin: 4px 0; }
+.facts { color: var(--muted); font-size: 0.9rem; }
+.ready { color: var(--good); font-weight: 600; }
+.allergens { color: var(--muted); font-size: 0.875rem; }
+
+.badges { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0; }
+.badge {
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--good);
+  color: var(--good);
+}
+
+.empty { color: var(--muted); }
+
+footer {
+  margin-top: 32px;
+  color: var(--muted);
+  font-size: 0.8rem;
+}

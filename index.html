@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Recipe Finder</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Recipe Finder</h1>
+      <p class="subtitle">Type what's in your kitchen. We'll find what you can cook.</p>
+    </header>
+
+    <form id="search">
+      <label for="ingredients">Your ingredients, separated by commas</label>
+      <div class="search-row">
+        <input id="ingredients" type="text" placeholder="e.g. eggs, cheese, spinach, tomato" autocomplete="off">
+        <button type="submit">Find recipes</button>
+      </div>
+
+      <fieldset class="filters">
+        <legend>Only show</legend>
+        <label class="chip"><input type="checkbox" name="diet" value="vegetarian"> Vegetarian</label>
+        <label class="chip"><input type="checkbox" name="diet" value="vegan"> Vegan</label>
+        <label class="chip"><input type="checkbox" name="diet" value="gluten-free"> Gluten-free</label>
+        <label class="chip"><input type="checkbox" id="have-everything"> I have everything</label>
+      </fieldset>
+      <p class="hint">Salt, pepper and water are assumed to be at home.</p>
+    </form>
+
+    <div id="notes"></div>
+    <p id="count"></p>
+    <div id="results"></div>
+
+    <footer>
+      Prices are rough estimates in euros. Allergen info may be incomplete. Always check ingredient labels.
+    </footer>
+  </main>
+
+  <!-- Order matters: pantry, then cook, then waiter. -->
+  <script src="recipes.js"></script>
+  <script src="matcher.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
