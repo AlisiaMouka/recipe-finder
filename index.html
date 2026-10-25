@@ -18,13 +18,20 @@
 
     <form id="search" autocomplete="off">
       <label class="field-label" for="have-input">I have</label>
-      <div class="search-row">
-        <div class="tag-box" id="have-box">
-          <div class="tags"></div>
-          <input id="have-input" type="text" placeholder="Type an ingredient…">
-          <ul class="suggestions" hidden></ul>
-        </div>
+      <div class="tag-box" id="have-box">
+        <div class="tags"></div>
+        <input id="have-input" type="text" placeholder="Type an ingredient…">
+        <ul class="suggestions" hidden></ul>
+      </div>
 
+      <label class="field-label" for="out-input">Leave out</label>
+      <div class="tag-box leave-out" id="out-box">
+        <div class="tags"></div>
+        <input id="out-input" type="text" placeholder="Type an ingredient…">
+        <ul class="suggestions" hidden></ul>
+      </div>
+
+      <div class="action-row">
         <div class="filters">
           <button type="button" id="filters-button" class="filters-button" aria-expanded="false">Filters ▾</button>
           <div id="filters-panel" class="filters-panel" hidden>
@@ -36,15 +43,7 @@
             <label><input type="checkbox" id="have-everything"> I have everything</label>
           </div>
         </div>
-
         <button type="submit" class="find-button">Find recipes</button>
-      </div>
-
-      <label class="field-label" for="out-input">Leave out</label>
-      <div class="tag-box leave-out" id="out-box">
-        <div class="tags"></div>
-        <input id="out-input" type="text" placeholder="Add an ingredient you don't want…">
-        <ul class="suggestions" hidden></ul>
       </div>
       <p class="hint">Salt, pepper and water are assumed to be at home.</p>
     </form>
