@@ -54,18 +54,26 @@ function labelsOf(recipe) {
   return labels;
 }
 
-// typed: ingredients the user has, e.g. ["egg", "cheddar"]
-// options.leaveOut: ingredients or families the user doesn't want, e.g. ["meat"]
+// The recipes that pass the filters and contain nothing from "Leave out".
 // options.diets: labels a recipe must have, e.g. ["vegetarian", "dairy-free"]
-// options.haveEverything: true = only recipes with nothing missing
-function findRecipes(recipes, typed, options) {
+// options.leaveOut: ingredients or families the user doesn't want, e.g. ["meat"]
+function allowedRecipes(recipes, options) {
   const passesDiets = (recipe) => options.diets.every((diet) => labelsOf(recipe).includes(diet));
   const avoidsLeftOut = (recipe) =>
     !recipe.ingredients.some((item) => options.leaveOut.some((out) => isLeftOutBy(item, out)));
-  const allowed = recipes.filter((recipe) => passesDiets(recipe) && avoidsLeftOut(recipe));
+  return recipes.filter((recipe) => passesDiets(recipe) && avoidsLeftOut(recipe));
+}
 
+// Browsing, when no ingredients are typed: every allowed recipe, A to Z.
+function browseRecipes(recipes, options) {
+  return allowedRecipes(recipes, options).sort((a, b) => a.name.localeCompare(b.name));
+}
+
+// typed: ingredients the user has, e.g. ["egg", "cheddar"]
+// options: the same filters and "Leave out" as allowedRecipes
+function findRecipes(recipes, typed, options) {
   const results = [];
-  for (const recipe of allowed) {
+  for (const recipe of allowedRecipes(recipes, options)) {
     // have: [{ needed: "cheese", using: "cheddar" }, ...]
     const have = [];
     const missing = [];
@@ -76,7 +84,6 @@ function findRecipes(recipes, typed, options) {
     }
 
     if (have.length === 0) continue; // Rule 3: uses none of your ingredients
-    if (options.haveEverything && missing.length > 0) continue;
 
     results.push({ recipe, labels: labelsOf(recipe), have, missing });
   }

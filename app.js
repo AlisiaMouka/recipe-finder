@@ -11,7 +11,6 @@ const MAX_SUGGESTIONS = 6;
 const form = document.getElementById("search");
 const filtersButton = document.getElementById("filters-button");
 const filtersPanel = document.getElementById("filters-panel");
-const haveEverythingSwitch = document.getElementById("have-everything");
 const notesArea = document.getElementById("notes");
 const countArea = document.getElementById("count");
 const resultsArea = document.getElementById("results");
@@ -204,19 +203,21 @@ form.addEventListener("submit", (event) => {
 });
 
 function search() {
+  const diets = [...filtersPanel.querySelectorAll('input[name="diet"]:checked')].map((box) => box.value);
+  const options = { diets, leaveOut: outBox.items };
+
+  // Nothing typed in "I have": browse every recipe that passes the filters, A to Z.
   if (haveBox.items.length === 0) {
+    const recipes = browseRecipes(RECIPES, options);
     notesArea.innerHTML = "";
-    countArea.textContent = "";
-    resultsArea.innerHTML = "";
+    countArea.innerHTML = `<b>${escapeText(browseTitle(diets, outBox.items))}</b> · ${recipes.length}, A to Z`;
+    resultsArea.innerHTML = recipes.length
+      ? recipes.map((recipe) => recipeCard({ recipe, labels: labelsOf(recipe) })).join("")
+      : `<p class="empty">No recipes match. Try fewer filters.</p>`;
     return;
   }
 
-  const diets = [...filtersPanel.querySelectorAll('input[name="diet"]:checked')].map((box) => box.value);
-  const { results, notes } = findRecipes(RECIPES, haveBox.items, {
-    diets,
-    leaveOut: outBox.items,
-    haveEverything: haveEverythingSwitch.checked,
-  });
+  const { results, notes } = findRecipes(RECIPES, haveBox.items, options);
 
   notesArea.innerHTML = notes.map((note) => `<p class="note">${escapeText(note)}</p>`).join("");
   countArea.textContent = results.length === 1 ? "1 recipe found" : `${results.length} recipes found`;
@@ -225,6 +226,13 @@ function search() {
     : `<p class="empty">No recipes match. Try more ingredients or fewer filters.</p>`;
 }
 
+// e.g. "All recipes", "Vegan recipes", "Vegan + gluten-free recipes without meat"
+function browseTitle(diets, leaveOut) {
+  const title = diets.length ? `${capitalize(diets.join(" + "))} recipes` : "All recipes";
+  return leaveOut.length ? `${title} without ${leaveOut.join(", ")}` : title;
+}
+
+// When browsing, `have` is not given and the card lists the ingredients instead.
 function recipeCard({ recipe, labels, have, missing }) {
   const picture = recipe.image
     ? `<img class="thumb" src="${escapeText(recipe.image)}" alt="">`
@@ -236,9 +244,12 @@ function recipeCard({ recipe, labels, have, missing }) {
     `~€${recipe.price.toFixed(2)}`,
     ...labels,
   ];
-  const missingLine = missing.length
-    ? `<p><span class="missing">Missing:</span> ${missing.map(escapeText).join(", ")}</p>`
-    : `<p class="ready">You have everything!</p>`;
+  const ingredientLines = !have
+    ? `<p>Ingredients: ${recipe.ingredients.map(escapeText).join(", ")}</p>`
+    : `<p>You have: ${have.map(describeHave).join(", ")}</p>` +
+      (missing.length
+        ? `<p><span class="missing">Missing:</span> ${missing.map(escapeText).join(", ")}</p>`
+        : `<p class="ready">You have everything!</p>`);
 
   return `
     <article class="card">
@@ -246,8 +257,7 @@ function recipeCard({ recipe, labels, have, missing }) {
       <div class="card-body">
         <h2>${escapeText(recipe.name)}</h2>
         <p class="facts">${facts.map(escapeText).join(" · ")}</p>
-        <p>You have: ${have.map(describeHave).join(", ")}</p>
-        ${missingLine}
+        ${ingredientLines}
         <details class="steps">
           <summary><span class="when-closed">Show steps ▾</span><span class="when-open">Hide steps ▴</span></summary>
           <ol>${recipe.steps.map((step) => `<li>${escapeText(step)}</li>`).join("")}</ol>
@@ -276,3 +286,6 @@ function escapeText(text) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
 }
+
+// Show every recipe as soon as the page opens.
+search();

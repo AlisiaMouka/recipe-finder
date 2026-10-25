@@ -18,7 +18,9 @@
 - "Leave out" box: recipes containing these ingredients are hidden.
 - An ingredient can't be in both boxes at once.
 - Filters dropdown (filters hide recipes): vegetarian, vegan, gluten-free,
-  dairy-free (no "dairy" allergen), and "I have everything."
+  dairy-free (no "dairy" allergen).
+- With nothing typed in "I have", show every recipe that passes the filters and
+  "Leave out", A to Z, with each card listing its ingredients.
 - Each result shows which ingredients you're missing.
 - Each recipe has 3–8 cooking steps, folded away behind "Show steps ▾".
 - Smarter matching, using a reference book of ingredients (`ingredients.js`):
@@ -52,6 +54,8 @@
   4. "Cheapest": lowest estimated price first.
 - More filters: by cuisine, by allergen.
 - Real recipe photos.
+- Sort the front page by real popularity (which recipes people open). Needs the
+  app online and somewhere to store the counts. Never invent popularity numbers.
 
 ## How we work
 - Sketch first: show a picture of a new feature or design before building it.

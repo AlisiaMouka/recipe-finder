@@ -173,7 +173,6 @@ h1 em { color: var(--accent); }
 .filters-panel label { display: flex; gap: 10px; align-items: center; padding: 7px 8px; cursor: pointer; border-radius: 8px; }
 .filters-panel label:hover { background: var(--accent-soft); }
 .filters-panel input { accent-color: var(--accent); }
-.filters-panel hr { border: none; border-top: 1px solid var(--line); margin: 6px 0; }
 
 .hint { color: var(--muted); font-size: 0.85rem; margin: 8px 0 24px; }
 
@@ -185,6 +184,7 @@ h1 em { color: var(--accent); }
 }
 
 #count { color: var(--muted); margin: 16px 0 10px; }
+#count b { color: var(--text); font-weight: 500; }
 
 /* Recipe cards */
 #results { display: flex; flex-direction: column; gap: 12px; }
