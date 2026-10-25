@@ -190,6 +190,18 @@ check("on a wide screen, recipes sit two per row", async () => {
   assert.ok(Math.abs(first - second) < 2, "the first two recipes should be side by side");
 });
 
+check('two recipes in the same row have the same height, with "Show steps" lined up', async () => {
+  await openPage(1000); // narrow enough that the two cards' text wraps differently
+  const cards = page.locator(".card");
+  const [a, b] = [await cards.nth(0).boundingBox(), await cards.nth(1).boundingBox()];
+  assert.ok(Math.abs(a.height - b.height) < 2, `heights ${a.height}px and ${b.height}px`);
+  const [linkA, linkB] = [
+    await cards.nth(0).getByText("Show steps").boundingBox(),
+    await cards.nth(1).getByText("Show steps").boundingBox(),
+  ];
+  assert.ok(Math.abs(linkA.y - linkB.y) < 2, "the Show steps links should line up");
+});
+
 check("opening one recipe's steps doesn't stretch the recipe next to it", async () => {
   await openPage(1440);
   const before = await page.locator(".card").nth(1).boundingBox();
