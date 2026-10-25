@@ -3,6 +3,10 @@
 // Ingredient names are lowercase and singular ("tomato", not "Tomatoes").
 // Salt, pepper and water are assumed to be at home, so they're not listed.
 // Prices are rough estimates in euros for the whole recipe.
+// Allergens are kept here but not shown on the page. "dairy" covers milk,
+// cheese, butter, cream, yogurt, etc. A recipe without it counts as dairy-free.
+// image (optional): a link to a photo, e.g. image: "images/shakshuka.jpg".
+// Without one, the card shows a colored placeholder.
 
 const RECIPES = [
   {
@@ -13,7 +17,7 @@ const RECIPES = [
     price: 2.5,
     ingredients: ["egg", "cheese", "spinach", "butter"],
     diet: ["vegetarian", "gluten-free"],
-    allergens: ["egg", "milk"],
+    allergens: ["egg", "dairy"],
   },
   {
     name: "Shakshuka",
@@ -33,7 +37,7 @@ const RECIPES = [
     price: 3.5,
     ingredients: ["pasta", "tomato", "garlic", "basil", "olive oil", "parmesan"],
     diet: ["vegetarian"],
-    allergens: ["gluten", "milk"],
+    allergens: ["gluten", "dairy"],
   },
   {
     name: "Vegetable Fried Rice",
@@ -93,7 +97,7 @@ const RECIPES = [
     price: 8,
     ingredients: ["tortilla", "beef", "onion", "tomato", "cheese", "lettuce"],
     diet: [],
-    allergens: ["gluten", "milk"],
+    allergens: ["gluten", "dairy"],
   },
   {
     name: "Greek Salad",
@@ -103,7 +107,7 @@ const RECIPES = [
     price: 5,
     ingredients: ["tomato", "cucumber", "onion", "feta", "olive", "olive oil"],
     diet: ["vegetarian", "gluten-free"],
-    allergens: ["milk"],
+    allergens: ["dairy"],
   },
   {
     name: "Lentil Soup",
@@ -123,7 +127,7 @@ const RECIPES = [
     price: 6,
     ingredients: ["rice", "mushroom", "onion", "garlic", "parmesan", "butter", "vegetable stock"],
     diet: ["vegetarian", "gluten-free"],
-    allergens: ["milk"],
+    allergens: ["dairy"],
   },
   {
     name: "Lemon Salmon with Potatoes",
@@ -133,7 +137,7 @@ const RECIPES = [
     price: 11,
     ingredients: ["salmon", "potato", "lemon", "dill", "butter"],
     diet: ["gluten-free"],
-    allergens: ["fish", "milk"],
+    allergens: ["fish", "dairy"],
   },
   {
     name: "Pancakes",
@@ -143,7 +147,7 @@ const RECIPES = [
     price: 2,
     ingredients: ["flour", "egg", "milk", "butter", "sugar"],
     diet: ["vegetarian"],
-    allergens: ["gluten", "egg", "milk"],
+    allergens: ["gluten", "egg", "dairy"],
   },
   {
     name: "Peanut Noodles",
@@ -163,7 +167,7 @@ const RECIPES = [
     price: 3.5,
     ingredients: ["bread", "tomato", "mozzarella", "basil", "olive oil"],
     diet: ["vegetarian"],
-    allergens: ["gluten", "milk"],
+    allergens: ["gluten", "dairy"],
   },
   {
     name: "Banana Oat Smoothie",
@@ -173,7 +177,7 @@ const RECIPES = [
     price: 1.5,
     ingredients: ["banana", "oat", "milk", "honey"],
     diet: ["vegetarian"],
-    allergens: ["milk"],
+    allergens: ["dairy"],
   },
   {
     name: "Potato & Leek Soup",
@@ -183,6 +187,6 @@ const RECIPES = [
     price: 3.5,
     ingredients: ["potato", "leek", "onion", "butter", "vegetable stock", "cream"],
     diet: ["vegetarian", "gluten-free"],
-    allergens: ["milk"],
+    allergens: ["dairy"],
   },
 ];
