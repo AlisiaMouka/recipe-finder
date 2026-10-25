@@ -6,7 +6,8 @@
 // Turns "  Zucchinis " into "courgette" so typing style doesn't matter.
 function cleanIngredient(text) {
   let word = text.trim().toLowerCase().replace(/\s+/g, " ");
-  if (word.endsWith("oes")) word = word.slice(0, -2); // tomatoes -> tomato
+  if (word.endsWith("ies")) word = word.slice(0, -3) + "y"; // strawberries -> strawberry
+  else if (word.endsWith("oes")) word = word.slice(0, -2); // tomatoes -> tomato
   else if (word.endsWith("s") && !word.endsWith("ss")) word = word.slice(0, -1); // eggs -> egg
   return OTHER_NAMES[word] || word;
 }

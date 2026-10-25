@@ -6,7 +6,7 @@ const { check, loadCook, runChecks, assert } = require("./checker");
 const { RECIPES, FAMILIES, OTHER_NAMES, cleanIngredient } = loadCook();
 
 const DIET_LABELS = ["vegetarian", "vegan", "gluten-free"];
-const ALLERGENS = ["gluten", "dairy", "egg", "soy", "peanut", "fish"];
+const ALLERGENS = ["gluten", "dairy", "egg", "soy", "peanut", "fish", "shellfish", "sesame"];
 
 check("every recipe has a name, cuisine, cooking time, servings and a price", () => {
   for (const recipe of RECIPES) {
@@ -50,6 +50,14 @@ check('allergens use the agreed names (e.g. "dairy", not "milk")', () => {
 check("every vegan recipe is also labelled vegetarian", () => {
   for (const recipe of RECIPES.filter((recipe) => recipe.diet.includes("vegan"))) {
     assert.ok(recipe.diet.includes("vegetarian"), `${recipe.name} is vegan but not vegetarian`);
+  }
+});
+
+check("no vegan recipe contains egg, dairy or honey", () => {
+  for (const recipe of RECIPES.filter((recipe) => recipe.diet.includes("vegan"))) {
+    const problems = recipe.allergens.filter((a) => a === "egg" || a === "dairy");
+    if (recipe.ingredients.includes("honey")) problems.push("honey");
+    assert.deepStrictEqual(problems, [], `${recipe.name} is vegan but contains ${problems.join(", ")}`);
   }
 });
 
