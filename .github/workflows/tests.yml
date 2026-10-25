@@ -1,0 +1,25 @@
+# Runs every check automatically on each pull request and on main.
+# The pull request then shows a green ✓ (all passed) or a red ✗ (something broke).
+name: Checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install the browser used by the page checks
+        run: |
+          npm install --no-save playwright@1.63.0
+          npx playwright install --with-deps chromium
+      - name: Run all checks
+        run: npm test
+        env:
+          CI: true
