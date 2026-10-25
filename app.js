@@ -1,7 +1,11 @@
 // THE WAITER
 // Reads what the user picked, asks the cook (matcher.js), and shows the results.
 
-const KNOWN_INGREDIENTS = allIngredients(RECIPES);
+// Everything you can type: known names, plus other names that point to them.
+const SEARCHABLE = [
+  ...allIngredients(RECIPES).map((name) => ({ value: name, text: name })),
+  ...Object.entries(OTHER_NAMES).map(([other, name]) => ({ value: name, text: other, alias: other })),
+];
 const MAX_SUGGESTIONS = 6;
 
 const form = document.getElementById("search");
@@ -35,6 +39,9 @@ function createTagBox(element, name) {
   };
   box.message.className = "box-message";
   element.after(box.message);
+  box.covers = document.createElement("p"); // "Also leaving out: ..." (Leave out box only)
+  box.covers.className = "covers";
+  box.message.after(box.covers);
 
   box.input.addEventListener("input", () => {
     // Typing or pasting a comma adds everything before it as tags.
@@ -62,7 +69,7 @@ function createTagBox(element, name) {
       const typed = box.input.value.trim().toLowerCase();
       const top = box.list.hidden ? null : box.list.querySelector("li");
       if (options[box.highlighted]) addItem(box, options[box.highlighted].dataset.value);
-      else if (top && top.dataset.value.startsWith(typed)) addItem(box, top.dataset.value);
+      else if (top && top.dataset.match.startsWith(typed)) addItem(box, top.dataset.value);
       else addItem(box, box.input.value);
     } else if (event.key === "Backspace" && box.input.value === "" && box.items.length) {
       removeItem(box, box.items[box.items.length - 1]);
@@ -94,8 +101,9 @@ function addItem(box, text) {
   box.input.value = "";
   hideSuggestions(box);
   if (item === "" || box.items.includes(item)) return;
-  if (box.other.items.includes(item)) {
-    box.message.textContent = `${capitalize(item)} is already in "${box.other.name}".`;
+  const clash = box.other.items.find((other) => clashes(item, other));
+  if (clash) {
+    box.message.textContent = clashMessage(item, clash, box.other.name);
     return;
   }
   box.message.textContent = "";
@@ -111,30 +119,50 @@ function removeItem(box, item) {
   search();
 }
 
+// e.g. 'Cheddar counts as cheese, which is in "Leave out".'
+function clashMessage(item, other, otherBoxName) {
+  if (item === other) return `${capitalize(item)} is already in "${otherBoxName}".`;
+  if (isMemberOf(item, other)) return `${capitalize(item)} counts as ${other}, which is in "${otherBoxName}".`;
+  return `${capitalize(item)} includes ${other}, which is in "${otherBoxName}".`;
+}
+
 function drawTags(box) {
   box.tagsArea.innerHTML = box.items
     .map((item) => `<span class="tag">${escapeText(item)}<button type="button" data-value="${escapeText(item)}" aria-label="Remove ${escapeText(item)}">×</button></span>`)
     .join("");
+
+  // In "Leave out", list what the families cover, so there are no surprises.
+  if (box === outBox) {
+    const members = [...new Set(box.items.flatMap((item) => FAMILIES[item] || []))];
+    box.covers.innerHTML = members.length ? `Also leaving out: <b>${members.map(escapeText).join(", ")}</b>` : "";
+  }
 }
 
 // Suggestions: names starting with what's typed come first, then names
-// containing it. Ingredients in the other box are shown greyed out.
+// containing it. Another name shows faintly next to the one we use.
+// Ingredients that clash with the other box are shown greyed out.
 function showSuggestions(box) {
   const typed = box.input.value.trim().toLowerCase();
   box.highlighted = -1;
   if (typed === "") return hideSuggestions(box);
 
-  const notYetPicked = KNOWN_INGREDIENTS.filter((item) => !box.items.includes(item));
-  const startsWith = notYetPicked.filter((item) => item.startsWith(typed));
-  const contains = notYetPicked.filter((item) => !item.startsWith(typed) && item.includes(typed));
-  const matches = [...startsWith, ...contains].slice(0, MAX_SUGGESTIONS);
+  const notYetPicked = SEARCHABLE.filter((entry) => !box.items.includes(entry.value));
+  const startsWith = notYetPicked.filter((entry) => entry.text.startsWith(typed));
+  const contains = notYetPicked.filter((entry) => !entry.text.startsWith(typed) && entry.text.includes(typed));
+  const seen = new Set();
+  const matches = [...startsWith, ...contains]
+    .filter((entry) => !seen.has(entry.value) && seen.add(entry.value))
+    .slice(0, MAX_SUGGESTIONS);
   if (matches.length === 0) return hideSuggestions(box);
 
   box.list.innerHTML = matches
-    .map((item) => {
-      const blocked = box.other.items.includes(item);
-      const note = blocked ? `<small>already in "${box.other.name}"</small>` : "";
-      return `<li class="${blocked ? "blocked" : ""}" data-value="${escapeText(item)}">${escapeText(item)}${note}</li>`;
+    .map(({ value, text, alias }) => {
+      const clash = box.other.items.find((other) => clashes(value, other));
+      const aliasNote = alias ? `<small class="alias">${escapeText(alias)}</small>` : "";
+      const clashNote = clash
+        ? `<small>${clash === value ? "already" : escapeText(clash) + " is"} in "${box.other.name}"</small>`
+        : "";
+      return `<li class="${clash ? "blocked" : ""}" data-value="${escapeText(value)}" data-match="${escapeText(text)}">${escapeText(value)}${aliasNote}${clashNote}</li>`;
     })
     .join("");
   box.list.hidden = false;
@@ -218,10 +246,16 @@ function recipeCard({ recipe, labels, have, missing }) {
       <div class="card-body">
         <h2>${escapeText(recipe.name)}</h2>
         <p class="facts">${facts.map(escapeText).join(" · ")}</p>
-        <p>You have: ${have.map(escapeText).join(", ")}</p>
+        <p>You have: ${have.map(describeHave).join(", ")}</p>
         ${missingLine}
       </div>
     </article>`;
+}
+
+// "cheddar (as cheese)" when a family member stands in for the family.
+function describeHave({ needed, using }) {
+  if (using === needed) return escapeText(using);
+  return `${escapeText(using)} <span class="as">(as ${escapeText(needed)})</span>`;
 }
 
 // Gives each placeholder picture a slightly different shade, based on the name.
