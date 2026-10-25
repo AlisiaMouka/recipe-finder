@@ -95,6 +95,18 @@ check("other names show discreetly in suggestions (garbanzo → chickpea)", asyn
   assert.deepStrictEqual(item, { value: "chickpea", alias: "garbanzo bean" });
 });
 
+check('"Show steps" unfolds the numbered cooking steps, and "Hide steps" folds them away', async () => {
+  await openPage();
+  await add("have", "potato, egg, onion");
+  const card = page.locator(".card", { hasText: "Spanish Tortilla" });
+  assert.ok(!(await card.locator(".steps li").first().isVisible()), "steps should start folded");
+  await card.getByText("Show steps").click();
+  assert.ok(await card.locator(".steps li").first().isVisible(), "steps should unfold");
+  assert.ok((await card.locator(".steps li").count()) >= 3);
+  await card.getByText("Hide steps").click();
+  assert.ok(!(await card.locator(".steps li").first().isVisible()), "steps should fold away");
+});
+
 check("the Filters dropdown opens, counts what's ticked, and closes when clicking elsewhere", async () => {
   await openPage();
   await add("have", "egg");
@@ -130,6 +142,16 @@ check("on a phone, the buttons come after Leave out, with no sideways scrolling"
   assert.ok(button.y > outBox.y, "buttons should be below Leave out");
   const scrollsSideways = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
   assert.ok(!scrollsSideways);
+});
+
+check("on a phone, unfolded steps use (almost) the full card width", async () => {
+  await openPage(390);
+  await add("have", "potato, egg, onion");
+  const card = page.locator(".card", { hasText: "Spanish Tortilla" });
+  await card.getByText("Show steps").click();
+  const cardBox = await card.boundingBox();
+  const stepsBox = await card.locator(".steps ol").boundingBox();
+  assert.ok(stepsBox.width > cardBox.width * 0.85, `steps are ${Math.round(stepsBox.width)}px in a ${Math.round(cardBox.width)}px card`);
 });
 
 check("no errors happen on the page during any of these checks", async () => {

@@ -20,6 +20,7 @@
 - Filters dropdown (filters hide recipes): vegetarian, vegan, gluten-free,
   dairy-free (no "dairy" allergen), and "I have everything."
 - Each result shows which ingredients you're missing.
+- Each recipe has 3–8 cooking steps, folded away behind "Show steps ▾".
 - Smarter matching, using a reference book of ingredients (`ingredients.js`):
   - Families: cheese, meat, fish, vegetable, fruit, spice, herb, rice, pasta,
     noodle, stock, bread. An ingredient can be in more than one family.
@@ -50,9 +51,6 @@
   3. "Quickest": shortest cooking time first.
   4. "Cheapest": lowest estimated price first.
 - More filters: by cuisine, by allergen.
-- Leave out should also use allergens, not just ingredients: leaving out "fish"
-  should hide Kimchi Fried Rice (kimchi often contains fish sauce).
-- Short cooking instructions on each recipe.
 - Real recipe photos.
 
 ## How we work

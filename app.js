@@ -248,6 +248,10 @@ function recipeCard({ recipe, labels, have, missing }) {
         <p class="facts">${facts.map(escapeText).join(" · ")}</p>
         <p>You have: ${have.map(describeHave).join(", ")}</p>
         ${missingLine}
+        <details class="steps">
+          <summary><span class="when-closed">Show steps ▾</span><span class="when-open">Hide steps ▴</span></summary>
+          <ol>${recipe.steps.map((step) => `<li>${escapeText(step)}</li>`).join("")}</ol>
+        </details>
       </div>
     </article>`;
 }
