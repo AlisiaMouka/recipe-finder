@@ -59,6 +59,10 @@ check('capitals, spaces and plurals don\'t matter ("  Tomatoes " = "tomato")', (
   assert.strictEqual(cleanIngredient("Eggs"), "egg");
 });
 
+check('"-ies" plurals work too ("strawberries" = "strawberry")', () => {
+  assert.strictEqual(cleanIngredient("Strawberries"), "strawberry");
+});
+
 check('other names work ("zucchinis" = courgette, "garbanzo beans" = chickpea)', () => {
   assert.strictEqual(cleanIngredient("zucchinis"), "courgette");
   assert.strictEqual(cleanIngredient("garbanzo beans"), "chickpea");

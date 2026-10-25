@@ -2,7 +2,7 @@
 
 ## Version 1
 - A single web page you open in a browser.
-- About 15–20 recipes we write ourselves, kept separate from the matching part
+- 50 recipes we write ourselves, kept separate from the matching part
   (the "pantry" is separate from the "cook").
 - Each recipe carries this information:
   - Ingredients
@@ -50,6 +50,9 @@
   3. "Quickest": shortest cooking time first.
   4. "Cheapest": lowest estimated price first.
 - More filters: by cuisine, by allergen.
+- Leave out should also use allergens, not just ingredients: leaving out "fish"
+  should hide Kimchi Fried Rice (kimchi often contains fish sauce).
+- Short cooking instructions on each recipe.
 - Real recipe photos.
 
 ## How we work

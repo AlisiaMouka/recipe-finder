@@ -14,8 +14,9 @@ const FAMILIES = {
   vegetable: [
     "tomato", "onion", "garlic", "spinach", "carrot", "pea", "bell pepper", "mushroom",
     "potato", "leek", "cucumber", "lettuce", "avocado", "courgette", "aubergine",
+    "broccoli", "sweet potato",
   ],
-  fruit: ["banana", "lemon", "lime", "apple", "orange"],
+  fruit: ["banana", "lemon", "lime", "apple", "orange", "strawberry"],
   spice: ["cumin", "curry powder", "ginger", "paprika", "cinnamon", "chili"],
   herb: ["basil", "dill", "coriander", "parsley"],
   rice: ["basmati", "jasmine rice", "arborio", "brown rice"],
