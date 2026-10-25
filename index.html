@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Recipe Finder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Recipe <em>Finder</em></h1>
+      <p class="subtitle">What's in your kitchen? Let's cook something.</p>
+    </header>
+
+    <form id="search" autocomplete="off">
+      <label class="field-label" for="have-input">I have</label>
+      <div class="tag-box" id="have-box">
+        <div class="tags"></div>
+        <input id="have-input" type="text" placeholder="Type an ingredient…">
+        <ul class="suggestions" hidden></ul>
+      </div>
+
+      <label class="field-label" for="out-input">Leave out</label>
+      <div class="tag-box leave-out" id="out-box">
+        <div class="tags"></div>
+        <input id="out-input" type="text" placeholder="Type an ingredient…">
+        <ul class="suggestions" hidden></ul>
+      </div>
+
+      <div class="action-row">
+        <div class="filters">
+          <button type="button" id="filters-button" class="filters-button" aria-expanded="false">Filters ▾</button>
+          <div id="filters-panel" class="filters-panel" hidden>
+            <label><input type="checkbox" name="diet" value="vegetarian"> Vegetarian</label>
+            <label><input type="checkbox" name="diet" value="vegan"> Vegan</label>
+            <label><input type="checkbox" name="diet" value="gluten-free"> Gluten-free</label>
+            <label><input type="checkbox" name="diet" value="dairy-free"> Dairy-free</label>
+            <hr>
+            <label><input type="checkbox" id="have-everything"> I have everything</label>
+          </div>
+        </div>
+        <button type="submit" class="find-button">Find recipes</button>
+      </div>
+      <p class="hint">Salt, pepper and water are assumed to be at home.</p>
+    </form>
+
+    <div id="notes"></div>
+    <p id="count"></p>
+    <div id="results"></div>
+
+    <footer>
+      Prices are rough estimates in euros. Always check ingredient labels for allergens.
+    </footer>
+  </main>
+
+  <!-- Order matters: pantry, then cook, then waiter. -->
+  <script src="recipes.js"></script>
+  <script src="matcher.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
