@@ -29,6 +29,35 @@ const tags = (box) => page.$$eval(`#${box}-box .tag`, (els) => els.map((el) => e
 const recipeNames = () => page.$$eval(".card h2", (els) => els.map((el) => el.textContent));
 const messages = () => page.$$eval(".box-message", (els) => els.map((el) => el.textContent).join(" "));
 
+check("the front page shows every recipe, A to Z, before anything is typed", async () => {
+  await openPage();
+  const names = await recipeNames();
+  assert.ok(names.length >= 50, `only ${names.length} recipes shown`);
+  assert.deepStrictEqual(names, [...names].sort((a, b) => a.localeCompare(b)));
+  assert.ok((await page.textContent("#count")).startsWith("All recipes"));
+});
+
+check("with nothing typed, cards show the ingredient list (not You have / Missing)", async () => {
+  await openPage();
+  const first = await page.locator(".card").first().innerText();
+  assert.ok(first.includes("Ingredients:"), first);
+  assert.ok(!first.includes("Missing:"), first);
+});
+
+check("ticking only Vegan shows all vegan recipes", async () => {
+  await openPage();
+  await page.click("#filters-button");
+  await page.check('input[value="vegan"]');
+  assert.ok((await page.textContent("#count")).startsWith("Vegan recipes"));
+  const labels = await page.$$eval(".card .facts", (els) => els.map((el) => el.textContent));
+  assert.ok(labels.length > 5 && labels.every((text) => text.includes("vegan")));
+});
+
+check('"I have everything" is gone from the Filters menu', async () => {
+  await openPage();
+  assert.strictEqual(await page.locator("#have-everything").count(), 0);
+});
+
 check("typing shows suggestions, and Enter picks the top one", async () => {
   await openPage();
   await page.click("#have-input");

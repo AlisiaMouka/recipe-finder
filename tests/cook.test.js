@@ -3,9 +3,9 @@
 // Some checks use small made-up recipes, so each rule can be tested on its own.
 
 const { check, loadCook, runChecks, assert } = require("./checker");
-const { RECIPES, findRecipes, cleanIngredient } = loadCook();
+const { RECIPES, findRecipes, browseRecipes, cleanIngredient } = loadCook();
 
-const noFilters = { diets: [], leaveOut: [], haveEverything: false };
+const noFilters = { diets: [], leaveOut: [] };
 
 // A made-up recipe with only the fields the cook needs.
 function fake(name, ingredients, extra = {}) {
@@ -41,15 +41,33 @@ check("rule 3: a recipe that uses none of your ingredients doesn't appear", () =
   assert.deepStrictEqual(namesOf(results), []);
 });
 
-check('"I have everything" shows only recipes with nothing missing', () => {
-  const { results } = find(["egg", "cheese", "spinach", "butter"], { haveEverything: true });
-  assert.deepStrictEqual(namesOf(results), ["Spinach & Cheese Omelette"]);
-});
-
 check("each result lists what you're missing", () => {
   const { results } = find(["egg", "cheese", "spinach"]);
   const omelette = results.find((r) => r.recipe.name === "Spinach & Cheese Omelette");
   assert.deepStrictEqual(omelette.missing, ["butter"]);
+});
+
+// ---- Browsing (no ingredients typed) ----
+
+check("with nothing selected, all recipes are shown, A to Z", () => {
+  const names = browseRecipes(RECIPES, noFilters).map((recipe) => recipe.name);
+  assert.strictEqual(names.length, RECIPES.length);
+  assert.deepStrictEqual(names, [...names].sort((a, b) => a.localeCompare(b)));
+});
+
+check("with only a filter, every recipe in that category is shown (Vegan)", () => {
+  const shown = browseRecipes(RECIPES, { ...noFilters, diets: ["vegan"] });
+  const allVegan = RECIPES.filter((recipe) => recipe.diet.includes("vegan"));
+  assert.strictEqual(shown.length, allVegan.length);
+  assert.ok(shown.every((recipe) => recipe.diet.includes("vegan")));
+});
+
+check('with only Leave out, every other recipe is shown (leave out "meat")', () => {
+  const shown = browseRecipes(RECIPES, { ...noFilters, leaveOut: ["meat"] });
+  assert.ok(shown.length > 0);
+  for (const recipe of shown) {
+    assert.ok(!recipe.ingredients.some((item) => ["meat", "chicken", "beef", "pork", "lamb", "bacon", "ham", "chicken stock"].includes(item)), recipe.name);
+  }
 });
 
 // ---- Typing style ----
