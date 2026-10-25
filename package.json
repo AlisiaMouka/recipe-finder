@@ -1,0 +1,8 @@
+{
+  "name": "recipe-finder",
+  "private": true,
+  "description": "Find recipes based on the ingredients you have.",
+  "scripts": {
+    "test": "node tests/run.js"
+  }
+}
