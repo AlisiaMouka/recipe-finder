@@ -54,7 +54,7 @@ h1 em { color: var(--accent); }
   color: var(--muted);
 }
 
-.tag-box + .box-message + .field-label, .tag-box + .field-label { margin-top: 16px; }
+#search .field-label:not(:first-child) { margin-top: 16px; }
 .action-row { display: flex; gap: 10px; margin-top: 16px; }
 
 /* Ingredient boxes with tags */
@@ -136,6 +136,13 @@ h1 em { color: var(--accent); }
 
 .box-message { margin: 4px 0 0; color: var(--accent); font-size: 0.85rem; min-height: 0; }
 .box-message:empty { display: none; }
+
+.covers { margin: 6px 0 0; font-size: 0.85rem; color: var(--muted); }
+.covers b { color: var(--text); font-weight: 500; }
+.covers:empty { display: none; }
+
+.suggestions .alias { font-style: normal; font-size: 0.7rem; opacity: 0.5; }
+.as { color: var(--muted); font-style: italic; }
 
 /* Filters dropdown */
 .filters { position: relative; }
