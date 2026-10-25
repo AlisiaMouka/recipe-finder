@@ -18,6 +18,29 @@ check("every recipe has a name, cuisine, cooking time, servings and a price", ()
   }
 });
 
+check("every recipe has 3 to 8 cooking steps", () => {
+  for (const recipe of RECIPES) {
+    const count = (recipe.steps || []).length;
+    assert.ok(count >= 3 && count <= 8, `${recipe.name} has ${count} steps`);
+  }
+});
+
+check("every ingredient is mentioned in the cooking steps", () => {
+  for (const recipe of RECIPES) {
+    const allSteps = (recipe.steps || []).join(" ").toLowerCase();
+    for (const item of recipe.ingredients) {
+      // Ignore longer ingredient names that contain this one ("olive oil" when checking "olive").
+      let text = allSteps;
+      for (const longer of recipe.ingredients.filter((other) => other !== item && other.includes(item))) {
+        text = text.split(longer).join(" ");
+      }
+      const plural = item.endsWith("y") ? item.slice(0, -1) + "ies" : item + "s";
+      const mentioned = new RegExp(`\\b(${item}|${item}es|${plural})\\b`).test(text);
+      assert.ok(mentioned, `${recipe.name}: the steps never mention "${item}"`);
+    }
+  }
+});
+
 check("no two recipes have the same name", () => {
   const names = RECIPES.map((recipe) => recipe.name);
   assert.strictEqual(new Set(names).size, names.length);
