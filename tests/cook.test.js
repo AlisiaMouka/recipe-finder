@@ -3,7 +3,7 @@
 // Some checks use small made-up recipes, so each rule can be tested on its own.
 
 const { check, loadCook, runChecks, assert } = require("./checker");
-const { RECIPES, findRecipes, browseRecipes, cleanIngredient } = loadCook();
+const { RECIPES, findRecipes, browseRecipes, cleanIngredient, closestIngredient, letterChanges } = loadCook();
 
 const noFilters = { diets: [], leaveOut: [] };
 
@@ -111,11 +111,52 @@ check("when browsing, Quickest and Cheapest work too, with ties falling back to 
   assert.deepStrictEqual(names("cheapest"), ["Beta", "Alpha", "Gamma"]); // €2 / €3 / €9 per serving
 });
 
+// ---- Typos ----
+
+check("letter changes are counted one add, remove or swap at a time", () => {
+  assert.strictEqual(letterChanges("brocoli", "broccoli"), 1); // add a c
+  assert.strictEqual(letterChanges("tomatoe", "tomato"), 1); // remove the e
+  assert.strictEqual(letterChanges("rise", "rice"), 1); // swap s for c
+  assert.strictEqual(letterChanges("egg", "egg"), 0);
+});
+
+check('a close typo gets a guess: brocoli → broccoli, tomatoe → tomato, parmesean → parmesan', () => {
+  assert.strictEqual(closestIngredient("brocoli", RECIPES), "broccoli");
+  assert.strictEqual(closestIngredient("tomatoe", RECIPES), "tomato");
+  assert.strictEqual(closestIngredient("parmesean", RECIPES), "parmesan");
+});
+
+check("words up to 5 letters allow 1 change (rise → rice), longer words allow 2 (brokoli → broccoli)", () => {
+  assert.strictEqual(closestIngredient("rise", RECIPES), "rice");
+  assert.strictEqual(closestIngredient("brokoli", RECIPES), "broccoli"); // 2 changes, 7 letters
+  assert.strictEqual(closestIngredient("rcie", RECIPES), null); // 2 changes, only 4 letters
+});
+
+check("known ingredients are never questioned (egg, cheddar, courgette)", () => {
+  for (const word of ["egg", "cheddar", "courgette", "cheese"]) {
+    assert.strictEqual(closestIngredient(word, RECIPES), null, word);
+  }
+});
+
+check("words that aren't close to anything get no guess (pizza, chocolate bar)", () => {
+  assert.strictEqual(closestIngredient("pizza", RECIPES), null);
+  assert.strictEqual(closestIngredient("chocolate bar", RECIPES), null);
+});
+
+check('real foods are never questioned, even when they\'re close to another one ("pear" isn\'t questioned as "pea")', () => {
+  assert.strictEqual(closestIngredient("pear", RECIPES), null);
+  assert.strictEqual(closestIngredient("kale", RECIPES), null);
+});
+
 // ---- Typing style ----
 
 check('capitals, spaces and plurals don\'t matter ("  Tomatoes " = "tomato")', () => {
   assert.strictEqual(cleanIngredient("  Tomatoes "), "tomato");
   assert.strictEqual(cleanIngredient("Eggs"), "egg");
+});
+
+check('words ending in "-us" aren\'t plurals (couscous, asparagus, hummus stay whole)', () => {
+  for (const word of ["couscous", "asparagus", "hummus"]) assert.strictEqual(cleanIngredient(word), word);
 });
 
 check('"-ies" plurals work too ("strawberries" = "strawberry")', () => {

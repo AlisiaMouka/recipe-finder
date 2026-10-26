@@ -36,6 +36,11 @@
   - A family does NOT count for a specific one: "cheese" doesn't match parmesan.
   - A family in "Leave out" hides every member, and the page lists what it covers.
   - Other names for the same thing work (zucchini = courgette), shown discreetly.
+- Typos: a word we don't know but that is close to a known ingredient (up to 5
+  letters: 1 letter change; longer: 2) is suggested while typing ("did you mean?"),
+  and pressing Enter asks "Did you mean tomato?" with Yes / No. Never fixed silently.
+  Real foods are never questioned: ingredients from our recipes, plus a list of
+  other foods in `ingredients.js` (`OTHER_FOODS`, e.g. pear, kale, quinoa).
 - If a filter makes one of your ingredients unusable, say so
   (e.g. "Chicken was ignored because Vegetarian is on").
 
@@ -55,7 +60,7 @@
 
 ## Later (Version 2+)
 - Add an online recipe source alongside our own list.
-- Smarter recommendations (e.g. typos, swaps like lemon for lime).
+- Swaps (e.g. lime for lemon), considered and put off for now.
 - More filters: by cuisine, by allergen.
 - Real recipe photos from Unsplash (work parked on the `photos` branch, PR 10,
   see its HANDOVER-PHOTOS.md). The owner must be able to swap photos without coding.

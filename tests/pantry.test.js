@@ -5,7 +5,7 @@
 const { check, loadCook, runChecks, assert } = require("./checker");
 const fs = require("fs");
 const path = require("path");
-const { RECIPES, FAMILIES, OTHER_NAMES, cleanIngredient } = loadCook();
+const { RECIPES, FAMILIES, OTHER_NAMES, OTHER_FOODS, allIngredients, cleanIngredient } = loadCook();
 const ROOT = path.join(__dirname, "..");
 
 const DIET_LABELS = ["vegetarian", "vegan", "gluten-free"];
@@ -50,6 +50,18 @@ check("every recipe has a drawing, and that drawing exists in images/illustratio
     const file = path.join(ROOT, "images", "illustrations", `${recipe.illustration}.svg`);
     assert.ok(fs.existsSync(file), `${recipe.name}: there is no drawing called "${recipe.illustration}"`);
   }
+});
+
+check(`foods on the "other foods" list are written the app's way (lowercase, singular)`, () => {
+  for (const food of OTHER_FOODS) {
+    assert.strictEqual(cleanIngredient(food), food, `"${food}" should be written as "${cleanIngredient(food)}"`);
+  }
+});
+
+check('nothing on the "other foods" list is already a known ingredient', () => {
+  const known = allIngredients(RECIPES);
+  const doubles = OTHER_FOODS.filter((food) => known.includes(food));
+  assert.deepStrictEqual(doubles, [], `already known: ${doubles.join(", ")}`);
 });
 
 check("no two recipes have the same name", () => {

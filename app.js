@@ -38,6 +38,20 @@ function createTagBox(element, name) {
   };
   box.message.className = "box-message";
   element.after(box.message);
+  // "Did you mean tomato?" with Yes/No buttons, one typo at a time.
+  box.question = document.createElement("p");
+  box.question.className = "did-you-mean";
+  box.question.id = `${element.id}-question`;
+  box.question.hidden = true;
+  box.message.after(box.question);
+  box.typos = []; // waiting for an answer: [{ typed: "tomatoe", guess: "tomato" }]
+  box.question.addEventListener("click", (event) => {
+    const button = event.target.closest("button");
+    if (!button) return;
+    const { typed, guess } = box.typos.shift();
+    addItem(box, button.dataset.answer === "yes" ? guess : typed, { asTyped: true });
+    askAboutTypo(box);
+  });
   box.covers = document.createElement("p"); // "Also leaving out: ..." (Leave out box only)
   box.covers.className = "covers";
   box.message.after(box.covers);
@@ -95,11 +109,19 @@ function createTagBox(element, name) {
   return box;
 }
 
-function addItem(box, text) {
+// asTyped: add exactly this word, without asking "Did you mean…?"
+function addItem(box, text, { asTyped = false } = {}) {
   const item = cleanIngredient(text);
   box.input.value = "";
   hideSuggestions(box);
   if (item === "" || box.items.includes(item)) return;
+  // A word we don't know but that is close to one we do: ask before adding.
+  const guess = asTyped ? null : closestIngredient(item, RECIPES);
+  if (guess) {
+    box.typos.push({ typed: item, guess });
+    askAboutTypo(box);
+    return;
+  }
   const clash = box.other.items.find((other) => clashes(item, other));
   if (clash) {
     box.message.textContent = clashMessage(item, clash, box.other.name);
@@ -109,6 +131,17 @@ function addItem(box, text) {
   box.items.push(item);
   drawTags(box);
   search();
+}
+
+// Shows the question for the first typo still waiting for an answer, if any.
+function askAboutTypo(box) {
+  const next = box.typos[0];
+  box.question.hidden = !next;
+  if (!next) return;
+  const guess = escapeText(next.guess);
+  box.question.innerHTML = `<span>Did you mean <b>${guess}</b>?</span>
+    <button type="button" data-answer="yes">Yes, use ${guess}</button>
+    <button type="button" data-answer="no" class="keep">No, keep "${escapeText(next.typed)}"</button>`;
 }
 
 function removeItem(box, item) {
@@ -149,15 +182,20 @@ function showSuggestions(box) {
   const startsWith = notYetPicked.filter((entry) => entry.text.startsWith(typed));
   const contains = notYetPicked.filter((entry) => !entry.text.startsWith(typed) && entry.text.includes(typed));
   const seen = new Set();
-  const matches = [...startsWith, ...contains]
+  let matches = [...startsWith, ...contains]
     .filter((entry) => !seen.has(entry.value) && seen.add(entry.value))
     .slice(0, MAX_SUGGESTIONS);
+  // Nothing matches what's typed: offer the closest real ingredient, if there is one.
+  if (matches.length === 0) {
+    const guess = closestIngredient(cleanIngredient(typed), RECIPES);
+    if (guess && !box.items.includes(guess)) matches = [{ value: guess, text: guess, typo: true }];
+  }
   if (matches.length === 0) return hideSuggestions(box);
 
   box.list.innerHTML = matches
-    .map(({ value, text, alias }) => {
+    .map(({ value, text, alias, typo }) => {
       const clash = box.other.items.find((other) => clashes(value, other));
-      const aliasNote = alias ? `<small class="alias">${escapeText(alias)}</small>` : "";
+      const aliasNote = alias ? `<small class="alias">${escapeText(alias)}</small>` : typo ? `<small class="typo">did you mean?</small>` : "";
       const clashNote = clash
         ? `<small>${clash === value ? "already" : escapeText(clash) + " is"} in "${box.other.name}"</small>`
         : "";
