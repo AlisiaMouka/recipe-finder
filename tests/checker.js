@@ -19,7 +19,7 @@ function loadCook() {
   const code = ["recipes.js", "ingredients.js", "matcher.js"]
     .map((file) => fs.readFileSync(path.join(ROOT, file), "utf8"))
     .join("\n");
-  const exported = "RECIPES, FAMILIES, OTHER_NAMES, findRecipes, browseRecipes, cleanIngredient, allIngredients, labelsOf";
+  const exported = "RECIPES, FAMILIES, OTHER_NAMES, findRecipes, browseRecipes, cleanIngredient, closestIngredient, letterChanges, allIngredients, labelsOf";
   return new Function(`${code}\nreturn { ${exported} };`)();
 }
 

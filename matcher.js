@@ -23,6 +23,42 @@ function allIngredients(recipes) {
   return [...names].sort();
 }
 
+// ---- Typos ----
+
+// How many single-letter changes (add, remove or swap one letter) turn a into b.
+// e.g. "brocoli" -> "broccoli" is 1 (add a c).
+function letterChanges(a, b) {
+  let previous = Array.from({ length: b.length + 1 }, (_, i) => i);
+  for (let i = 1; i <= a.length; i++) {
+    const current = [i];
+    for (let j = 1; j <= b.length; j++) {
+      const swap = previous[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1);
+      current[j] = Math.min(previous[j] + 1, current[j - 1] + 1, swap);
+    }
+    previous = current;
+  }
+  return previous[b.length];
+}
+
+// The known ingredient a typo most likely meant, or null.
+// "Close" means: words of up to 5 letters may be 1 change away, longer words 2.
+// Known words (and words close to nothing) get null.
+function closestIngredient(word, recipes) {
+  const known = allIngredients(recipes);
+  if (known.includes(word)) return null;
+  const allowed = word.length <= 5 ? 1 : 2;
+  let best = null;
+  let bestChanges = allowed + 1;
+  for (const name of known) {
+    const changes = letterChanges(word, name);
+    if (changes < bestChanges) {
+      best = name;
+      bestChanges = changes;
+    }
+  }
+  return best;
+}
+
 // True when `item` belongs to `family`, e.g. ("cheddar", "cheese").
 function isMemberOf(item, family) {
   return (FAMILIES[family] || []).includes(item);

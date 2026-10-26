@@ -108,6 +108,39 @@ check("clearing your ingredients returns to A to Z, unless Quickest or Cheapest 
   assert.strictEqual((await page.textContent("#sort-button")).trim(), "Quickest ▾");
 });
 
+check('typing a typo ("brocoli") suggests the real ingredient, marked "did you mean?"', async () => {
+  await openPage();
+  await page.click("#have-input");
+  await page.keyboard.type("brocoli");
+  const item = await page.$eval("#have-box .suggestions li", (li) => ({ value: li.dataset.value, text: li.textContent }));
+  assert.strictEqual(item.value, "broccoli");
+  assert.ok(item.text.includes("did you mean?"), item.text);
+});
+
+check('Enter on a typo asks "Did you mean tomato?" and "Yes" adds tomato', async () => {
+  await openPage();
+  await page.click("#have-input");
+  await page.keyboard.type("tomatoe");
+  await page.keyboard.press("Escape"); // close the suggestions, so Enter uses the typed word
+  await page.keyboard.press("Enter");
+  assert.deepStrictEqual(await tags("have"), [], "nothing should be added before answering");
+  const question = page.locator("#have-box-question");
+  assert.ok((await question.textContent()).includes("Did you mean tomato?"));
+  await question.getByText("Yes, use tomato").click();
+  assert.deepStrictEqual(await tags("have"), ["tomato"]);
+  assert.ok(!(await question.isVisible()), "the question should go away");
+});
+
+check('"No, keep it" adds exactly what was typed', async () => {
+  await openPage();
+  await page.click("#have-input");
+  await page.keyboard.type("tomatoe");
+  await page.keyboard.press("Escape");
+  await page.keyboard.press("Enter");
+  await page.locator("#have-box-question").getByText('No, keep "tomatoe"').click();
+  assert.deepStrictEqual(await tags("have"), ["tomatoe"]);
+});
+
 check("typing shows suggestions, and Enter picks the top one", async () => {
   await openPage();
   await page.click("#have-input");
