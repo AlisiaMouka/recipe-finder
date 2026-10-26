@@ -70,6 +70,47 @@ check('with only Leave out, every other recipe is shown (leave out "meat")', () 
   }
 });
 
+// ---- Sorting ----
+
+check("Use Most puts the recipe using the most of your ingredients first", () => {
+  const two = fake("Two", ["egg", "milk", "flour", "sugar"]); // 2 of yours, 2 missing
+  const one = fake("One", ["egg"]); // 1 of yours, nothing missing
+  const { results } = find(["egg", "milk"], { sortBy: "use-most" }, [one, two]);
+  assert.deepStrictEqual(namesOf(results), ["Two", "One"]);
+});
+
+check("Quickest puts the shortest cooking time first", () => {
+  const slow = fake("Slow", ["egg"], { minutes: 40 });
+  const fast = fake("Fast", ["egg", "flour"], { minutes: 10 });
+  const { results } = find(["egg"], { sortBy: "quickest" }, [slow, fast]);
+  assert.deepStrictEqual(namesOf(results), ["Fast", "Slow"]);
+});
+
+check("Cheapest compares price per serving, not total (€12 for 4 beats €4 for 1)", () => {
+  const paella = fake("Paella", ["rice"], { price: 12, servings: 4 }); // €3 per serving
+  const toast = fake("Toast", ["rice"], { price: 4, servings: 1 }); // €4 per serving
+  const { results } = find(["rice"], { sortBy: "cheapest" }, [toast, paella]);
+  assert.deepStrictEqual(namesOf(results), ["Paella", "Toast"]);
+});
+
+check("ties fall back to the default order (Buy Less when ingredients are typed)", () => {
+  const missingTwo = fake("Missing two", ["egg", "a", "b"], { minutes: 20 });
+  const missingNone = fake("Missing none", ["egg"], { minutes: 20 });
+  const { results } = find(["egg"], { sortBy: "quickest" }, [missingTwo, missingNone]);
+  assert.deepStrictEqual(namesOf(results), ["Missing none", "Missing two"]);
+});
+
+check("when browsing, Quickest and Cheapest work too, with ties falling back to A to Z", () => {
+  const recipes = [
+    fake("Beta", ["x"], { minutes: 10, price: 2, servings: 1 }),
+    fake("Alpha", ["x"], { minutes: 10, price: 6, servings: 2 }),
+    fake("Gamma", ["x"], { minutes: 5, price: 9, servings: 1 }),
+  ];
+  const names = (sortBy) => browseRecipes(recipes, { ...noFilters, sortBy }).map((r) => r.name);
+  assert.deepStrictEqual(names("quickest"), ["Gamma", "Alpha", "Beta"]);
+  assert.deepStrictEqual(names("cheapest"), ["Beta", "Alpha", "Gamma"]); // €2 / €3 / €9 per serving
+});
+
 // ---- Typing style ----
 
 check('capitals, spaces and plurals don\'t matter ("  Tomatoes " = "tomato")', () => {

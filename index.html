@@ -48,7 +48,14 @@
     </form>
 
     <div id="notes"></div>
-    <p id="count"></p>
+    <div class="results-bar">
+      <p id="count"></p>
+      <div class="sort">
+        <span class="sort-label">Sort by</span>
+        <button type="button" id="sort-button" class="sort-button" aria-expanded="false">A to Z ▾</button>
+        <div id="sort-panel" class="sort-panel" hidden></div>
+      </div>
+    </div>
     <div id="results"></div>
   </main>
 

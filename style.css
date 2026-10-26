@@ -183,7 +183,45 @@ h1 em { color: var(--accent); }
   margin: 0 0 8px;
 }
 
-#count { color: var(--muted); margin: 16px 0 10px; }
+.results-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px 16px;
+  margin: 16px 0 10px;
+}
+#count { color: var(--muted); margin: 0; }
+
+.sort { position: relative; display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 0.9rem; }
+.sort-button {
+  padding: 7px 14px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: var(--text);
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+.sort-panel {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 10;
+  width: 260px;
+  margin-top: 6px;
+  padding: 6px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: 0 12px 30px rgba(30, 40, 10, 0.15);
+}
+.sort-panel label { display: flex; gap: 10px; align-items: flex-start; padding: 8px 10px; border-radius: 8px; color: var(--text); cursor: pointer; }
+.sort-panel label:hover, .sort-panel label:has(input:checked) { background: var(--accent-soft); }
+.sort-panel input { accent-color: var(--accent); margin-top: 4px; }
+.sort-panel small { display: block; color: var(--muted); font-size: 0.75rem; }
+.sorted-by { color: var(--accent); font-weight: 600; }
 #count b { color: var(--text); font-weight: 500; }
 
 /* Recipe cards */
@@ -236,7 +274,6 @@ img.thumb { filter: none; }
   #search { display: grid; grid-template-columns: 1fr auto; column-gap: 10px; }
   #search > * { grid-column: 1; }
   #search > .action-row { grid-column: 2; grid-row: 2; margin-top: 0; align-self: start; }
-  .tag-box.leave-out { max-width: 520px; }
 }
 
 @media (max-width: 520px) {

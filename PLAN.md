@@ -23,6 +23,11 @@
   "Leave out", A to Z, with each card listing its ingredients.
 - Each result shows which ingredients you're missing.
 - Each recipe has 3–8 cooking steps, folded away behind "Show steps ▾".
+- "Sort by" menu (sorting reorders, it doesn't hide). Ties fall back to the default.
+  - Browsing (nothing typed): A to Z (default), Quickest, Cheapest.
+  - Ingredients typed: Buy Less (default), Use Most, Quickest, Cheapest.
+  - Cheapest means lowest price **per serving**.
+  - The value being sorted by is highlighted on each card.
 - Smarter matching, using a reference book of ingredients (`ingredients.js`):
   - Families: cheese, meat, fish, vegetable, fruit, spice, herb, rice, pasta,
     noodle, stock, bread. An ingredient can be in more than one family.
@@ -49,11 +54,6 @@
 ## Later (Version 2+)
 - Add an online recipe source alongside our own list.
 - Smarter recommendations (e.g. typos, swaps like lemon for lime).
-- Let the user pick how results are sorted (sorting reorders, it doesn't hide):
-  1. "Buy Less": fewest missing ingredients first (the default).
-  2. "Use Most": uses the most of what you typed first.
-  3. "Quickest": shortest cooking time first.
-  4. "Cheapest": lowest estimated price first.
 - More filters: by cuisine, by allergen.
 - Real recipe photos.
 - Sort the front page by real popularity (which recipes people open). Needs the
