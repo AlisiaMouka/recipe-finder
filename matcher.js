@@ -64,13 +64,44 @@ function allowedRecipes(recipes, options) {
   return recipes.filter((recipe) => passesDiets(recipe) && avoidsLeftOut(recipe));
 }
 
-// Browsing, when no ingredients are typed: every allowed recipe, A to Z.
+// ---- Sorting ----
+// Each sort compares two recipes; ties fall back to the default order
+// (A to Z when browsing, Buy Less when ingredients are typed).
+
+function pricePerServing(recipe) {
+  return recipe.price / recipe.servings;
+}
+
+const byName = (a, b) => a.name.localeCompare(b.name);
+const byTime = (a, b) => a.minutes - b.minutes;
+const byPricePerServing = (a, b) => pricePerServing(a) - pricePerServing(b);
+
+// Browsing: compares recipes.
+const BROWSE_SORTS = {
+  "a-z": byName,
+  quickest: (a, b) => byTime(a, b) || byName(a, b),
+  cheapest: (a, b) => byPricePerServing(a, b) || byName(a, b),
+};
+
+// Ingredients typed: compares results ({ recipe, have, missing }).
+const buyLess = (a, b) => a.missing.length - b.missing.length || b.have.length - a.have.length;
+const FIND_SORTS = {
+  "buy-less": buyLess,
+  "use-most": (a, b) => b.have.length - a.have.length || buyLess(a, b),
+  quickest: (a, b) => byTime(a.recipe, b.recipe) || buyLess(a, b),
+  cheapest: (a, b) => byPricePerServing(a.recipe, b.recipe) || buyLess(a, b),
+};
+
+// Browsing, when no ingredients are typed: every allowed recipe, A to Z
+// unless options.sortBy says "quickest" or "cheapest".
 function browseRecipes(recipes, options) {
-  return allowedRecipes(recipes, options).sort((a, b) => a.name.localeCompare(b.name));
+  const compare = BROWSE_SORTS[options.sortBy] || BROWSE_SORTS["a-z"];
+  return allowedRecipes(recipes, options).sort(compare);
 }
 
 // typed: ingredients the user has, e.g. ["egg", "cheddar"]
-// options: the same filters and "Leave out" as allowedRecipes
+// options: the same filters and "Leave out" as allowedRecipes, plus
+// options.sortBy: "buy-less" (default), "use-most", "quickest" or "cheapest"
 function findRecipes(recipes, typed, options) {
   const results = [];
   for (const recipe of allowedRecipes(recipes, options)) {
@@ -88,8 +119,8 @@ function findRecipes(recipes, typed, options) {
     results.push({ recipe, labels: labelsOf(recipe), have, missing });
   }
 
-  // Rule 1: fewest missing first. Rule 2: if tied, uses more of yours first.
-  results.sort((a, b) => a.missing.length - b.missing.length || b.have.length - a.have.length);
+  // Default (Buy Less) is the cook's rule 1 and 2: fewest missing first, then uses more of yours.
+  results.sort(FIND_SORTS[options.sortBy] || FIND_SORTS["buy-less"]);
 
   return { results, notes: explainUnusedIngredients(recipes, typed, options.diets) };
 }

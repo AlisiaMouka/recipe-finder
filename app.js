@@ -192,6 +192,57 @@ function setFiltersOpen(open) {
   filtersButton.setAttribute("aria-expanded", String(open));
 }
 
+// ---- Sort menu ----
+
+const SORT_LABELS = {
+  "a-z": ["A to Z", "by recipe name"],
+  "buy-less": ["Buy Less", "fewest missing ingredients first"],
+  "use-most": ["Use Most", "uses the most of what you have"],
+  quickest: ["Quickest", "shortest cooking time first"],
+  cheapest: ["Cheapest", "lowest price per serving first"],
+};
+// Buy Less and Use Most only make sense once ingredients are typed.
+const SORT_CHOICES = {
+  browse: ["a-z", "quickest", "cheapest"],
+  find: ["buy-less", "use-most", "quickest", "cheapest"],
+};
+const sortButton = document.getElementById("sort-button");
+const sortPanel = document.getElementById("sort-panel");
+let sortBy = "a-z";
+
+// Shows the choices for this situation; falls back to its default when the
+// current choice doesn't exist here (e.g. Buy Less after clearing "I have").
+function drawSortMenu(mode) {
+  if (!SORT_CHOICES[mode].includes(sortBy)) sortBy = SORT_CHOICES[mode][0];
+  sortButton.textContent = `${SORT_LABELS[sortBy][0]} ▾`;
+  sortPanel.innerHTML = SORT_CHOICES[mode]
+    .map((choice) => {
+      const [name, explanation] = SORT_LABELS[choice];
+      const checked = choice === sortBy ? "checked" : "";
+      return `<label data-sort="${choice}"><input type="radio" name="sort" value="${choice}" ${checked}>
+        <span>${name}<small>${explanation}</small></span></label>`;
+    })
+    .join("");
+}
+
+sortButton.addEventListener("click", () => setSortOpen(sortPanel.hidden));
+sortPanel.addEventListener("change", (event) => {
+  sortBy = event.target.value;
+  setSortOpen(false);
+  search();
+});
+document.addEventListener("click", (event) => {
+  if (!event.target.closest(".sort")) setSortOpen(false);
+});
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") setSortOpen(false);
+});
+
+function setSortOpen(open) {
+  sortPanel.hidden = !open;
+  sortButton.setAttribute("aria-expanded", String(open));
+}
+
 // ---- Searching and showing results ----
 
 form.addEventListener("submit", (event) => {
@@ -206,18 +257,20 @@ function search() {
   const diets = [...filtersPanel.querySelectorAll('input[name="diet"]:checked')].map((box) => box.value);
   const options = { diets, leaveOut: outBox.items };
 
-  // Nothing typed in "I have": browse every recipe that passes the filters, A to Z.
+  // Nothing typed in "I have": browse every recipe that passes the filters.
   if (haveBox.items.length === 0) {
-    const recipes = browseRecipes(RECIPES, options);
+    drawSortMenu("browse");
+    const recipes = browseRecipes(RECIPES, { ...options, sortBy });
     notesArea.innerHTML = "";
-    countArea.innerHTML = `<b>${escapeText(browseTitle(diets, outBox.items))}</b> · ${recipes.length}, A to Z`;
+    countArea.innerHTML = `<b>${escapeText(browseTitle(diets, outBox.items))}</b> · ${recipes.length}`;
     resultsArea.innerHTML = recipes.length
       ? recipes.map((recipe) => recipeCard({ recipe, labels: labelsOf(recipe) })).join("")
       : `<p class="empty">No recipes match. Try fewer filters.</p>`;
     return;
   }
 
-  const { results, notes } = findRecipes(RECIPES, haveBox.items, options);
+  drawSortMenu("find");
+  const { results, notes } = findRecipes(RECIPES, haveBox.items, { ...options, sortBy });
 
   notesArea.innerHTML = notes.map((note) => `<p class="note">${escapeText(note)}</p>`).join("");
   countArea.textContent = results.length === 1 ? "1 recipe found" : `${results.length} recipes found`;
@@ -237,12 +290,17 @@ function recipeCard({ recipe, labels, have, missing }) {
   const picture = recipe.image
     ? `<img class="thumb" src="${escapeText(recipe.image)}" alt="">`
     : `<div class="thumb" style="--shift: ${placeholderShift(recipe.name)}deg"></div>`;
+  // The value the recipes are sorted by is highlighted, so the order makes sense.
+  const highlight = (text) => `<b class="sorted-by">${escapeText(text)}</b>`;
+  const time = `${recipe.minutes} min`;
   const facts = [
-    recipe.cuisine,
-    `${recipe.minutes} min`,
-    `${recipe.servings} serving${recipe.servings > 1 ? "s" : ""}`,
-    `~€${recipe.price.toFixed(2)}`,
-    ...labels,
+    escapeText(recipe.cuisine),
+    sortBy === "quickest" ? highlight(time) : escapeText(time),
+    escapeText(`${recipe.servings} serving${recipe.servings > 1 ? "s" : ""}`),
+    sortBy === "cheapest"
+      ? highlight(`~€${pricePerServing(recipe).toFixed(2)} per serving`)
+      : escapeText(`~€${recipe.price.toFixed(2)}`),
+    ...labels.map(escapeText),
   ];
   const ingredientLines = !have
     ? `<p>Ingredients: ${recipe.ingredients.map(escapeText).join(", ")}</p>`
@@ -256,7 +314,7 @@ function recipeCard({ recipe, labels, have, missing }) {
       ${picture}
       <div class="card-body">
         <h2>${escapeText(recipe.name)}</h2>
-        <p class="facts">${facts.map(escapeText).join(" · ")}</p>
+        <p class="facts">${facts.join(" · ")}</p>
         ${ingredientLines}
         <details class="steps">
           <summary><span class="when-closed">Show steps ▾</span><span class="when-open">Hide steps ▴</span></summary>

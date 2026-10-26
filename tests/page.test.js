@@ -58,6 +58,56 @@ check('"I have everything" is gone from the Filters menu', async () => {
   assert.strictEqual(await page.locator("#have-everything").count(), 0);
 });
 
+const sortOptions = () => page.$$eval("#sort-panel label", (els) => els.map((el) => el.dataset.sort));
+
+async function chooseSort(sortBy) {
+  await page.click("#sort-button");
+  await page.click(`#sort-panel label[data-sort="${sortBy}"]`);
+}
+
+check("when browsing, Sort by offers A to Z (chosen), Quickest and Cheapest", async () => {
+  await openPage();
+  await page.click("#sort-button");
+  assert.deepStrictEqual(await sortOptions(), ["a-z", "quickest", "cheapest"]);
+  assert.strictEqual((await page.textContent("#sort-button")).trim(), "A to Z ▾");
+});
+
+check("with ingredients typed, Sort by offers Buy Less (chosen), Use Most, Quickest and Cheapest", async () => {
+  await openPage();
+  await add("have", "egg");
+  await page.click("#sort-button");
+  assert.deepStrictEqual(await sortOptions(), ["buy-less", "use-most", "quickest", "cheapest"]);
+  assert.strictEqual((await page.textContent("#sort-button")).trim(), "Buy Less ▾");
+});
+
+check("choosing Quickest reorders recipes by cooking time and highlights the time", async () => {
+  await openPage();
+  await chooseSort("quickest");
+  const times = await page.$$eval(".card .sorted-by", (els) => els.map((el) => parseInt(el.textContent)));
+  assert.ok(times.length >= 50, "every card should highlight its time");
+  assert.deepStrictEqual(times, [...times].sort((a, b) => a - b));
+});
+
+check("choosing Cheapest highlights the price per serving, lowest first", async () => {
+  await openPage();
+  await add("have", "rice");
+  await chooseSort("cheapest");
+  const prices = await page.$$eval(".card .sorted-by", (els) => els.map((el) => el.textContent));
+  assert.ok(prices[0].includes("per serving"), prices[0]);
+  const numbers = prices.map((text) => parseFloat(text.replace(/[^0-9.]/g, "")));
+  assert.deepStrictEqual(numbers, [...numbers].sort((a, b) => a - b));
+});
+
+check("clearing your ingredients returns to A to Z, unless Quickest or Cheapest was chosen", async () => {
+  await openPage();
+  await add("have", "egg");
+  await page.click('#have-box .tag button[data-value="egg"]');
+  assert.strictEqual((await page.textContent("#sort-button")).trim(), "A to Z ▾");
+  await chooseSort("quickest");
+  await add("have", "egg");
+  assert.strictEqual((await page.textContent("#sort-button")).trim(), "Quickest ▾");
+});
+
 check("typing shows suggestions, and Enter picks the top one", async () => {
   await openPage();
   await page.click("#have-input");
@@ -181,6 +231,15 @@ check("on a phone, unfolded steps use (almost) the full card width", async () =>
   const cardBox = await card.boundingBox();
   const stepsBox = await card.locator(".steps ol").boundingBox();
   assert.ok(stepsBox.width > cardBox.width * 0.85, `steps are ${Math.round(stepsBox.width)}px in a ${Math.round(cardBox.width)}px card`);
+});
+
+check('"I have" and "Leave out" boxes are the same width', async () => {
+  for (const width of [1440, 390]) {
+    await openPage(width);
+    const have = await page.locator("#have-box").boundingBox();
+    const out = await page.locator("#out-box").boundingBox();
+    assert.ok(Math.abs(have.width - out.width) < 2, `at ${width}px: ${have.width}px vs ${out.width}px`);
+  }
 });
 
 check("on a wide screen, recipes sit two per row", async () => {
