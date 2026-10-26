@@ -284,6 +284,28 @@ check("the browser tab shows the food icon (favicon.svg)", async () => {
   assert.ok(require("fs").existsSync(require("path").join(ROOT, href)) || loaded, "favicon.svg is missing");
 });
 
+check("every card shows its recipe's drawing", async () => {
+  await openPage();
+  const pictures = await page.$$eval(".card", (cards) => cards.map((card) => ({
+    name: card.querySelector("h2").textContent,
+    src: card.querySelector(".thumb img").getAttribute("src"),
+  })));
+  const { RECIPES } = require("./checker").loadCook();
+  assert.strictEqual(pictures.length, RECIPES.length);
+  for (const { name, src } of pictures) {
+    const recipe = RECIPES.find((r) => r.name === name);
+    assert.strictEqual(src, `images/illustrations/${recipe.illustration}.svg`, name);
+  }
+});
+
+check("every picture on the page actually loads (no broken images)", async () => {
+  await openPage();
+  await page.waitForLoadState("load");
+  const broken = await page.$$eval(".card img", (imgs) =>
+    imgs.filter((img) => !img.complete || img.naturalWidth === 0).map((img) => img.getAttribute("src")));
+  assert.deepStrictEqual(broken, []);
+});
+
 check("no errors happen on the page during any of these checks", async () => {
   await openPage();
   await add("have", "egg, cheddar, tomato");

@@ -42,7 +42,9 @@
 ## Look and feel
 - Sage green background, rose/berry accents ("Mix 2").
 - Elegant serif headings (Cormorant Garamond), clean body text (Jost).
-- Recipe cards with a small rounded thumbnail on the left.
+- Recipe cards with a small food drawing on the left (18 drawings in the app's
+  colors, in `images/illustrations`), on one of four soft background shades.
+  To change a recipe's drawing, change its `illustration` word in `recipes.js`.
 - Wide screens: page up to 1200px wide, two recipes per row. Phones: one per row.
 - Browser tab icon: a steaming berry bowl (`favicon.svg`).
 
@@ -55,7 +57,8 @@
 - Add an online recipe source alongside our own list.
 - Smarter recommendations (e.g. typos, swaps like lemon for lime).
 - More filters: by cuisine, by allergen.
-- Real recipe photos.
+- Real recipe photos from Unsplash (work parked on the `photos` branch, PR 10,
+  see its HANDOVER-PHOTOS.md). The owner must be able to swap photos without coding.
 - Sort the front page by real popularity (which recipes people open). Needs the
   app online and somewhere to store the counts. Never invent popularity numbers.
 
