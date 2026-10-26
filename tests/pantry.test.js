@@ -9,7 +9,7 @@ const { RECIPES, FAMILIES, OTHER_NAMES, OTHER_FOODS, allIngredients, cleanIngred
 const ROOT = path.join(__dirname, "..");
 
 const DIET_LABELS = ["vegetarian", "vegan", "gluten-free"];
-const ALLERGENS = ["gluten", "dairy", "egg", "soy", "peanut", "fish", "shellfish", "sesame"];
+const ALLERGENS = ["gluten", "dairy", "egg", "soy", "peanut", "nuts", "fish", "shellfish", "sesame"];
 
 check("every recipe has a name, cuisine, cooking time, servings and a price", () => {
   for (const recipe of RECIPES) {
@@ -21,10 +21,10 @@ check("every recipe has a name, cuisine, cooking time, servings and a price", ()
   }
 });
 
-check("every recipe has 3 to 8 cooking steps", () => {
+check("every recipe has 3 to 15 cooking steps", () => {
   for (const recipe of RECIPES) {
     const count = (recipe.steps || []).length;
-    assert.ok(count >= 3 && count <= 8, `${recipe.name} has ${count} steps`);
+    assert.ok(count >= 3 && count <= 15, `${recipe.name} has ${count} steps`);
   }
 });
 
@@ -116,12 +116,33 @@ check("no vegetarian recipe contains meat or fish", () => {
 });
 
 check("recipes with cheese, butter, cream or milk are marked with the dairy allergen", () => {
-  const dairy = ["cheese", ...FAMILIES.cheese, "butter", "cream", "milk", "yogurt"];
+  const dairy = ["cheese", ...FAMILIES.cheese, "butter", "cream", "milk", "yogurt", "sour cream", "cream cheese", "ghee"];
   for (const recipe of RECIPES) {
     if (recipe.ingredients.some((item) => dairy.includes(item))) {
       assert.ok(recipe.allergens.includes("dairy"), `${recipe.name} contains dairy but isn't marked "dairy"`);
     }
   }
+});
+
+check("recipes with almonds, walnuts or other tree nuts are marked with the nuts allergen", () => {
+  const nuts = ["almond", "almond flour", "walnut", "candlenut", "cashew", "hazelnut", "pistachio", "pecan", "pine nut"];
+  for (const recipe of RECIPES) {
+    if (recipe.ingredients.some((item) => nuts.includes(item))) {
+      assert.ok(recipe.allergens.includes("nuts"), `${recipe.name} contains nuts but isn't marked "nuts"`);
+    }
+  }
+});
+
+check("every recipe from Wikibooks names its source, links its page, and says CC BY-SA 4.0", () => {
+  const imported = RECIPES.filter((recipe) => recipe.source);
+  for (const recipe of imported) {
+    const { name, url, license, licenseUrl } = recipe.source;
+    assert.strictEqual(name, "Wikibooks Cookbook", recipe.name);
+    assert.ok(url.startsWith("https://en.wikibooks.org/wiki/Cookbook:"), `${recipe.name}: ${url}`);
+    assert.strictEqual(license, "CC BY-SA 4.0", recipe.name);
+    assert.strictEqual(licenseUrl, "https://creativecommons.org/licenses/by-sa/4.0/", recipe.name);
+  }
+  assert.ok(imported.length >= 25, `only ${imported.length} imported recipes`);
 });
 
 check("other names point to a name the app knows", () => {

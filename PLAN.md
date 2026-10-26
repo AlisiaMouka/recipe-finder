@@ -2,13 +2,15 @@
 
 ## Version 1
 - A single web page you open in a browser.
-- 50 recipes we write ourselves, kept separate from the matching part
+- Recipes we wrote ourselves (50) plus recipes adapted from the Wikibooks Cookbook
+  (CC BY-SA 4.0, credited on each card), kept separate from the matching part
   (the "pantry" is separate from the "cook").
 - Each recipe carries this information:
   - Ingredients
   - Diet labels: vegetarian, vegan, gluten-free
   - Allergens, kept in the pantry but not shown on the page.
-    "dairy" covers milk, cheese, butter, cream, yogurt, etc.
+    "dairy" covers milk, cheese, butter, cream, yogurt, etc. "nuts" covers tree nuts
+    (almonds, walnuts, candlenuts, …); peanuts are separate.
   - Cooking time
   - Estimated price in euros (approximate)
   - Cuisine (e.g. Italian, Mexican)
@@ -22,7 +24,10 @@
 - With nothing typed in "I have", show every recipe that passes the filters and
   "Leave out", A to Z, with each card listing its ingredients.
 - Each result shows which ingredients you're missing.
-- Each recipe has 3–8 cooking steps, folded away behind "Show steps ▾".
+- Each recipe has 3–15 cooking steps, folded away behind "Show steps ▾".
+- Optional ingredients aren't listed as ingredients: the steps mention them as
+  optional, and they don't decide labels or allergens (e.g. Chapati with optional
+  ghee is vegan).
 - "Sort by" menu (sorting reorders, it doesn't hide). Ties fall back to the default.
   - Browsing (nothing typed): A to Z (default), Quickest, Cheapest.
   - Ingredients typed: Buy Less (default), Use Most, Quickest, Cheapest.

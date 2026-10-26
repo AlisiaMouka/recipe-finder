@@ -8,8 +8,11 @@
 // member (e.g. "cheddar"). Leaving out a family leaves out all its members.
 // An ingredient can be in more than one family (chicken stock is stock AND meat).
 const FAMILIES = {
-  cheese: ["cheddar", "feta", "mozzarella", "parmesan", "goat cheese"],
-  meat: ["chicken", "beef", "pork", "lamb", "bacon", "ham", "chicken stock"],
+  cheese: ["cheddar", "feta", "mozzarella", "parmesan", "goat cheese", "gouda"],
+  meat: [
+    "chicken", "beef", "pork", "lamb", "bacon", "ham", "chicken stock",
+    "sausage", "turkey", "venison", "corned beef", "lard",
+  ],
   fish: ["salmon", "tuna", "cod", "shrimp"],
   vegetable: [
     "tomato", "onion", "garlic", "spinach", "carrot", "pea", "bell pepper", "mushroom",
@@ -39,21 +42,19 @@ const OTHER_NAMES = {
 // typo (e.g. "pear" isn't questioned as "pea"). Add more any time:
 // lowercase and singular, and not already used in a recipe.
 const OTHER_FOODS = [
-  "almond", "anchovy", "apricot", "artichoke", "arugula", "asparagus", "baking powder",
-  "baking soda", "balsamic vinegar", "barley", "bay leaf nutmeg", "beetroot",
-  "blackberry", "blueberry", "brie", "bulgur", "buttermilk", "cabbage", "camembert",
-  "cardamom", "cashew", "cauliflower", "celery", "chard", "cherry", "chia seed", "chive",
-  "chocolate", "chorizo", "clam", "clove", "coconut", "corn", "cornflour", "couscous",
-  "crab", "cranberry", "date", "duck", "fennel", "fig", "flaxseed", "gelatin", "gouda",
-  "grape", "grapefruit", "haddock", "halloumi", "hazelnut", "hummus", "jam nutella",
-  "kale", "ketchup", "kiwi", "lobster", "mackerel", "mango", "maple syrup", "mascarpone",
-  "mayonnaise vinegar", "melon", "mince", "mint", "miso", "mussel", "mustard",
-  "nectarine", "oatmeal", "octopus", "okra", "oregano", "parsnip", "peach", "peanut",
-  "pear", "pecan", "pesto", "pine nut", "pineapple", "pistachio", "plum", "polenta",
-  "pomegranate", "prawn", "prosciutto", "pumpkin", "quinoa", "radish", "raisin",
-  "raspberry", "ricotta", "rocket", "rosemary", "saffron", "sage", "salami", "sardine",
-  "sausage", "scallop", "seitan", "semolina", "sesame seed", "shallot", "spring onion",
-  "squash", "squid", "sriracha", "steak", "sunflower seed", "tahini", "tarragon",
-  "tempeh", "thyme", "trout", "turkey", "turmeric", "turnip", "vanilla", "veal",
-  "venison", "walnut", "watercress", "watermelon", "yeast",
+  "anchovy", "apricot", "artichoke", "arugula", "asparagus", "baking soda",
+  "balsamic vinegar", "barley", "bay leaf nutmeg", "beetroot", "blackberry", "blueberry",
+  "brie", "bulgur", "buttermilk", "cabbage", "camembert", "cashew", "cauliflower",
+  "chard", "cherry", "chia seed", "chive", "chorizo", "clam", "coconut", "corn",
+  "cornflour", "couscous", "crab", "cranberry", "date", "duck", "fennel", "fig",
+  "flaxseed", "gelatin", "grape", "grapefruit", "haddock", "halloumi", "hazelnut",
+  "hummus", "jam nutella", "kale", "ketchup", "kiwi", "lobster", "mackerel", "mango",
+  "maple syrup", "mascarpone", "mayonnaise vinegar", "melon", "mince", "mint", "miso",
+  "mussel", "mustard", "nectarine", "oatmeal", "octopus", "okra", "oregano", "parsnip",
+  "peach", "peanut", "pear", "pecan", "pesto", "pine nut", "pineapple", "pistachio",
+  "plum", "polenta", "pomegranate", "prawn", "prosciutto", "pumpkin", "quinoa", "raisin",
+  "raspberry", "ricotta", "rocket", "rosemary", "saffron", "salami", "sardine", "scallop",
+  "seitan", "semolina", "sesame seed", "squash", "squid", "sriracha", "steak",
+  "sunflower seed", "tahini", "tarragon", "tempeh", "thyme", "trout", "turnip", "vanilla",
+  "veal", "watercress", "watermelon", "yeast",
 ];
