@@ -351,11 +351,15 @@ check(`a recipe card shows "From Wikibooks Cookbook · CC BY-SA 4.0", linked, an
   assert.strictEqual(await page.locator(".card .source").count(), cards, "some cards have no credit line");
 });
 
-check("the credit line is the last thing on a card, under the cooking steps", async () => {
+check("the credit line is hidden while the steps are closed, and shows under the last step once opened", async () => {
   await openPage();
-  const lastOnCards = await page.$$eval(".card .card-body", (bodies) =>
-    [...new Set(bodies.map((body) => body.lastElementChild.className))]);
-  assert.deepStrictEqual(lastOnCards, ["source"]);
+  const lastInSteps = await page.$$eval(".card details.steps", (steps) =>
+    [...new Set(steps.map((details) => details.lastElementChild.className))]);
+  assert.deepStrictEqual(lastInSteps, ["source"], "every card's credit should come right after its steps");
+  const card = page.locator(".card", { has: page.locator("h2", { hasText: "Shortbread" }) });
+  assert.ok(!(await card.locator(".source").isVisible()), "credit should be hidden while the steps are closed");
+  await card.getByText("Show steps").click();
+  assert.ok(await card.locator(".source").isVisible(), "credit should show once the steps are open");
 });
 
 check('a recipe with optional ingredients shows "Optional: …" under its ingredients', async () => {
