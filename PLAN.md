@@ -2,13 +2,15 @@
 
 ## Version 1
 - A single web page you open in a browser.
-- 50 recipes we write ourselves, kept separate from the matching part
+- Recipes we wrote ourselves (50) plus recipes adapted from the Wikibooks Cookbook
+  (CC BY-SA 4.0, credited on each card), kept separate from the matching part
   (the "pantry" is separate from the "cook").
 - Each recipe carries this information:
   - Ingredients
   - Diet labels: vegetarian, vegan, gluten-free
   - Allergens, kept in the pantry but not shown on the page.
-    "dairy" covers milk, cheese, butter, cream, yogurt, etc.
+    "dairy" covers milk, cheese, butter, cream, yogurt, etc. "nuts" covers tree nuts
+    (almonds, walnuts, candlenuts, …); peanuts are separate.
   - Cooking time
   - Estimated price in euros (approximate)
   - Cuisine (e.g. Italian, Mexican)
@@ -22,7 +24,9 @@
 - With nothing typed in "I have", show every recipe that passes the filters and
   "Leave out", A to Z, with each card listing its ingredients.
 - Each result shows which ingredients you're missing.
-- Each recipe has 3–8 cooking steps, folded away behind "Show steps ▾".
+- Each recipe has 3–15 cooking steps, folded away behind "Show steps ▾".
+- Optional ingredients are shown in a grey "Optional: …" line. They never count as
+  missing and don't decide labels or allergens (e.g. Chapati with optional ghee is vegan).
 - "Sort by" menu (sorting reorders, it doesn't hide). Ties fall back to the default.
   - Browsing (nothing typed): A to Z (default), Quickest, Cheapest.
   - Ingredients typed: Buy Less (default), Use Most, Quickest, Cheapest.
@@ -59,7 +63,13 @@
 3. A recipe that uses none of your ingredients doesn't appear.
 
 ## Later (Version 2+)
-- Add an online recipe source alongside our own list.
+- Import 150 recipes from Wikibooks Cookbook (CC BY-SA 4.0) and USDA MyPlate
+  Kitchen (USDA-written recipes only, public domain), in batches of ~25 approved by
+  the owner. Each imported card shows a credit line. See HANDOVER-IMPORTS.md on the
+  `import-recipes` branch. (Live recipe services were ruled out: paid, no storing
+  allowed, or they need a secret key a static site can't hide.)
+  Imported recipes with the same name as ours replace ours. Once all 150 are in,
+  our own 50 recipes will be removed (a separate step, approved by the owner).
 - Swaps (e.g. lime for lemon), considered and put off for now.
 - More filters: by cuisine, by allergen.
 - Real recipe photos from Unsplash (work parked on the `photos` branch, PR 10,

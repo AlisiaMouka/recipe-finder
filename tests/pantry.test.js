@@ -9,7 +9,7 @@ const { RECIPES, FAMILIES, OTHER_NAMES, OTHER_FOODS, allIngredients, cleanIngred
 const ROOT = path.join(__dirname, "..");
 
 const DIET_LABELS = ["vegetarian", "vegan", "gluten-free"];
-const ALLERGENS = ["gluten", "dairy", "egg", "soy", "peanut", "fish", "shellfish", "sesame"];
+const ALLERGENS = ["gluten", "dairy", "egg", "soy", "peanut", "nuts", "fish", "shellfish", "sesame"];
 
 check("every recipe has a name, cuisine, cooking time, servings and a price", () => {
   for (const recipe of RECIPES) {
@@ -21,10 +21,10 @@ check("every recipe has a name, cuisine, cooking time, servings and a price", ()
   }
 });
 
-check("every recipe has 3 to 8 cooking steps", () => {
+check("every recipe has 3 to 15 cooking steps", () => {
   for (const recipe of RECIPES) {
     const count = (recipe.steps || []).length;
-    assert.ok(count >= 3 && count <= 8, `${recipe.name} has ${count} steps`);
+    assert.ok(count >= 3 && count <= 15, `${recipe.name} has ${count} steps`);
   }
 });
 
@@ -62,6 +62,24 @@ check('nothing on the "other foods" list is already a known ingredient', () => {
   const known = allIngredients(RECIPES);
   const doubles = OTHER_FOODS.filter((food) => known.includes(food));
   assert.deepStrictEqual(doubles, [], `already known: ${doubles.join(", ")}`);
+});
+
+check(`no two foods are glued together on the "other foods" list (like "bay leaf nutmeg")`, () => {
+  const known = new Set([...allIngredients(RECIPES), ...OTHER_FOODS]);
+  for (const food of OTHER_FOODS.filter((food) => food.includes(" "))) {
+    const glued = food.split(" ").filter((word) => known.has(word));
+    assert.deepStrictEqual(glued, [], `"${food}" looks like two foods stuck together`);
+  }
+});
+
+check("optional ingredients are written the app's way and aren't also listed as ingredients", () => {
+  for (const recipe of RECIPES) {
+    for (const item of recipe.optional || []) {
+      assert.strictEqual(cleanIngredient(item), item, `${recipe.name}: optional "${item}" should be written as "${cleanIngredient(item)}"`);
+      assert.ok(!recipe.ingredients.includes(item), `${recipe.name}: "${item}" is both an ingredient and optional`);
+    }
+  }
+  assert.ok(RECIPES.some((recipe) => (recipe.optional || []).length > 0), "no recipe has optional ingredients");
 });
 
 check("no two recipes have the same name", () => {
@@ -116,12 +134,33 @@ check("no vegetarian recipe contains meat or fish", () => {
 });
 
 check("recipes with cheese, butter, cream or milk are marked with the dairy allergen", () => {
-  const dairy = ["cheese", ...FAMILIES.cheese, "butter", "cream", "milk", "yogurt"];
+  const dairy = ["cheese", ...FAMILIES.cheese, "butter", "cream", "milk", "yogurt", "sour cream", "cream cheese", "ghee"];
   for (const recipe of RECIPES) {
     if (recipe.ingredients.some((item) => dairy.includes(item))) {
       assert.ok(recipe.allergens.includes("dairy"), `${recipe.name} contains dairy but isn't marked "dairy"`);
     }
   }
+});
+
+check("recipes with almonds, walnuts or other tree nuts are marked with the nuts allergen", () => {
+  const nuts = ["almond", "almond flour", "walnut", "candlenut", "cashew", "hazelnut", "pistachio", "pecan", "pine nut"];
+  for (const recipe of RECIPES) {
+    if (recipe.ingredients.some((item) => nuts.includes(item))) {
+      assert.ok(recipe.allergens.includes("nuts"), `${recipe.name} contains nuts but isn't marked "nuts"`);
+    }
+  }
+});
+
+check("every recipe from Wikibooks names its source, links its page, and says CC BY-SA 4.0", () => {
+  const imported = RECIPES.filter((recipe) => recipe.source);
+  for (const recipe of imported) {
+    const { name, url, license, licenseUrl } = recipe.source;
+    assert.strictEqual(name, "Wikibooks Cookbook", recipe.name);
+    assert.ok(url.startsWith("https://en.wikibooks.org/wiki/Cookbook:"), `${recipe.name}: ${url}`);
+    assert.strictEqual(license, "CC BY-SA 4.0", recipe.name);
+    assert.strictEqual(licenseUrl, "https://creativecommons.org/licenses/by-sa/4.0/", recipe.name);
+  }
+  assert.ok(imported.length >= 150, `only ${imported.length} imported recipes`);
 });
 
 check("other names point to a name the app knows", () => {

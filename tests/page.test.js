@@ -339,6 +339,25 @@ check("every picture on the page actually loads (no broken images)", async () =>
   assert.deepStrictEqual(broken, []);
 });
 
+check(`an imported recipe shows "From Wikibooks Cookbook · CC BY-SA 4.0", linked; our own recipes don't`, async () => {
+  await openPage();
+  const pralin = page.locator(".card", { has: page.locator("h2", { hasText: "Pralin" }) });
+  const credit = pralin.locator(".source");
+  assert.strictEqual((await credit.textContent()).trim(), "From Wikibooks Cookbook · CC BY-SA 4.0");
+  assert.strictEqual(await credit.locator("a").first().getAttribute("href"), "https://en.wikibooks.org/wiki/Cookbook:Pralin");
+  assert.strictEqual(await credit.locator("a").nth(1).getAttribute("href"), "https://creativecommons.org/licenses/by-sa/4.0/");
+  const ours = page.locator(".card", { has: page.locator("h2", { hasText: "Greek Salad" }) });
+  assert.strictEqual(await ours.locator(".source").count(), 0);
+});
+
+check('a recipe with optional ingredients shows "Optional: …" under its ingredients', async () => {
+  await openPage();
+  const chapati = page.locator(".card", { has: page.locator("h2", { hasText: "Chapati" }) });
+  assert.strictEqual((await chapati.locator(".optional").textContent()).trim(), "Optional: ghee");
+  const ours = page.locator(".card", { has: page.locator("h2", { hasText: "Greek Salad" }) });
+  assert.strictEqual(await ours.locator(".optional").count(), 0);
+});
+
 check("no errors happen on the page during any of these checks", async () => {
   await openPage();
   await add("have", "egg, cheddar, tomato");

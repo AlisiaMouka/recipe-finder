@@ -341,6 +341,9 @@ function recipeCard({ recipe, labels, have, missing }) {
       : escapeText(`~€${recipe.price.toFixed(2)}`),
     ...labels.map(escapeText),
   ];
+  const optional = (recipe.optional || []).length
+    ? `<p class="optional"><b>Optional:</b> ${recipe.optional.map(escapeText).join(", ")}</p>`
+    : "";
   const ingredientLines = !have
     ? `<p>Ingredients: ${recipe.ingredients.map(escapeText).join(", ")}</p>`
     : `<p>You have: ${have.map(describeHave).join(", ")}</p>` +
@@ -354,13 +357,22 @@ function recipeCard({ recipe, labels, have, missing }) {
       <div class="card-body">
         <h2>${escapeText(recipe.name)}</h2>
         <p class="facts">${facts.join(" · ")}</p>
+        ${sourceLine(recipe)}
         ${ingredientLines}
+        ${optional}
         <details class="steps">
           <summary><span class="when-closed">Show steps ▾</span><span class="when-open">Hide steps ▴</span></summary>
           <ol>${recipe.steps.map((step) => `<li>${escapeText(step)}</li>`).join("")}</ol>
         </details>
       </div>
     </article>`;
+}
+
+// Credit for imported recipes, e.g. "From Wikibooks Cookbook · CC BY-SA 4.0" (both linked).
+function sourceLine(recipe) {
+  if (!recipe.source) return "";
+  const { name, url, license, licenseUrl } = recipe.source;
+  return `<p class="source">From <a href="${escapeText(url)}">${escapeText(name)}</a> · <a href="${escapeText(licenseUrl)}">${escapeText(license)}</a></p>`;
 }
 
 // "cheddar (as cheese)" when a family member stands in for the family.

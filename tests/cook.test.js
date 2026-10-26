@@ -20,6 +20,15 @@ function find(typed, options = {}, recipes = RECIPES) {
   return findRecipes(recipes, typed, { ...noFilters, ...options });
 }
 
+// ---- Optional ingredients ----
+
+check("optional ingredients never count as missing, and never count as yours", () => {
+  const flatbread = fake("Flatbread", ["flour"], { optional: ["ghee"] });
+  const { results } = find(["flour", "ghee"], {}, [flatbread]);
+  assert.deepStrictEqual(results[0].missing, []);
+  assert.deepStrictEqual(results[0].have.map((h) => h.needed), ["flour"]);
+});
+
 // ---- Ranking (the cook's rule) ----
 
 check("rule 1: a recipe you can cook right now beats one that uses more of your ingredients", () => {
@@ -219,6 +228,13 @@ check('a family in Leave out hides every member ("cheese" hides parmesan, feta, 
 check('leaving out "meat" also hides chicken stock (it is in two families)', () => {
   const soup = fake("Chicken Stock Soup", ["chicken stock", "carrot"]);
   const { results } = find(["carrot"], { leaveOut: ["meat"] }, [soup]);
+  assert.deepStrictEqual(namesOf(results), []);
+});
+
+check('leaving out "fish" also hides oysters and smoked salmon', () => {
+  const oysters = fake("Oyster Toast", ["oyster", "bread"]);
+  const bagel = fake("Salmon Bagel", ["smoked salmon", "bread"]);
+  const { results } = find(["bread"], { leaveOut: ["fish"] }, [oysters, bagel]);
   assert.deepStrictEqual(namesOf(results), []);
 });
 

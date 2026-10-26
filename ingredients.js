@@ -8,19 +8,29 @@
 // member (e.g. "cheddar"). Leaving out a family leaves out all its members.
 // An ingredient can be in more than one family (chicken stock is stock AND meat).
 const FAMILIES = {
-  cheese: ["cheddar", "feta", "mozzarella", "parmesan", "goat cheese"],
-  meat: ["chicken", "beef", "pork", "lamb", "bacon", "ham", "chicken stock"],
-  fish: ["salmon", "tuna", "cod", "shrimp"],
+  cheese: [
+    "cheddar", "feta", "mozzarella", "parmesan", "goat cheese", "gouda", "gruyere",
+    "pecorino", "ricotta", "blue cheese", "swiss cheese",
+  ],
+  meat: [
+    "chicken", "beef", "pork", "lamb", "bacon", "ham", "chicken stock",
+    "sausage", "turkey", "venison", "corned beef", "lard", "veal", "beef stock", "biltong",
+    "snail", "pancetta", "chorizo", "pork blood",
+  ],
+  fish: [
+    "salmon", "tuna", "cod", "shrimp", "catfish", "crayfish", "imitation crab",
+    "shrimp paste", "fish sauce", "smoked salmon", "hake", "oyster",
+  ],
   vegetable: [
     "tomato", "onion", "garlic", "spinach", "carrot", "pea", "bell pepper", "mushroom",
     "potato", "leek", "cucumber", "lettuce", "avocado", "courgette", "aubergine",
-    "broccoli", "sweet potato",
+    "broccoli", "sweet potato", "cauliflower", "asparagus", "green bean", "butternut squash",
   ],
-  fruit: ["banana", "lemon", "lime", "apple", "orange", "strawberry"],
+  fruit: ["banana", "lemon", "lime", "apple", "orange", "strawberry", "peach", "cranberry"],
   spice: ["cumin", "curry powder", "ginger", "paprika", "cinnamon", "chili"],
   herb: ["basil", "dill", "coriander", "parsley"],
   rice: ["basmati", "jasmine rice", "arborio", "brown rice"],
-  pasta: ["spaghetti", "penne", "fusilli"],
+  pasta: ["spaghetti", "penne", "fusilli", "macaroni"],
   noodle: ["rice noodle", "egg noodle", "udon"],
   stock: ["vegetable stock", "chicken stock"],
   bread: ["baguette", "sourdough"],
@@ -39,21 +49,15 @@ const OTHER_NAMES = {
 // typo (e.g. "pear" isn't questioned as "pea"). Add more any time:
 // lowercase and singular, and not already used in a recipe.
 const OTHER_FOODS = [
-  "almond", "anchovy", "apricot", "artichoke", "arugula", "asparagus", "baking powder",
-  "baking soda", "balsamic vinegar", "barley", "bay leaf nutmeg", "beetroot",
-  "blackberry", "blueberry", "brie", "bulgur", "buttermilk", "cabbage", "camembert",
-  "cardamom", "cashew", "cauliflower", "celery", "chard", "cherry", "chia seed", "chive",
-  "chocolate", "chorizo", "clam", "clove", "coconut", "corn", "cornflour", "couscous",
-  "crab", "cranberry", "date", "duck", "fennel", "fig", "flaxseed", "gelatin", "gouda",
-  "grape", "grapefruit", "haddock", "halloumi", "hazelnut", "hummus", "jam nutella",
-  "kale", "ketchup", "kiwi", "lobster", "mackerel", "mango", "maple syrup", "mascarpone",
-  "mayonnaise vinegar", "melon", "mince", "mint", "miso", "mussel", "mustard",
-  "nectarine", "oatmeal", "octopus", "okra", "oregano", "parsnip", "peach", "peanut",
-  "pear", "pecan", "pesto", "pine nut", "pineapple", "pistachio", "plum", "polenta",
-  "pomegranate", "prawn", "prosciutto", "pumpkin", "quinoa", "radish", "raisin",
-  "raspberry", "ricotta", "rocket", "rosemary", "saffron", "sage", "salami", "sardine",
-  "sausage", "scallop", "seitan", "semolina", "sesame seed", "shallot", "spring onion",
-  "squash", "squid", "sriracha", "steak", "sunflower seed", "tahini", "tarragon",
-  "tempeh", "thyme", "trout", "turkey", "turmeric", "turnip", "vanilla", "veal",
-  "venison", "walnut", "watercress", "watermelon", "yeast",
+  "anchovy", "apricot", "artichoke", "arugula", "barley", "bay leaf", "blackberry",
+  "blueberry", "brie", "buttermilk", "camembert", "cashew", "chard", "cherry",
+  "chia seed", "chive", "clam", "couscous", "crab", "date", "duck", "fennel", "fig",
+  "flaxseed", "gelatin", "grape", "grapefruit", "haddock", "halloumi", "hazelnut",
+  "hummus", "kale", "kiwi", "lobster", "mackerel", "mango", "maple syrup", "mascarpone",
+  "melon", "mince", "miso", "mussel", "nectarine", "nutella", "oatmeal", "octopus",
+  "okra", "parsnip", "pear", "pecan", "pineapple", "pistachio", "plum", "polenta",
+  "pomegranate", "prawn", "prosciutto", "pumpkin", "quinoa", "raspberry", "rocket",
+  "salami", "sardine", "scallop", "seitan", "semolina", "sesame seed", "squash", "squid",
+  "sriracha", "steak", "sunflower seed", "tarragon", "tempeh", "trout", "turnip",
+  "vanilla", "watercress", "watermelon",
 ];
