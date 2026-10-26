@@ -59,7 +59,11 @@
 3. A recipe that uses none of your ingredients doesn't appear.
 
 ## Later (Version 2+)
-- Add an online recipe source alongside our own list.
+- Import 150 recipes from Wikibooks Cookbook (CC BY-SA 4.0) and USDA MyPlate
+  Kitchen (USDA-written recipes only, public domain), in batches of ~25 approved by
+  the owner. Each imported card shows a credit line. See HANDOVER-IMPORTS.md on the
+  `import-recipes` branch. (Live recipe services were ruled out: paid, no storing
+  allowed, or they need a secret key a static site can't hide.)
 - Swaps (e.g. lime for lemon), considered and put off for now.
 - More filters: by cuisine, by allergen.
 - Real recipe photos from Unsplash (work parked on the `photos` branch, PR 10,
