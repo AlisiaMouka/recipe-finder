@@ -5,14 +5,18 @@
 // Prices are rough estimates in euros for the whole recipe.
 // Allergens are kept here but not shown on the page. "dairy" covers milk,
 // cheese, butter, cream, yogurt, etc. A recipe without it counts as dairy-free.
-// image (optional): a link to a photo, e.g. image: "images/shakshuka.jpg".
-// Without one, the card shows a colored placeholder.
+// illustration: which drawing the card shows, from images/illustrations
+//   (e.g. "soup" means images/illustrations/soup.svg).
+// image (optional): a photo, e.g. image: "images/photos/shakshuka.jpg".
+//   A photo always wins over the drawing. Give every photo a credit line in
+//   photo-credits.js. See PHOTOS.md for step-by-step instructions.
 // steps: 3 to 8 short cooking steps that mention every ingredient.
 
 const RECIPES = [
   {
     name: "Spinach & Cheese Omelette",
     cuisine: "French",
+    illustration: "egg",
     minutes: 10,
     servings: 1,
     price: 2.5,
@@ -31,6 +35,7 @@ const RECIPES = [
   {
     name: "Shakshuka",
     cuisine: "Middle Eastern",
+    illustration: "pan",
     minutes: 25,
     servings: 2,
     price: 4,
@@ -49,6 +54,7 @@ const RECIPES = [
   {
     name: "Tomato Basil Pasta",
     cuisine: "Italian",
+    illustration: "pasta",
     minutes: 20,
     servings: 2,
     price: 3.5,
@@ -67,6 +73,7 @@ const RECIPES = [
   {
     name: "Vegetable Fried Rice",
     cuisine: "Chinese",
+    illustration: "rice-bowl",
     minutes: 20,
     servings: 2,
     price: 3,
@@ -85,6 +92,7 @@ const RECIPES = [
   {
     name: "Chicken Fried Rice",
     cuisine: "Chinese",
+    illustration: "rice-bowl",
     minutes: 25,
     servings: 2,
     price: 5,
@@ -103,6 +111,7 @@ const RECIPES = [
   {
     name: "Chicken Curry",
     cuisine: "Indian",
+    illustration: "curry",
     minutes: 40,
     servings: 4,
     price: 9,
@@ -121,6 +130,7 @@ const RECIPES = [
   {
     name: "Chickpea Curry",
     cuisine: "Indian",
+    illustration: "curry",
     minutes: 30,
     servings: 4,
     price: 5,
@@ -139,6 +149,7 @@ const RECIPES = [
   {
     name: "Black Bean Tacos",
     cuisine: "Mexican",
+    illustration: "taco",
     minutes: 20,
     servings: 2,
     price: 4.5,
@@ -157,6 +168,7 @@ const RECIPES = [
   {
     name: "Beef Tacos",
     cuisine: "Mexican",
+    illustration: "taco",
     minutes: 25,
     servings: 3,
     price: 8,
@@ -174,6 +186,7 @@ const RECIPES = [
   {
     name: "Greek Salad",
     cuisine: "Greek",
+    illustration: "salad",
     minutes: 10,
     servings: 2,
     price: 5,
@@ -191,6 +204,7 @@ const RECIPES = [
   {
     name: "Lentil Soup",
     cuisine: "Middle Eastern",
+    illustration: "soup",
     minutes: 40,
     servings: 4,
     price: 3,
@@ -209,6 +223,7 @@ const RECIPES = [
   {
     name: "Mushroom Risotto",
     cuisine: "Italian",
+    illustration: "pan",
     minutes: 35,
     servings: 3,
     price: 6,
@@ -227,6 +242,7 @@ const RECIPES = [
   {
     name: "Lemon Salmon with Potatoes",
     cuisine: "Nordic",
+    illustration: "fish",
     minutes: 30,
     servings: 2,
     price: 11,
@@ -244,6 +260,7 @@ const RECIPES = [
   {
     name: "Pancakes",
     cuisine: "American",
+    illustration: "pancakes",
     minutes: 20,
     servings: 2,
     price: 2,
@@ -261,6 +278,7 @@ const RECIPES = [
   {
     name: "Peanut Noodles",
     cuisine: "Thai",
+    illustration: "noodles",
     minutes: 15,
     servings: 2,
     price: 4,
@@ -278,6 +296,7 @@ const RECIPES = [
   {
     name: "Caprese Toast",
     cuisine: "Italian",
+    illustration: "toast",
     minutes: 10,
     servings: 1,
     price: 3.5,
@@ -295,6 +314,7 @@ const RECIPES = [
   {
     name: "Banana Oat Smoothie",
     cuisine: "International",
+    illustration: "smoothie",
     minutes: 5,
     servings: 1,
     price: 1.5,
@@ -311,6 +331,7 @@ const RECIPES = [
   {
     name: "Potato & Leek Soup",
     cuisine: "French",
+    illustration: "soup",
     minutes: 35,
     servings: 4,
     price: 3.5,
@@ -328,6 +349,7 @@ const RECIPES = [
   {
     name: "Tuna Pasta Salad",
     cuisine: "Italian",
+    illustration: "salad",
     minutes: 15,
     servings: 2,
     price: 4,
@@ -345,6 +367,7 @@ const RECIPES = [
   {
     name: "Garlic Shrimp",
     cuisine: "Spanish",
+    illustration: "pan",
     minutes: 15,
     servings: 2,
     price: 9,
@@ -362,6 +385,7 @@ const RECIPES = [
   {
     name: "Baked Cod with Tomatoes",
     cuisine: "Mediterranean",
+    illustration: "fish",
     minutes: 30,
     servings: 2,
     price: 10,
@@ -379,6 +403,7 @@ const RECIPES = [
   {
     name: "Salmon Teriyaki Bowl",
     cuisine: "Japanese",
+    illustration: "rice-bowl",
     minutes: 25,
     servings: 2,
     price: 12,
@@ -397,6 +422,7 @@ const RECIPES = [
   {
     name: "Pork Stir-Fry",
     cuisine: "Chinese",
+    illustration: "rice-bowl",
     minutes: 20,
     servings: 2,
     price: 7,
@@ -415,6 +441,7 @@ const RECIPES = [
   {
     name: "Lamb Kofta",
     cuisine: "Middle Eastern",
+    illustration: "skewer",
     minutes: 30,
     servings: 3,
     price: 10,
@@ -432,6 +459,7 @@ const RECIPES = [
   {
     name: "Spaghetti Carbonara",
     cuisine: "Italian",
+    illustration: "pasta",
     minutes: 20,
     servings: 2,
     price: 5,
@@ -450,6 +478,7 @@ const RECIPES = [
   {
     name: "Chicken Caesar Salad",
     cuisine: "American",
+    illustration: "salad",
     minutes: 20,
     servings: 2,
     price: 7,
@@ -467,6 +496,7 @@ const RECIPES = [
   {
     name: "Ham & Cheese Toastie",
     cuisine: "British",
+    illustration: "toast",
     minutes: 10,
     servings: 1,
     price: 3,
@@ -483,6 +513,7 @@ const RECIPES = [
   {
     name: "Beef Bulgogi",
     cuisine: "Korean",
+    illustration: "rice-bowl",
     minutes: 30,
     servings: 3,
     price: 11,
@@ -500,6 +531,7 @@ const RECIPES = [
   {
     name: "Chicken Paella",
     cuisine: "Spanish",
+    illustration: "pan",
     minutes: 45,
     servings: 4,
     price: 12,
@@ -518,6 +550,7 @@ const RECIPES = [
   {
     name: "Ratatouille",
     cuisine: "French",
+    illustration: "baked-dish",
     minutes: 45,
     servings: 4,
     price: 6,
@@ -535,6 +568,7 @@ const RECIPES = [
   {
     name: "Courgette Fritters",
     cuisine: "Greek",
+    illustration: "pancakes",
     minutes: 25,
     servings: 2,
     price: 3.5,
@@ -552,6 +586,7 @@ const RECIPES = [
   {
     name: "Aubergine Parmigiana",
     cuisine: "Italian",
+    illustration: "baked-dish",
     minutes: 60,
     servings: 4,
     price: 8,
@@ -569,6 +604,7 @@ const RECIPES = [
   {
     name: "Falafel Wrap",
     cuisine: "Middle Eastern",
+    illustration: "taco",
     minutes: 30,
     servings: 2,
     price: 4.5,
@@ -586,6 +622,7 @@ const RECIPES = [
   {
     name: "Udon Noodle Soup",
     cuisine: "Japanese",
+    illustration: "noodles",
     minutes: 25,
     servings: 2,
     price: 5,
@@ -603,6 +640,7 @@ const RECIPES = [
   {
     name: "Tofu Stir-Fry",
     cuisine: "Chinese",
+    illustration: "rice-bowl",
     minutes: 20,
     servings: 2,
     price: 5,
@@ -621,6 +659,7 @@ const RECIPES = [
   {
     name: "Three-Bean Chili",
     cuisine: "Mexican",
+    illustration: "curry",
     minutes: 40,
     servings: 4,
     price: 5,
@@ -638,6 +677,7 @@ const RECIPES = [
   {
     name: "Mushroom Stroganoff",
     cuisine: "Eastern European",
+    illustration: "pasta",
     minutes: 25,
     servings: 2,
     price: 5.5,
@@ -656,6 +696,7 @@ const RECIPES = [
   {
     name: "Sweet Potato Curry",
     cuisine: "Indian",
+    illustration: "curry",
     minutes: 35,
     servings: 4,
     price: 5,
@@ -673,6 +714,7 @@ const RECIPES = [
   {
     name: "Tomato Soup",
     cuisine: "British",
+    illustration: "soup",
     minutes: 30,
     servings: 4,
     price: 3,
@@ -690,6 +732,7 @@ const RECIPES = [
   {
     name: "Spanish Tortilla",
     cuisine: "Spanish",
+    illustration: "pan",
     minutes: 35,
     servings: 4,
     price: 3,
@@ -708,6 +751,7 @@ const RECIPES = [
   {
     name: "Kimchi Fried Rice",
     cuisine: "Korean",
+    illustration: "rice-bowl",
     minutes: 15,
     servings: 2,
     price: 4,
@@ -725,6 +769,7 @@ const RECIPES = [
   {
     name: "Guacamole & Chips",
     cuisine: "Mexican",
+    illustration: "taco",
     minutes: 10,
     servings: 2,
     price: 4,
@@ -742,6 +787,7 @@ const RECIPES = [
   {
     name: "Lentil Dahl",
     cuisine: "Indian",
+    illustration: "curry",
     minutes: 35,
     servings: 4,
     price: 3,
@@ -760,6 +806,7 @@ const RECIPES = [
   {
     name: "Overnight Oats",
     cuisine: "International",
+    illustration: "yogurt-bowl",
     minutes: 5,
     servings: 1,
     price: 2,
@@ -776,6 +823,7 @@ const RECIPES = [
   {
     name: "Avocado Toast",
     cuisine: "International",
+    illustration: "toast",
     minutes: 10,
     servings: 1,
     price: 3,
@@ -792,6 +840,7 @@ const RECIPES = [
   {
     name: "French Toast",
     cuisine: "French",
+    illustration: "toast",
     minutes: 15,
     servings: 2,
     price: 2.5,
@@ -809,6 +858,7 @@ const RECIPES = [
   {
     name: "Apple Crumble",
     cuisine: "British",
+    illustration: "baked-dish",
     minutes: 45,
     servings: 4,
     price: 4,
@@ -826,6 +876,7 @@ const RECIPES = [
   {
     name: "Chocolate Mug Cake",
     cuisine: "American",
+    illustration: "cake",
     minutes: 5,
     servings: 1,
     price: 1.5,
@@ -842,6 +893,7 @@ const RECIPES = [
   {
     name: "Strawberry Yogurt Bowl",
     cuisine: "International",
+    illustration: "yogurt-bowl",
     minutes: 5,
     servings: 1,
     price: 2.5,
@@ -858,6 +910,7 @@ const RECIPES = [
   {
     name: "Banana \"Nice Cream\"",
     cuisine: "International",
+    illustration: "ice-cream",
     minutes: 5,
     servings: 2,
     price: 1.5,

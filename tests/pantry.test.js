@@ -3,7 +3,10 @@
 // These catch typos when someone adds or edits a recipe.
 
 const { check, loadCook, runChecks, assert } = require("./checker");
-const { RECIPES, FAMILIES, OTHER_NAMES, cleanIngredient } = loadCook();
+const fs = require("fs");
+const path = require("path");
+const { RECIPES, PHOTO_CREDITS, FAMILIES, OTHER_NAMES, cleanIngredient } = loadCook();
+const ROOT = path.join(__dirname, "..");
 
 const DIET_LABELS = ["vegetarian", "vegan", "gluten-free"];
 const ALLERGENS = ["gluten", "dairy", "egg", "soy", "peanut", "fish", "shellfish", "sesame"];
@@ -38,6 +41,34 @@ check("every ingredient is mentioned in the cooking steps", () => {
       const mentioned = new RegExp(`\\b(${item}|${item}es|${plural})\\b`).test(text);
       assert.ok(mentioned, `${recipe.name}: the steps never mention "${item}"`);
     }
+  }
+});
+
+check("every recipe has a drawing, and that drawing exists in images/illustrations", () => {
+  for (const recipe of RECIPES) {
+    assert.ok(recipe.illustration, `${recipe.name} has no illustration`);
+    const file = path.join(ROOT, "images", "illustrations", `${recipe.illustration}.svg`);
+    assert.ok(fs.existsSync(file), `${recipe.name}: there is no drawing called "${recipe.illustration}"`);
+  }
+});
+
+check("every photo a recipe points to exists", () => {
+  for (const recipe of RECIPES.filter((recipe) => recipe.image)) {
+    assert.ok(fs.existsSync(path.join(ROOT, recipe.image)), `${recipe.name}: ${recipe.image} is missing`);
+  }
+});
+
+check('every photo has a credit line (write "Own photo" for your own)', () => {
+  for (const recipe of RECIPES.filter((recipe) => recipe.image)) {
+    assert.ok(PHOTO_CREDITS[recipe.name], `${recipe.name} has a photo but no credit in photo-credits.js`);
+  }
+});
+
+check("every credit belongs to a recipe that has a photo", () => {
+  for (const name of Object.keys(PHOTO_CREDITS)) {
+    const recipe = RECIPES.find((recipe) => recipe.name === name);
+    assert.ok(recipe, `photo-credits.js mentions "${name}", but there's no recipe with that name`);
+    assert.ok(recipe.image, `photo-credits.js has a credit for "${name}", but that recipe has no photo`);
   }
 });
 

@@ -284,6 +284,39 @@ check("the browser tab shows the food icon (favicon.svg)", async () => {
   assert.ok(require("fs").existsSync(require("path").join(ROOT, href)) || loaded, "favicon.svg is missing");
 });
 
+const cardFor = (name) => page.locator(".card", { has: page.locator("h2", { hasText: name }) }).first();
+
+check("a recipe with a photo shows the photo; one without shows its drawing", async () => {
+  await openPage();
+  const pictures = await page.$$eval(".card", (cards) => cards.map((card) => {
+    const img = card.querySelector(".thumb img, img.thumb");
+    return { name: card.querySelector("h2").textContent, src: img ? img.getAttribute("src") : "" };
+  }));
+  const { RECIPES } = require("./checker").loadCook();
+  for (const { name, src } of pictures) {
+    const recipe = RECIPES.find((r) => r.name === name);
+    const expected = recipe.image || `images/illustrations/${recipe.illustration}.svg`;
+    assert.strictEqual(src, expected, name);
+  }
+});
+
+check("every picture on the page actually loads (no broken images)", async () => {
+  await openPage();
+  await page.waitForLoadState("load");
+  const broken = await page.$$eval(".card img", (imgs) =>
+    imgs.filter((img) => !img.complete || img.naturalWidth === 0).map((img) => img.getAttribute("src")));
+  assert.deepStrictEqual(broken, []);
+});
+
+check("Photo credits are listed at the bottom, folded away", async () => {
+  await openPage();
+  const credits = page.locator("#photo-credits");
+  assert.ok(await credits.isVisible());
+  assert.ok(!(await credits.locator("li").first().isVisible()), "credits should start folded");
+  await credits.locator("summary").click();
+  assert.ok(await credits.locator("li").first().isVisible());
+});
+
 check("no errors happen on the page during any of these checks", async () => {
   await openPage();
   await add("have", "egg, cheddar, tomato");

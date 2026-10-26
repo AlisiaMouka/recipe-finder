@@ -27,6 +27,8 @@ This project belongs to someone learning to build apps with AI agents.
 | File | Role |
 |---|---|
 | `recipes.js` | The pantry: recipe information only, no logic |
+| `photo-credits.js` | Who took each recipe photo, and its license |
+| `images/` | `illustrations/` (drawings) and `photos/`. See `PHOTOS.md` |
 | `ingredients.js` | The reference book: ingredient families and other names |
 | `matcher.js` | The cook: picks and ranks recipes; knows nothing about the page |
 | `app.js` | The waiter: connects the page to the cook |
@@ -34,3 +36,6 @@ This project belongs to someone learning to build apps with AI agents.
 | `tests/` | Pantry, cook and page checks |
 
 Keep these roles separate. For example, adding a recipe should only touch `recipes.js`.
+
+The owner changes pictures themselves by following `PHOTOS.md`. Keep that guide
+accurate whenever pictures work differently.
