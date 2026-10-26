@@ -1,0 +1,23 @@
+{
+  "engine": "axe-core 4.10.3",
+  "tags": [
+    "wcag2a",
+    "wcag2aa",
+    "wcag21aa"
+  ],
+  "desktop": {
+    "incomplete": [
+      "aria-prohibited-attr",
+      "color-contrast"
+    ],
+    "passes": 27,
+    "violations": []
+  },
+  "mobileRecipe": {
+    "incomplete": [
+      "color-contrast"
+    ],
+    "passes": 23,
+    "violations": []
+  }
+}

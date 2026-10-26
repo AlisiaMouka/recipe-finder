@@ -1,0 +1,34 @@
+{
+  "date": "2026-10-26",
+  "conditions": {
+    "viewport": "1440x900",
+    "cacheDisabled": true,
+    "latencyMs": 150,
+    "downloadBytesPerSecond": 200000,
+    "uploadBytesPerSecond": 93750,
+    "cpuThrottle": "unavailable; none applied",
+    "runs": 1
+  },
+  "baseline": {
+    "server": "Python static preview, no compression",
+    "transferBytes": 1481705,
+    "domContentLoadedMs": 8089.7,
+    "loadMs": 8180.1,
+    "firstContentfulPaintMs": 1620,
+    "largestContentfulPaintMs": 1620,
+    "cumulativeLayoutShift": 0.00293
+  },
+  "final": {
+    "server": "included Node serve.js with gzip",
+    "transferBytes": 206544,
+    "domContentLoadedMs": 1404.8,
+    "loadMs": 1426,
+    "firstContentfulPaintMs": 848,
+    "largestContentfulPaintMs": 1684,
+    "cumulativeLayoutShift": 0.0191459,
+    "longTasksMs": [
+      156
+    ]
+  },
+  "scope": "Single controlled lab sample, not field Core Web Vitals. Final six visible recipe illustrations loaded. Layout and LCP element differ; baseline had one saved/planned recipe, final kitchen was empty."
+}

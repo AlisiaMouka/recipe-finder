@@ -15,23 +15,32 @@ This project belongs to someone learning to build apps with AI agents.
 - Show a working preview in the chat before anything is merged.
 - When in doubt about food, go with what a cook would recommend.
 - When a mistake could hurt someone (allergies, diets), hide too much rather than too little.
+- Code from outside (a ZIP, another tool) is inspected before it goes in, and compared
+  with the decisions in `PLAN.md`. Point out anything that undoes a decision.
 
 ## Checks (tests)
-- Run `npm test` **before** changing anything (to know it worked to begin with)
-  and **after** (to catch anything you broke).
-- Every new rule or feature gets a new check, with a plain-language sentence.
+- Run the checks **before** changing anything (to know it worked to begin with)
+  and **after** (to catch anything you broke):
+  - `npm run check` (every script can be read) and `npm test` (82 checks).
+  - The 12 browser checks: start `PORT=8768 npm start`, then run
+    `node tests/browser-runner.mjs http://127.0.0.1:8768` (needs Playwright).
+- Every new rule or feature gets a new check, with a plain-language name.
 - Never delete or weaken a check to make it pass. If a check is wrong, explain why and ask first.
-- GitHub runs the same checks on every pull request. Only merge when they're green.
+- GitHub runs `npm run check` and `npm test` on every pull request. Only merge when they're green.
 
 ## How the code is organized (the kitchen)
 | File | Role |
 |---|---|
-| `recipes.js` | The pantry: recipe information only, no logic |
-| `images/illustrations/` | The 18 food drawings shown on recipe cards |
-| `ingredients.js` | The reference book: ingredient families, other names, other real foods |
-| `matcher.js` | The cook: picks and ranks recipes; knows nothing about the page |
+| `recipes.js` | The pantry: the 150 Wikibooks recipes, information only |
+| `recipes-extra.js` | The 40 recipes written for version 3, with measured amounts |
+| `recipe-enhancements.js` | Measured amounts for 22 Wikibooks recipes (originals stay untouched) |
+| `engine.js` | The cook: food families, matching, labels, search, amounts, shopping list; knows nothing about the page |
+| `kitchen-state.js` | The fridge notes: what's saved in the browser, and backups |
 | `app.js` | The waiter: connects the page to the cook |
-| `index.html`, `style.css` | The dining room: what the page looks like |
-| `tests/` | Pantry, cook and page checks |
+| `index.html`, `style.css`, `fonts/` | The dining room: what the page looks like |
+| `recipe-art.js`, `recipe-art-manifest.json`, `images/` | The drawings for each recipe |
+| `hero.js`, `vendor/three.min.js` | The optional 3D bowl (Three.js, official release) |
+| `serve.js` | Optional local preview server (only on your own computer) |
+| `tests/` | The checks |
 
-Keep these roles separate. For example, adding a recipe should only touch `recipes.js`.
+Keep these roles separate. For example, adding a recipe should only touch the recipe files.

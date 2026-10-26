@@ -1,0 +1,67 @@
+{
+  "passed": 12,
+  "checks": [
+    {
+      "name": "Fresh kitchen shows the complete 190-recipe collection",
+      "status": "passed",
+      "durationMs": 888
+    },
+    {
+      "name": "Pagination changes cards and returns to the first page",
+      "status": "passed",
+      "durationMs": 783
+    },
+    {
+      "name": "An unknown name requires an explicit custom-ingredient choice",
+      "status": "passed",
+      "durationMs": 1082
+    },
+    {
+      "name": "Natural ingredient lists normalize quantities, plurals and separators",
+      "status": "passed",
+      "durationMs": 731
+    },
+    {
+      "name": "A typo is confirmed before its suggested ingredient is added",
+      "status": "passed",
+      "durationMs": 1051
+    },
+    {
+      "name": "Typing a recipe query retains input focus through result updates",
+      "status": "passed",
+      "durationMs": 157
+    },
+    {
+      "name": "Cookbook keeps saved recipes independent of pantry matching",
+      "status": "passed",
+      "durationMs": 2003
+    },
+    {
+      "name": "Measured ingredients have separate amount, unit and name fields that scale",
+      "status": "passed",
+      "durationMs": 910
+    },
+    {
+      "name": "Wednesday planning preserves servings and edits one meal instead of duplicating it",
+      "status": "passed",
+      "durationMs": 3548
+    },
+    {
+      "name": "Cooking navigation focuses and announces the current step",
+      "status": "passed",
+      "durationMs": 986
+    },
+    {
+      "name": "A paused timer survives reload and replacement requires confirmation",
+      "status": "passed",
+      "durationMs": 4605
+    },
+    {
+      "name": "Cleanup clears the disposable kitchen through Settings",
+      "status": "passed",
+      "durationMs": 1003
+    }
+  ],
+  "snapshots": 70,
+  "origin": "http://127.0.0.1:8768"
+}

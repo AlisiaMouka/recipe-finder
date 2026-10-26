@@ -1,79 +1,47 @@
 # Recipe Finder: Plan
 
-## Version 1
-- A single web page you open in a browser.
-- Recipes we wrote ourselves (50) plus recipes adapted from the Wikibooks Cookbook
-  (CC BY-SA 4.0, credited on each card), kept separate from the matching part
-  (the "pantry" is separate from the "cook").
-- Each recipe carries this information:
-  - Ingredients
-  - Diet labels: vegetarian, vegan, gluten-free
-  - Allergens, kept in the pantry but not shown on the page.
-    "dairy" covers milk, cheese, butter, cream, yogurt, etc. "nuts" covers tree nuts
-    (almonds, walnuts, candlenuts, …); peanuts are separate.
-  - Cooking time
-  - Estimated price in euros (approximate)
-  - Cuisine (e.g. Italian, Mexican)
-  - Servings
-  - Optional photo (a placeholder is shown until we have real photos)
-- "I have" box: ingredients become tags, with suggestions while typing.
-- "Leave out" box: recipes containing these ingredients are hidden.
-- An ingredient can't be in both boxes at once.
-- Filters dropdown (filters hide recipes): vegetarian, vegan, gluten-free,
-  dairy-free (no "dairy" allergen).
-- With nothing typed in "I have", show every recipe that passes the filters and
-  "Leave out", A to Z, with each card listing its ingredients.
-- Each result shows which ingredients you're missing.
-- Each recipe has 3–15 cooking steps, folded away behind "Show steps ▾".
-- Optional ingredients are shown in a grey "Optional: …" line. They never count as
-  missing and don't decide labels or allergens (e.g. Chapati with optional ghee is vegan).
-- "Sort by" menu (sorting reorders, it doesn't hide). Ties fall back to the default.
-  - Browsing (nothing typed): A to Z (default), Quickest, Cheapest.
-  - Ingredients typed: Buy Less (default), Use Most, Quickest, Cheapest.
-  - Cheapest means lowest price **per serving**.
-  - The value being sorted by is highlighted on each card.
-- Smarter matching, using a reference book of ingredients (`ingredients.js`):
-  - Families: cheese, meat, fish, vegetable, fruit, spice, herb, rice, pasta,
-    noodle, stock, bread. An ingredient can be in more than one family.
-  - A specific ingredient counts for its family: cheddar counts for a recipe
-    that says "cheese" (shown as "cheddar (as cheese)").
-  - A family does NOT count for a specific one: "cheese" doesn't match parmesan.
-  - A family in "Leave out" hides every member, and the page lists what it covers.
-  - Other names for the same thing work (zucchini = courgette), shown discreetly.
-- Typos: a word we don't know but that is close to a known ingredient (up to 5
-  letters: 1 letter change; longer: 2) is suggested while typing ("did you mean?"),
-  and pressing Enter asks "Did you mean tomato?" with Yes / No. Never fixed silently.
-  Real foods are never questioned: ingredients from our recipes, plus a list of
-  other foods in `ingredients.js` (`OTHER_FOODS`, e.g. pear, kale, quinoa).
-- If a filter makes one of your ingredients unusable, say so
-  (e.g. "Chicken was ignored because Vegetarian is on").
+## Version 3 (current)
+The app was replaced by an expanded edition (from a ZIP the owner provided), with the
+owner's approval. The README describes the features in detail. In short:
 
-## Look and feel
-- Sage green background, rose/berry accents ("Mix 2").
-- Elegant serif headings (Cormorant Garamond), clean body text (Jost).
-- Recipe cards with a small food drawing on the left (18 drawings in the app's
-  colors, in `images/illustrations`), on one of four soft background shades.
-  To change a recipe's drawing, change its `illustration` word in `recipes.js`.
-- Wide screens: page up to 1200px wide, two recipes per row. Phones: one per row.
-- Browser tab icon: a steaming berry bowl (`favicon.svg`).
+- **Discover:** a pantry box (with quantities, other names and typo questions), a
+  "leave out" list, search by dish, ingredient or cuisine, quick filters and a Filters
+  panel (time, diet, allergens, cuisine, extra purchases, measured recipes), sorting,
+  and pages of results.
+- **Cookbook:** saved favourite recipes. **Meal plan:** a seven-day planner.
+  **Shopping list:** what's missing for planned recipes, combined and downloadable.
+- **Cooking:** serving controls (measured recipes only), step-by-step mode, a timer.
+- **Kitchen settings:** export and restore a backup. Everything is saved in the
+  browser only; nothing is sent anywhere.
+- An optional 3D bowl (Three.js, bundled locally).
 
-## The cook's rule (how recipes are ranked)
-1. Fewest missing ingredients first. (A recipe you can cook right now wins.)
-2. If tied, the recipe that uses more of your ingredients comes first.
-3. A recipe that uses none of your ingredients doesn't appear.
+## Recipes
+- 190 recipes:
+  - 150 adapted from the Wikibooks Cookbook (CC BY-SA 4.0), each linking to its page.
+  - 40 new recipes written for this edition ("Recipe Finder kitchen collection",
+    CC BY-SA 4.0), all with measured amounts. These are not from an online source.
+  - 22 of the Wikibooks recipes have source-checked measured amounts
+    (`recipe-enhancements.js`, evidence in `docs/SOURCE-CHECKS.md`).
+- **Labels rule (changed in version 3):** optional ingredients now count for diet
+  labels and allergens. Example: Chapati with optional ghee is no longer vegan. This
+  is more cautious than before, and matches "hide too much rather than too little".
+- Food families: a specific ingredient counts for its family (parmesan covers
+  "cheese"); a family never promises a specific ingredient.
 
-## Later (Version 2+)
-- Done: all 150 recipes come from the Wikibooks Cookbook (CC BY-SA 4.0), adapted in
-  batches approved by the owner. Each card shows a credit line under its steps. Our own
-  50 recipes were removed afterwards. (Live recipe services were ruled out: paid, no
-  storing allowed, or they need a secret key a static site can't hide.) USDA MyPlate
-  Kitchen (public domain) could add more later; it's blocked by the network settings.
-- Swaps (e.g. lime for lemon), considered and put off for now.
-- More filters: by cuisine, by allergen.
-- Real recipe photos from Unsplash (work parked on the `photos` branch, PR 10,
-  see its HANDOVER-PHOTOS.md). The owner must be able to swap photos without coding.
-- Sort the front page by real popularity (which recipes people open). Needs the
-  app online and somewhere to store the counts. Never invent popularity numbers.
+## Earlier decisions (version 1 and 2), kept for history
+- Our own first 50 recipes were removed once the 150 Wikibooks recipes were in.
+- Live recipe services were ruled out: paid, no storing allowed, or they need a secret
+  key a static site can't hide. Copying other websites' recipes isn't allowed;
+  linking to them is fine.
+- Version 2 look: sage green with berry accents ("Mix 2"), Cormorant Garamond and
+  Jost, no footer. Version 3 replaced this design.
+
+## Later
+- Run the 12 browser checks on GitHub too (today they only run on a computer).
+- A "search more online" button that links to a Wikibooks search (option D).
+- Swaps (e.g. lime for lemon).
+- Real recipe photos (work parked in PR 10, built for the version 2 design).
+- Sort by real popularity. Never invent popularity numbers.
 
 ## How we work
 - Sketch first: show a picture of a new feature or design before building it.
@@ -84,3 +52,5 @@
 - When in doubt about food, go with what a cook would recommend.
 - When a mistake could hurt someone (allergies, diets), prefer hiding too much
   over hiding too little.
+- Code from outside (another tool or person) is checked before it goes in: safety,
+  our house rules, and a preview.
