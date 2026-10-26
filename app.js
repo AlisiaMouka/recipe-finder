@@ -287,9 +287,10 @@ function browseTitle(diets, leaveOut) {
 
 // When browsing, `have` is not given and the card lists the ingredients instead.
 function recipeCard({ recipe, labels, have, missing }) {
+  // A photo always wins; otherwise the recipe's drawing on a soft background.
   const picture = recipe.image
     ? `<img class="thumb" src="${escapeText(recipe.image)}" alt="">`
-    : `<div class="thumb" style="--shift: ${placeholderShift(recipe.name)}deg"></div>`;
+    : `<div class="thumb drawing tint-${tintFor(recipe.name)}"><img src="images/illustrations/${escapeText(recipe.illustration)}.svg" alt=""></div>`;
   // The value the recipes are sorted by is highlighted, so the order makes sense.
   const highlight = (text) => `<b class="sorted-by">${escapeText(text)}</b>`;
   const time = `${recipe.minutes} min`;
@@ -330,10 +331,25 @@ function describeHave({ needed, using }) {
   return `${escapeText(using)} <span class="as">(as ${escapeText(needed)})</span>`;
 }
 
-// Gives each placeholder picture a slightly different shade, based on the name.
-function placeholderShift(name) {
+// Picks one of four soft background shades for a drawing, based on the name,
+// so recipes sharing a drawing still look a little different.
+function tintFor(name) {
   const total = [...name].reduce((sum, letter) => sum + letter.charCodeAt(0), 0);
-  return (total % 7) * 8 - 24;
+  return total % 4;
+}
+
+// ---- Photo credits ----
+
+// Lists every credit from photo-credits.js; links the web address if there is one.
+function drawCredits() {
+  const entries = Object.entries(PHOTO_CREDITS).sort(([a], [b]) => a.localeCompare(b));
+  document.getElementById("photo-credits").hidden = entries.length === 0;
+  document.getElementById("credits-list").innerHTML = entries
+    .map(([name, credit]) => {
+      const linked = escapeText(credit).replace(/(https?:\/\/\S+)/, '<a href="$1">source</a>');
+      return `<li><b>${escapeText(name)}:</b> ${linked}</li>`;
+    })
+    .join("");
 }
 
 // Stops typed text from being treated as page code.
@@ -345,5 +361,6 @@ function escapeText(text) {
     .replace(/"/g, "&quot;");
 }
 
-// Show every recipe as soon as the page opens.
+// Show every recipe (and the photo credits) as soon as the page opens.
 search();
+drawCredits();

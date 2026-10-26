@@ -16,10 +16,10 @@ function check(sentence, run) {
 // Loads the pantry, the reference book and the cook (no browser needed),
 // and returns what they define.
 function loadCook() {
-  const code = ["recipes.js", "ingredients.js", "matcher.js"]
+  const code = ["recipes.js", "photo-credits.js", "ingredients.js", "matcher.js"]
     .map((file) => fs.readFileSync(path.join(ROOT, file), "utf8"))
     .join("\n");
-  const exported = "RECIPES, FAMILIES, OTHER_NAMES, findRecipes, browseRecipes, cleanIngredient, allIngredients, labelsOf";
+  const exported = "RECIPES, PHOTO_CREDITS, FAMILIES, OTHER_NAMES, findRecipes, browseRecipes, cleanIngredient, allIngredients, labelsOf";
   return new Function(`${code}\nreturn { ${exported} };`)();
 }
 

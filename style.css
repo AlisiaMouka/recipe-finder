@@ -12,6 +12,10 @@
   --note-bg: #f3e6d8;
   --thumb-1: #efc6d0;
   --thumb-2: #b86a80;
+  --tint-0: #f3d9e0;
+  --tint-1: #e2e9cf;
+  --tint-2: #f3e6d8;
+  --tint-3: #e6e1ef;
   --heading-font: "Cormorant Garamond", Georgia, serif;
   --body-font: "Jost", system-ui, sans-serif;
 }
@@ -257,6 +261,20 @@ h1 em { color: var(--accent); }
   filter: hue-rotate(var(--shift, 0deg));
 }
 img.thumb { filter: none; }
+.thumb.drawing { display: grid; place-items: center; background: var(--tint-0); filter: none; }
+.thumb.drawing img { width: 84%; height: 84%; }
+.thumb.tint-1 { background: var(--tint-1); }
+.thumb.tint-2 { background: var(--tint-2); }
+.thumb.tint-3 { background: var(--tint-3); }
+
+.credits { margin-top: 32px; font-size: 0.8rem; color: var(--muted); }
+.credits summary { display: inline-block; list-style: none; cursor: pointer; font-weight: 600; color: var(--accent); }
+.credits summary::-webkit-details-marker { display: none; }
+.credits .when-open, .credits[open] .when-closed { display: none; }
+.credits[open] .when-open { display: inline; }
+.credits ul { margin: 8px 0 0; padding-left: 18px; columns: 2 320px; column-gap: 32px; }
+.credits li { margin: 3px 0; break-inside: avoid; }
+.credits a { color: var(--accent); }
 .card-body { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 .card-body .steps { margin-top: auto; } /* keeps "Show steps" at the bottom, lined up across a row */
 .card h2 { margin: 0 0 2px; font-family: var(--heading-font); font-weight: 700; font-size: 1.6rem; line-height: 1.15; }
