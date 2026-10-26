@@ -20,7 +20,11 @@ owner's approval. The README describes the features in detail. In short:
   - 150 adapted from the Wikibooks Cookbook (CC BY-SA 4.0), each linking to its page.
   - 40 new recipes written for this edition ("Recipe Finder kitchen collection",
     CC BY-SA 4.0), all with measured amounts. These are not from an online source.
-  - 22 of the Wikibooks recipes have source-checked measured amounts
+  - 90 of the Wikibooks recipes have source-checked measured amounts: 22 with
+    clearer methods, and 68 with amounts only, taken from the source page.
+    Owner's rule: amounts come only from the source. If the source leaves any
+    ingredient unmeasured, the recipe stays unmeasured (60 recipes; reasons in
+    `docs/SOURCE-CHECKS.md`).
     (`recipe-enhancements.js`, evidence in `docs/SOURCE-CHECKS.md`).
 - **Labels rule (changed in version 3):** optional ingredients now count for diet
   labels and allergens. Example: Chapati with optional ghee is no longer vegan. This

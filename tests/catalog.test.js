@@ -28,15 +28,15 @@ function strings(value, label) {
   for (const entry of value) nonempty(entry, label);
 }
 
-test('the delivery retains 150 originals, adds 40 recipes and source-checks 22 original quantities', () => {
+test('the collection retains 150 originals, adds 40 recipes and source-checks 90 original quantities', () => {
   assert.equal(legacy.length, 150);
   assert.equal(extra.length, 40);
   assert.equal(catalog.length, 190);
   assert.equal(new Set(catalog.map(r => r.id)).size, 190);
   assert.equal(new Set(extra.map(r => r.id)).size, 40);
-  assert.equal(enhancements.length, 22);
-  assert.equal(enhancedNames.size, 22);
-  assert.equal(catalog.filter(r => r.hasQuantities).length, 62);
+  assert.equal(enhancements.length, 90);
+  assert.equal(enhancedNames.size, 90);
+  assert.equal(catalog.filter(r => r.hasQuantities).length, 130);
   for (const original of legacy) {
     assert.ok(catalog.some(r => r.name === original.name && r.source.url === original.source.url), original.name);
   }
@@ -132,9 +132,23 @@ test('every new recipe has exactly one positive amount for each required ingredi
   }
 });
 
-test('the 128 originals without checked quantities never acquire fabricated amounts when servings change', () => {
+test('amount-only upgrades add amounts without changing the recipe\'s ingredients, steps, servings or labels', () => {
+  const amountOnly = enhancements.filter(upgrade => !upgrade.steps);
+  assert.equal(amountOnly.length, 68);
+  const originalCatalog = E.buildCatalog(legacy, []);
+  for (const upgrade of amountOnly) {
+    const before = originalCatalog.find(r => r.name === upgrade.originalName);
+    const after = catalog.find(r => r.name === upgrade.originalName);
+    for (const key of ['ingredients', 'optional', 'steps', 'servings', 'minutes', 'diet', 'allergens']) {
+      assert.deepEqual(after[key], before[key], `${after.name}: ${key}`);
+    }
+    assert.match(upgrade.quantityNote, /^Amounts adapted from the linked source;/, after.name);
+  }
+});
+
+test('the 60 originals without checked quantities never acquire fabricated amounts when servings change', () => {
   const unchecked = legacy.filter(r => !enhancedNames.has(r.name));
-  assert.equal(unchecked.length, 128);
+  assert.equal(unchecked.length, 60);
   for (const original of unchecked) {
     const r = catalog.find(candidate => candidate.name === original.name);
     assert.equal(r.hasQuantities, false, r.name);
