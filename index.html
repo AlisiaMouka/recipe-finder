@@ -1,68 +1,527 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Recipe Finder</title>
-  <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <main>
-    <header>
-      <h1>Recipe <em>Finder</em></h1>
-      <p class="subtitle">What's in your kitchen? Let's cook something.</p>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#244b3a" />
+    <meta
+      name="description"
+      content="Turn your pantry into dinner. Search recipes, plan meals and build a shopping list, in one calm kitchen workspace."
+    />
+    <title>Recipe Finder — your kitchen, reimagined</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="preload"
+      href="fonts/sans.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <script src="recipes.js" defer></script>
+    <script src="recipes-extra.js" defer></script>
+    <script src="recipe-enhancements.js" defer></script>
+    <script src="recipe-art.js" defer></script>
+    <script src="engine.js" defer></script>
+    <script src="kitchen-state.js" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body class="app-shell">
+    <a class="skip-link" href="#recipe-query">Skip to recipe search</a>
+    <header class="site-header">
+      <a class="brand" href="#" aria-label="Recipe Finder home"
+        ><span class="brand-mark" aria-hidden="true"
+          ><svg viewBox="0 0 32 32">
+            <path d="M8 25C8 13 12 7 26 6c0 12-6 19-18 19Z" />
+            <path d="m7 27 13-14" /></svg></span
+        >Recipe<span class="brand-serif">Finder</span></a
+      >
+      <nav aria-label="Main navigation">
+        <button
+          class="nav-link active"
+          data-view="discover"
+          aria-current="page"
+        >
+          Discover</button
+        ><button class="nav-link" data-view="saved">
+          Cookbook <span id="saved-count">0</span></button
+        ><button class="nav-link" data-view="plan">Meal plan</button>
+      </nav>
+      <div class="header-utilities">
+        <button
+          id="settings-button"
+          class="icon-button"
+          aria-label="Kitchen settings and backup"
+        >
+          <span data-icon="sliders"></span></button
+        ><button
+          class="bag-button"
+          id="shopping-button"
+          aria-label="Open shopping list"
+        >
+          <span data-icon="bag"></span><span class="bag-label">Shopping</span
+          ><span id="shopping-count" class="count-bubble">0</span>
+        </button>
+      </div>
     </header>
-
-    <form id="search" autocomplete="off">
-      <label class="field-label" for="have-input">I have</label>
-      <div class="tag-box" id="have-box">
-        <div class="tags"></div>
-        <input id="have-input" type="text" placeholder="Type an ingredient…">
-        <ul class="suggestions" hidden></ul>
-      </div>
-
-      <label class="field-label" for="out-input">Leave out</label>
-      <div class="tag-box leave-out" id="out-box">
-        <div class="tags"></div>
-        <input id="out-input" type="text" placeholder="Type an ingredient…">
-        <ul class="suggestions" hidden></ul>
-      </div>
-
-      <div class="action-row">
-        <div class="filters">
-          <button type="button" id="filters-button" class="filters-button" aria-expanded="false">Filters ▾</button>
-          <div id="filters-panel" class="filters-panel" hidden>
-            <label><input type="checkbox" name="diet" value="vegetarian"> Vegetarian</label>
-            <label><input type="checkbox" name="diet" value="vegan"> Vegan</label>
-            <label><input type="checkbox" name="diet" value="gluten-free"> Gluten-free</label>
-            <label><input type="checkbox" name="diet" value="dairy-free"> Dairy-free</label>
+    <main>
+      <section class="kitchen" id="kitchen" aria-labelledby="section-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow" id="section-eyebrow">A LITTLE PANTRY MAGIC</p>
+            <h1 id="section-title">What’s for <em>dinner?</em></h1>
+          </div>
+          <div class="workspace-context">
+            <p id="section-description">
+              Start with what you have. Find something you love.
+            </p>
+            <span id="collection-size">190 recipes</span
+            ><button id="hero-surprise" class="text-button">
+              Surprise me <span data-icon="spark"></span>
+            </button>
           </div>
         </div>
-        <button type="submit" class="find-button">Find recipes</button>
+        <div id="hero" hidden></div>
+        <div id="discovery-layout" class="discovery-layout">
+          <aside class="pantry-panel" aria-labelledby="pantry-title">
+            <div class="panel-title">
+              <span data-icon="jar"></span>
+              <h2 id="pantry-title">Your pantry</h2>
+              <span id="pantry-count" class="pill">0</span
+              ><button
+                class="pantry-toggle"
+                id="pantry-toggle"
+                aria-expanded="true"
+                aria-controls="pantry-content"
+                aria-label="Collapse pantry"
+              >
+                <span data-icon="chevron"></span>
+              </button>
+            </div>
+            <div id="pantry-content">
+              <p class="muted">What ingredients do you have?</p>
+              <form id="pantry-form" autocomplete="off">
+                <label class="sr-only" for="pantry-input"
+                  >Add ingredients you have</label
+                >
+                <div class="ingredient-input">
+                  <input
+                    id="pantry-input"
+                    placeholder="e.g. eggs, tomatoes, spinach"
+                    role="combobox"
+                    aria-autocomplete="list"
+                    aria-expanded="false"
+                    aria-controls="ingredient-suggestions"
+                  /><button type="submit" aria-label="Add ingredients">
+                    <span data-icon="plus"></span>
+                  </button>
+                </div>
+                <ul
+                  id="ingredient-suggestions"
+                  class="suggestions"
+                  role="listbox"
+                  hidden
+                ></ul>
+              </form>
+              <p class="input-hint">Paste a list, or pick a suggestion.</p>
+              <div
+                id="ingredient-confirmation"
+                class="ingredient-confirmation"
+                aria-live="polite"
+                hidden
+              ></div>
+              <div id="pantry-tags" class="ingredient-tags"></div>
+              <div id="pantry-empty" class="pantry-empty">
+                <span data-icon="leaf"></span>
+                <p>
+                  A few everyday ingredients.<br />A very good place to start.
+                </p>
+              </div>
+              <div class="quick-add">
+                <p class="eyebrow">QUICK ADD</p>
+                <div id="quick-ingredients"></div>
+              </div>
+              <button id="add-staples" class="staples-button">
+                <span data-icon="plus"></span> Add oil, onion & garlic
+              </button>
+              <p class="input-hint">Salt, pepper and water are assumed.</p>
+              <div class="pantry-divider"></div>
+              <details class="exclusions">
+                <summary>
+                  Ingredients to leave out <span data-icon="chevron"></span>
+                </summary>
+                <p class="input-hint">An ingredient or family, like nuts.</p>
+                <form id="exclude-form">
+                  <label class="sr-only" for="exclude-input"
+                    >Ingredients to exclude</label
+                  >
+                  <div class="ingredient-input">
+                    <input
+                      id="exclude-input"
+                      placeholder="e.g. mushroom, dairy"
+                    /><button type="submit" aria-label="Exclude ingredients">
+                      <span data-icon="plus"></span>
+                    </button>
+                  </div>
+                </form>
+                <div
+                  id="exclude-tags"
+                  class="ingredient-tags exclude-tags"
+                ></div>
+              </details>
+              <button id="clear-pantry" class="clear-button" hidden>
+                Clear pantry
+              </button>
+              <div class="pantry-footnote">
+                <span data-icon="lock"></span> Saved only on this device.
+              </div>
+              <button
+                class="hero-animation-toggle text-button"
+                id="hero-animation-toggle"
+                aria-pressed="false"
+              >
+                Explore the 3D bowl <span data-icon="spark"></span>
+              </button>
+            </div>
+          </aside>
+          <div class="recipes-area">
+            <div class="browse-tools">
+              <div class="recipe-search">
+                <span data-icon="search"></span
+                ><label class="sr-only" for="recipe-query"
+                  >Search recipes, ingredients or cuisines</label
+                ><input
+                  id="recipe-query"
+                  type="search"
+                  placeholder="Search a dish, ingredient or cuisine…"
+                /><kbd>/</kbd>
+              </div>
+              <button id="filters-button" class="filter-button">
+                <span data-icon="sliders"></span> Filters
+                <span id="filter-count" hidden></span>
+              </button>
+            </div>
+            <div class="category-tabs" aria-label="Recipe collections">
+              <button class="active" data-collection="all" aria-pressed="true">
+                All recipes</button
+              ><button data-collection="quick" aria-pressed="false">
+                <span data-icon="clock"></span> Under 30 min</button
+              ><button data-collection="plant" aria-pressed="false">
+                <span data-icon="leaf"></span> Plant based</button
+              ><button data-collection="breakfast" aria-pressed="false">
+                Breakfast</button
+              ><button data-collection="dessert" aria-pressed="false">
+                Something sweet
+              </button>
+            </div>
+            <div id="active-filters" class="active-filters"></div>
+            <div class="results-bar">
+              <p id="result-count" role="status" aria-live="polite"></p>
+              <label id="saved-match-label" class="saved-match-label" hidden
+                ><input type="checkbox" id="saved-match-only" /> Pantry matches
+                only</label
+              ><label class="sort-label"
+                ><span class="sr-only">Sort by</span
+                ><select id="sort-select" aria-label="Sort recipes">
+                  <option value="recommended">Recommended</option>
+                  <option value="quickest">Quickest</option>
+                  <option value="cheapest">Lowest cost</option>
+                  <option value="use-most">Use most ingredients</option>
+                  <option value="a-z">A to Z</option>
+                </select></label
+              >
+            </div>
+            <div id="recipe-grid" class="recipe-grid"></div>
+            <div id="empty-state" class="empty-state" hidden>
+              <span data-icon="search"></span>
+              <h3>No recipes just yet.</h3>
+              <p id="empty-message">Try fewer filters or another ingredient.</p>
+              <button class="button primary" id="reset-filters">
+                Reset search & filters
+              </button>
+            </div>
+            <nav class="pagination" aria-label="Recipe pages">
+              <button
+                id="previous-page"
+                class="pagination-button"
+                aria-label="Previous recipe page"
+              >
+                <span data-icon="back"></span> Previous
+              </button>
+              <p id="page-status" aria-live="polite"></p>
+              <button
+                id="next-page"
+                class="pagination-button"
+                aria-label="Next recipe page"
+              >
+                Next <span data-icon="arrow"></span>
+              </button>
+            </nav>
+            <button id="load-more" hidden></button>
+          </div>
+        </div>
+        <section id="planner" hidden aria-label="Weekly meal planner">
+          <div class="planner-intro">
+            <div>
+              <h2>A little plan for a lovely week.</h2>
+              <p>
+                Choose a recipe for each day. Your shopping list follows along.
+              </p>
+            </div>
+            <button class="button primary" data-view="discover">
+              Find a recipe <span data-icon="plus"></span>
+            </button>
+          </div>
+          <div class="week-grid" id="week-grid"></div>
+          <div class="plan-summary">
+            <div>
+              <strong id="plan-summary"></strong>
+              <p>Check your pantry quantities before cooking.</p>
+            </div>
+            <button class="button primary" id="plan-shopping">
+              Open shopping list <span data-icon="bag"></span>
+            </button>
+          </div>
+        </section>
+        <div class="workspace-footer">
+          <button id="about-button">By Alisia · About & credits</button
+          ><span>Simple food. Thoughtful cooking.</span
+          ><button id="backup-shortcut">Back up your kitchen</button>
+        </div>
+      </section>
+    </main>
+    <dialog
+      id="filters-dialog"
+      class="side-dialog"
+      aria-labelledby="filters-title"
+    >
+      <form method="dialog">
+        <button class="close-button" aria-label="Close filters">
+          <span data-icon="close"></span>
+        </button>
+      </form>
+      <p class="eyebrow">MAKE IT YOURS</p>
+      <h2 id="filters-title">A recipe that <em>fits.</em></h2>
+      <div class="filter-section">
+        <h3>How do you eat?</h3>
+        <div class="choice-grid" id="diet-options"></div>
       </div>
-      <p class="hint">Salt, pepper and water are assumed to be at home.</p>
-    </form>
+      <div class="filter-section">
+        <h3>Leave out allergens</h3>
+        <p class="input-hint">
+          Includes optional ingredients. Always check labels and the original
+          recipe for allergies.
+        </p>
+        <div class="choice-grid" id="allergen-options"></div>
+      </div>
+      <div class="filter-section">
+        <label for="time-filter">Time in the kitchen</label
+        ><select id="time-filter">
+          <option value="0">Any amount of time</option>
+          <option value="15">15 minutes or less</option>
+          <option value="30">30 minutes or less</option>
+          <option value="45">45 minutes or less</option>
+          <option value="60">1 hour or less</option>
+        </select>
+      </div>
+      <div class="filter-section">
+        <label for="cuisine-filter">Take your taste buds somewhere</label
+        ><select id="cuisine-filter">
+          <option value="">Every cuisine</option>
+        </select>
+      </div>
+      <div class="filter-section">
+        <label for="missing-filter">Extra ingredients to buy</label
+        ><select id="missing-filter">
+          <option value="">Any number</option>
+          <option value="0">No extra ingredients</option>
+          <option value="1">Up to 1 extra ingredient</option>
+          <option value="3">Up to 3 extra ingredients</option>
+          <option value="5">Up to 5 extra ingredients</option>
+        </select>
+        <p class="input-hint">
+          Matches ingredient names, not the quantities in your pantry.
+        </p>
+      </div>
+      <label class="check-row"
+        ><input type="checkbox" id="quantified-filter" /> Recipes with measured
+        ingredients only</label
+      >
+      <div class="dialog-bottom">
+        <button class="text-button" id="clear-filters">Clear filters</button
+        ><button class="button primary" id="apply-filters">
+          Show recipes <span data-icon="arrow"></span>
+        </button>
+      </div>
+    </dialog>
+    <dialog
+      id="recipe-dialog"
+      class="recipe-dialog"
+      aria-labelledby="recipe-title"
+    >
+      <div id="recipe-detail"></div>
+    </dialog>
+    <dialog
+      id="shopping-dialog"
+      class="side-dialog"
+      aria-labelledby="shopping-title"
+    >
+      <form method="dialog">
+        <button class="close-button" aria-label="Close shopping list">
+          <span data-icon="close"></span>
+        </button>
+      </form>
+      <p class="eyebrow">A LITTLE LIST, A LOVELY WEEK</p>
+      <h2 id="shopping-title">The shopping <em>list.</em></h2>
+      <p class="muted">
+        For the recipes in your meal planner. Ingredients in your pantry are
+        left out, so check you have enough.
+      </p>
+      <div id="shopping-content"></div>
+      <div class="dialog-bottom">
+        <button class="text-button" id="uncheck-shopping">Uncheck all</button
+        ><button class="button primary" id="download-shopping">
+          Download list <span data-icon="download"></span>
+        </button>
+      </div>
+    </dialog>
+    <dialog
+      id="about-dialog"
+      class="about-dialog"
+      aria-labelledby="about-title"
+    >
+      <form method="dialog">
+        <button class="close-button" aria-label="Close about">
+          <span data-icon="close"></span>
+        </button>
+      </form>
+      <p class="eyebrow">A NOTE FROM THE KITCHEN</p>
+      <h2 id="about-title">Made for <em>real life.</em></h2>
+      <p>
+        Created by
+        <a
+          href="https://alisiamouka.github.io/recipe-finder/"
+          target="_blank"
+          rel="noopener"
+          >Alisia</a
+        >, Recipe Finder began with a simple idea: cook something lovely from
+        what you already have. This edition keeps the original collection and
+        adds a fresh design, smarter search, measured kitchen recipes, and tools
+        for the week ahead.
+      </p>
+      <p>
+        Original recipes are adapted from the
+        <a
+          href="https://en.wikibooks.org/wiki/Cookbook:Table_of_Contents"
+          target="_blank"
+          rel="noopener"
+          >Wikibooks Cookbook</a
+        >. Recipe content is shared under
+        <a
+          href="https://creativecommons.org/licenses/by-sa/4.0/"
+          target="_blank"
+          rel="noopener"
+          >CC BY-SA 4.0</a
+        >. Each original recipe links to its source. The new kitchen collection
+        is authored for this edition; it is not kitchen-tested.
+      </p>
+      <p>
+        Illustrations are artistic representations. Costs are rough estimates in
+        euros, not current shop prices. Diet labels are ingredient-based guides;
+        check products, substitutions, and cross-contact for allergies.
+      </p>
+      <p>
+        Your pantry, cookbook, and meal plan are saved only in this browser. No
+        account, tracking, or recipe API is required. Clearing browser data
+        removes your saved kitchen. Export a backup from Kitchen settings to
+        keep it.
+      </p>
+      <a class="button outline" href="README.md"
+        >Read the project guide <span data-icon="arrow"></span
+      ></a>
+    </dialog>
+    <dialog
+      id="settings-dialog"
+      class="side-dialog"
+      aria-labelledby="settings-title"
+    >
+      <form method="dialog">
+        <button class="close-button" aria-label="Close kitchen settings">
+          <span data-icon="close"></span>
+        </button>
+      </form>
+      <p class="eyebrow">YOUR OWN LITTLE KITCHEN</p>
+      <h2 id="settings-title">Keep it <em>yours.</em></h2>
+      <p class="muted">
+        Everything stays in this browser. Save a backup before switching devices
+        or clearing browser data.
+      </p>
+      <button id="export-kitchen" class="button primary">
+        Export kitchen backup <span data-icon="download"></span></button
+      ><label class="import-label" for="import-kitchen"
+        >Restore a kitchen backup<input
+          type="file"
+          id="import-kitchen"
+          accept="application/json,.json"
+      /></label>
+      <p class="input-hint">
+        Restoring replaces your pantry, cookbook, meal plan and preferences. We
+        check the file first and ask you before replacing anything.
+      </p>
+      <div id="import-preview" hidden></div>
+      <button id="settings-bowl" class="button outline">
+        Explore the 3D bowl
+      </button>
+      <div class="filter-section">
+        <h3>Start fresh</h3>
+        <p class="muted">
+          Clear the pantry, saved recipes, plan, filters and timer on this
+          device.
+        </p>
 
-    <div id="notes"></div>
-    <div class="results-bar">
-      <p id="count"></p>
-      <div class="sort">
-        <span class="sort-label">Sort by</span>
-        <button type="button" id="sort-button" class="sort-button" aria-expanded="false">A to Z ▾</button>
-        <div id="sort-panel" class="sort-panel" hidden></div>
+        <button id="reset-kitchen" class="button outline">
+          Clear my kitchen…
+        </button>
+        <div id="reset-confirmation" hidden>
+          <p>
+            Clear all saved kitchen data? Export a backup first if you want to
+            keep it.
+          </p>
+          <button id="confirm-reset" class="button danger">
+            Yes, clear this kitchen</button
+          ><button id="cancel-reset" class="text-button">
+            Keep my kitchen
+          </button>
+        </div>
       </div>
+      <p id="storage-status" class="input-hint"></p>
+    </dialog>
+    <dialog id="bowl-dialog" class="bowl-dialog" aria-labelledby="bowl-title">
+      <form method="dialog">
+        <button class="close-button" aria-label="Close 3D bowl">
+          <span data-icon="close"></span>
+        </button>
+      </form>
+      <p class="eyebrow">A LITTLE KITCHEN CURIOSITY</p>
+      <h2 id="bowl-title">Good things <em>come together.</em></h2>
+      <div id="hero-scene" aria-hidden="true">
+        <img data-src="images/plates/hero.svg" width="600" height="600" alt="" />
+      </div>
+      <p id="bowl-status" class="muted" role="status">
+        Loading the optional 3D bowl…
+      </p>
+    </dialog>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <div id="timer-dock" class="timer-dock" hidden>
+      <span data-icon="clock"></span>
+      <div>
+        <strong id="timer-display"></strong><span id="timer-context"></span>
+      </div>
+      <button id="timer-toggle">Pause</button
+      ><button id="timer-stop" aria-label="Dismiss timer">
+        <span data-icon="close"></span>
+      </button>
     </div>
-    <div id="results"></div>
-  </main>
-
-  <!-- Order matters: pantry and reference book, then cook, then waiter. -->
-  <script src="recipes.js"></script>
-  <script src="ingredients.js"></script>
-  <script src="matcher.js"></script>
-  <script src="app.js"></script>
-</body>
+    <div id="print-area"></div>
+  </body>
 </html>
