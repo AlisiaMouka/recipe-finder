@@ -63,13 +63,11 @@
 3. A recipe that uses none of your ingredients doesn't appear.
 
 ## Later (Version 2+)
-- Import 150 recipes from Wikibooks Cookbook (CC BY-SA 4.0) and USDA MyPlate
-  Kitchen (USDA-written recipes only, public domain), in batches of ~25 approved by
-  the owner. Each imported card shows a credit line. See HANDOVER-IMPORTS.md on the
-  `import-recipes` branch. (Live recipe services were ruled out: paid, no storing
-  allowed, or they need a secret key a static site can't hide.)
-  Imported recipes with the same name as ours replace ours. Once all 150 are in,
-  our own 50 recipes will be removed (a separate step, approved by the owner).
+- Done: all 150 recipes come from the Wikibooks Cookbook (CC BY-SA 4.0), adapted in
+  batches approved by the owner. Each card shows a credit line under its steps. Our own
+  50 recipes were removed afterwards. (Live recipe services were ruled out: paid, no
+  storing allowed, or they need a secret key a static site can't hide.) USDA MyPlate
+  Kitchen (public domain) could add more later; it's blocked by the network settings.
 - Swaps (e.g. lime for lemon), considered and put off for now.
 - More filters: by cuisine, by allergen.
 - Real recipe photos from Unsplash (work parked on the `photos` branch, PR 10,

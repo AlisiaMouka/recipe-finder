@@ -351,6 +351,13 @@ check(`a recipe card shows "From Wikibooks Cookbook · CC BY-SA 4.0", linked, an
   assert.strictEqual(await page.locator(".card .source").count(), cards, "some cards have no credit line");
 });
 
+check("the credit line is the last thing on a card, under the cooking steps", async () => {
+  await openPage();
+  const lastOnCards = await page.$$eval(".card .card-body", (bodies) =>
+    [...new Set(bodies.map((body) => body.lastElementChild.className))]);
+  assert.deepStrictEqual(lastOnCards, ["source"]);
+});
+
 check('a recipe with optional ingredients shows "Optional: …" under its ingredients', async () => {
   await openPage();
   const chapati = page.locator(".card", { has: page.locator("h2", { hasText: "Chapati" }) });
