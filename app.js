@@ -341,6 +341,9 @@ function recipeCard({ recipe, labels, have, missing }) {
       : escapeText(`~€${recipe.price.toFixed(2)}`),
     ...labels.map(escapeText),
   ];
+  const optional = (recipe.optional || []).length
+    ? `<p class="optional"><b>Optional:</b> ${recipe.optional.map(escapeText).join(", ")}</p>`
+    : "";
   const ingredientLines = !have
     ? `<p>Ingredients: ${recipe.ingredients.map(escapeText).join(", ")}</p>`
     : `<p>You have: ${have.map(describeHave).join(", ")}</p>` +
@@ -356,6 +359,7 @@ function recipeCard({ recipe, labels, have, missing }) {
         <p class="facts">${facts.join(" · ")}</p>
         ${sourceLine(recipe)}
         ${ingredientLines}
+        ${optional}
         <details class="steps">
           <summary><span class="when-closed">Show steps ▾</span><span class="when-open">Hide steps ▴</span></summary>
           <ol>${recipe.steps.map((step) => `<li>${escapeText(step)}</li>`).join("")}</ol>

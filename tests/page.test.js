@@ -350,6 +350,14 @@ check(`an imported recipe shows "From Wikibooks Cookbook · CC BY-SA 4.0", linke
   assert.strictEqual(await ours.locator(".source").count(), 0);
 });
 
+check('a recipe with optional ingredients shows "Optional: …" under its ingredients', async () => {
+  await openPage();
+  const chapati = page.locator(".card", { has: page.locator("h2", { hasText: "Chapati" }) });
+  assert.strictEqual((await chapati.locator(".optional").textContent()).trim(), "Optional: ghee");
+  const ours = page.locator(".card", { has: page.locator("h2", { hasText: "Greek Salad" }) });
+  assert.strictEqual(await ours.locator(".optional").count(), 0);
+});
+
 check("no errors happen on the page during any of these checks", async () => {
   await openPage();
   await add("have", "egg, cheddar, tomato");

@@ -37,6 +37,19 @@ Add **150 recipes** from two free sources, so the app has 200 in total:
 - New ingredients that come with imported recipes must be **removed from `OTHER_FOODS`**
   in `ingredients.js` (a pantry check will flag doubles), and may belong in a family.
 
+## Merge plan (decided with the owner)
+- **One merge at the end**, when all 150 imports are in (not per batch).
+- Then a separate step: **remove our own 50 recipes** (see above).
+
+## Progress
+- Batch 1 (25), batches 2–3 (50): done. **75 of 150 imported** (125 recipes in total).
+- Owner's quality rule: recipes that are clearly low quality may be dropped
+  (e.g. Breakfast Sludge, Rice Milk, Eärgon Salsa, Nuked Nachos were swapped out).
+- Optional ingredients: an `optional` list per recipe, shown as "Optional: …"
+  (approved sketch). They never count as missing and don't decide labels.
+- Next candidates: `complete.json` from the Wikibooks download (885 complete recipes);
+  rated ones are used up, so pick by variety and completeness.
+
 ## Status
 - License confirmed on Wikibooks pages and the Hugging Face card: CC BY-SA 4.0.
 - Hugging Face files are served from `us.aws.cdn.hf.co` (not allowed), so recipes are

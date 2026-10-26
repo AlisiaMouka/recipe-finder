@@ -20,6 +20,15 @@ function find(typed, options = {}, recipes = RECIPES) {
   return findRecipes(recipes, typed, { ...noFilters, ...options });
 }
 
+// ---- Optional ingredients ----
+
+check("optional ingredients never count as missing, and never count as yours", () => {
+  const flatbread = fake("Flatbread", ["flour"], { optional: ["ghee"] });
+  const { results } = find(["flour", "ghee"], {}, [flatbread]);
+  assert.deepStrictEqual(results[0].missing, []);
+  assert.deepStrictEqual(results[0].have.map((h) => h.needed), ["flour"]);
+});
+
 // ---- Ranking (the cook's rule) ----
 
 check("rule 1: a recipe you can cook right now beats one that uses more of your ingredients", () => {

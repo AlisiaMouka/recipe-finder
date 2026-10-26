@@ -64,6 +64,16 @@ check('nothing on the "other foods" list is already a known ingredient', () => {
   assert.deepStrictEqual(doubles, [], `already known: ${doubles.join(", ")}`);
 });
 
+check("optional ingredients are written the app's way and aren't also listed as ingredients", () => {
+  for (const recipe of RECIPES) {
+    for (const item of recipe.optional || []) {
+      assert.strictEqual(cleanIngredient(item), item, `${recipe.name}: optional "${item}" should be written as "${cleanIngredient(item)}"`);
+      assert.ok(!recipe.ingredients.includes(item), `${recipe.name}: "${item}" is both an ingredient and optional`);
+    }
+  }
+  assert.ok(RECIPES.some((recipe) => (recipe.optional || []).length > 0), "no recipe has optional ingredients");
+});
+
 check("no two recipes have the same name", () => {
   const names = RECIPES.map((recipe) => recipe.name);
   assert.strictEqual(new Set(names).size, names.length);

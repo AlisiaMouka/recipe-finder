@@ -25,9 +25,8 @@
   "Leave out", A to Z, with each card listing its ingredients.
 - Each result shows which ingredients you're missing.
 - Each recipe has 3–15 cooking steps, folded away behind "Show steps ▾".
-- Optional ingredients aren't listed as ingredients: the steps mention them as
-  optional, and they don't decide labels or allergens (e.g. Chapati with optional
-  ghee is vegan).
+- Optional ingredients are shown in a grey "Optional: …" line. They never count as
+  missing and don't decide labels or allergens (e.g. Chapati with optional ghee is vegan).
 - "Sort by" menu (sorting reorders, it doesn't hide). Ties fall back to the default.
   - Browsing (nothing typed): A to Z (default), Quickest, Cheapest.
   - Ingredients typed: Buy Less (default), Use Most, Quickest, Cheapest.
