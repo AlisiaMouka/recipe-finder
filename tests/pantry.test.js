@@ -163,10 +163,10 @@ check("every recipe from Wikibooks names its source, links its page, and says CC
   assert.ok(imported.length >= 150, `only ${imported.length} imported recipes`);
 });
 
-check("other names point to a name the app knows", () => {
-  const known = new Set([...RECIPES.flatMap((r) => r.ingredients), ...Object.values(FAMILIES).flat()]);
+check(`other names point to a name the app knows (an ingredient, or a food on the "other foods" list)`, () => {
+  const known = new Set([...RECIPES.flatMap((r) => r.ingredients), ...Object.values(FAMILIES).flat(), ...OTHER_FOODS]);
   for (const [other, name] of Object.entries(OTHER_NAMES)) {
-    assert.ok(known.has(name), `"${other}" points to "${name}", which isn't a known ingredient`);
+    assert.ok(known.has(name), `"${other}" points to "${name}", which isn't a known food`);
   }
 });
 

@@ -192,7 +192,7 @@ check('a card shows "cheddar (as cheese)"', async () => {
   await openPage();
   await add("have", "cheddar, egg");
   const cardText = await page.$$eval(".card", (cards) =>
-    cards.find((c) => c.querySelector("h2").textContent === "Spinach & Cheese Omelette").innerText);
+    cards.find((c) => c.querySelector("h2").textContent === "Zucchini Pasta Bake").innerText);
   assert.ok(cardText.includes("cheddar (as cheese)"), cardText);
 });
 
@@ -210,7 +210,7 @@ check("other names show discreetly in suggestions (garbanzo → chickpea)", asyn
 check('"Show steps" unfolds the numbered cooking steps, and "Hide steps" folds them away', async () => {
   await openPage();
   await add("have", "potato, egg, onion");
-  const card = page.locator(".card", { hasText: "Spanish Tortilla" });
+  const card = page.locator(".card", { has: page.locator("h2", { hasText: "Latino Scramble" }) });
   assert.ok(!(await card.locator(".steps li").first().isVisible()), "steps should start folded");
   await card.getByText("Show steps").click();
   assert.ok(await card.locator(".steps li").first().isVisible(), "steps should unfold");
@@ -259,7 +259,7 @@ check("on a phone, the buttons come after Leave out, with no sideways scrolling"
 check("on a phone, unfolded steps use (almost) the full card width", async () => {
   await openPage(390);
   await add("have", "potato, egg, onion");
-  const card = page.locator(".card", { hasText: "Spanish Tortilla" });
+  const card = page.locator(".card", { has: page.locator("h2", { hasText: "Latino Scramble" }) });
   await card.getByText("Show steps").click();
   const cardBox = await card.boundingBox();
   const stepsBox = await card.locator(".steps ol").boundingBox();
@@ -339,23 +339,31 @@ check("every picture on the page actually loads (no broken images)", async () =>
   assert.deepStrictEqual(broken, []);
 });
 
-check(`an imported recipe shows "From Wikibooks Cookbook · CC BY-SA 4.0", linked; our own recipes don't`, async () => {
+check(`a recipe card shows "From Wikibooks Cookbook · CC BY-SA 4.0", linked, and every card has a credit line`, async () => {
   await openPage();
   const pralin = page.locator(".card", { has: page.locator("h2", { hasText: "Pralin" }) });
   const credit = pralin.locator(".source");
   assert.strictEqual((await credit.textContent()).trim(), "From Wikibooks Cookbook · CC BY-SA 4.0");
   assert.strictEqual(await credit.locator("a").first().getAttribute("href"), "https://en.wikibooks.org/wiki/Cookbook:Pralin");
   assert.strictEqual(await credit.locator("a").nth(1).getAttribute("href"), "https://creativecommons.org/licenses/by-sa/4.0/");
-  const ours = page.locator(".card", { has: page.locator("h2", { hasText: "Greek Salad" }) });
-  assert.strictEqual(await ours.locator(".source").count(), 0);
+  const cards = await page.locator(".card").count();
+  assert.ok(cards >= 150, `only ${cards} cards shown`);
+  assert.strictEqual(await page.locator(".card .source").count(), cards, "some cards have no credit line");
+});
+
+check("the credit line is the last thing on a card, under the cooking steps", async () => {
+  await openPage();
+  const lastOnCards = await page.$$eval(".card .card-body", (bodies) =>
+    [...new Set(bodies.map((body) => body.lastElementChild.className))]);
+  assert.deepStrictEqual(lastOnCards, ["source"]);
 });
 
 check('a recipe with optional ingredients shows "Optional: …" under its ingredients', async () => {
   await openPage();
   const chapati = page.locator(".card", { has: page.locator("h2", { hasText: "Chapati" }) });
   assert.strictEqual((await chapati.locator(".optional").textContent()).trim(), "Optional: ghee");
-  const ours = page.locator(".card", { has: page.locator("h2", { hasText: "Greek Salad" }) });
-  assert.strictEqual(await ours.locator(".optional").count(), 0);
+  const without = page.locator(".card", { has: page.locator("h2", { hasText: "Shortbread" }) });
+  assert.strictEqual(await without.locator(".optional").count(), 0);
 });
 
 check("no errors happen on the page during any of these checks", async () => {

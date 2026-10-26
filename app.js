@@ -357,13 +357,13 @@ function recipeCard({ recipe, labels, have, missing }) {
       <div class="card-body">
         <h2>${escapeText(recipe.name)}</h2>
         <p class="facts">${facts.join(" · ")}</p>
-        ${sourceLine(recipe)}
         ${ingredientLines}
         ${optional}
         <details class="steps">
           <summary><span class="when-closed">Show steps ▾</span><span class="when-open">Hide steps ▴</span></summary>
           <ol>${recipe.steps.map((step) => `<li>${escapeText(step)}</li>`).join("")}</ol>
         </details>
+        ${sourceLine(recipe)}
       </div>
     </article>`;
 }

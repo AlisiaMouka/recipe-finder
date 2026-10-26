@@ -51,9 +51,9 @@ check("rule 3: a recipe that uses none of your ingredients doesn't appear", () =
 });
 
 check("each result lists what you're missing", () => {
-  const { results } = find(["egg", "cheese", "spinach"]);
-  const omelette = results.find((r) => r.recipe.name === "Spinach & Cheese Omelette");
-  assert.deepStrictEqual(omelette.missing, ["butter"]);
+  const omelette = fake("Spinach & Cheese Omelette", ["egg", "cheese", "spinach", "butter"]);
+  const { results } = find(["egg", "cheese", "spinach"], {}, [omelette]);
+  assert.deepStrictEqual(results[0].missing, ["butter"]);
 });
 
 // ---- Browsing (no ingredients typed) ----
@@ -180,7 +180,11 @@ check('other names work ("zucchinis" = courgette, "garbanzo beans" = chickpea)',
 // ---- Filters ----
 
 check("Vegetarian hides recipes with meat", () => {
-  const { results } = find(["chicken", "rice"], { diets: ["vegetarian"] });
+  const recipes = [
+    fake("Chicken Fried Rice", ["chicken", "rice"]),
+    fake("Vegetable Fried Rice", ["rice", "pea"], { diet: ["vegetarian"] }),
+  ];
+  const { results } = find(["chicken", "rice"], { diets: ["vegetarian"] }, recipes);
   assert.ok(!namesOf(results).includes("Chicken Fried Rice"));
   assert.ok(namesOf(results).includes("Vegetable Fried Rice"), "rice recipes should still show");
 });
@@ -213,16 +217,22 @@ check('an unknown ingredient gets a note ("We don\'t have any recipes with pizza
 // ---- Leave out ----
 
 check("Leave out hides recipes containing that ingredient", () => {
-  const { results } = find(["rice"], { leaveOut: ["mushroom"] });
+  const recipes = [fake("Mushroom Risotto", ["rice", "mushroom"]), fake("Vegetable Fried Rice", ["rice", "pea"])];
+  const { results } = find(["rice"], { leaveOut: ["mushroom"] }, recipes);
   assert.ok(!namesOf(results).includes("Mushroom Risotto"));
   assert.ok(namesOf(results).includes("Vegetable Fried Rice"));
 });
 
 check('a family in Leave out hides every member ("cheese" hides parmesan, feta, mozzarella)', () => {
-  const { results } = find(["tomato"], { leaveOut: ["cheese"] });
-  for (const name of ["Tomato Basil Pasta", "Greek Salad", "Caprese Toast", "Beef Tacos"]) {
-    assert.ok(!namesOf(results).includes(name), `${name} should be hidden`);
-  }
+  const recipes = [
+    fake("Tomato Basil Pasta", ["tomato", "parmesan"]),
+    fake("Greek Salad", ["tomato", "feta"]),
+    fake("Caprese Toast", ["tomato", "mozzarella"]),
+    fake("Beef Tacos", ["tomato", "cheese"]),
+    fake("Tomato Soup", ["tomato", "onion"]),
+  ];
+  const { results } = find(["tomato"], { leaveOut: ["cheese"] }, recipes);
+  assert.deepStrictEqual(namesOf(results), ["Tomato Soup"]);
 });
 
 check('leaving out "meat" also hides chicken stock (it is in two families)', () => {
@@ -241,15 +251,15 @@ check('leaving out "fish" also hides oysters and smoked salmon', () => {
 // ---- Families ----
 
 check('a specific ingredient counts for its family: cheddar works for "cheese"', () => {
-  const { results } = find(["cheddar", "egg"]);
-  const omelette = results.find((r) => r.recipe.name === "Spinach & Cheese Omelette");
-  assert.ok(omelette.have.some((h) => h.needed === "cheese" && h.using === "cheddar"));
+  const omelette = fake("Spinach & Cheese Omelette", ["egg", "cheese", "spinach", "butter"]);
+  const { results } = find(["cheddar", "egg"], {}, [omelette]);
+  assert.ok(results[0].have.some((h) => h.needed === "cheese" && h.using === "cheddar"));
 });
 
 check('a family does NOT count for a specific ingredient: "cheese" doesn\'t match parmesan', () => {
-  const { results } = find(["cheese", "rice"]);
-  const risotto = results.find((r) => r.recipe.name === "Mushroom Risotto");
-  assert.ok(risotto.missing.includes("parmesan"));
+  const risotto = fake("Mushroom Risotto", ["rice", "mushroom", "parmesan"]);
+  const { results } = find(["cheese", "rice"], {}, [risotto]);
+  assert.ok(results[0].missing.includes("parmesan"));
 });
 
 check('typing a family name explains it only matches recipes asking for "any" of it', () => {

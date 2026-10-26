@@ -8,7 +8,7 @@ Type what's in your kitchen and find something you can cook tonight.
 
 ## What it does
 
-- **200 recipes** from 50 cuisines, from Japanese Daifuku to Colombian bean stew, each with
+- **150 recipes** from 47 cuisines, from Japanese Daifuku to Colombian bean stew, each with
   cooking steps.
 - **I have:** type your ingredients (with suggestions as you go), and the recipes you can
   cook with the fewest extra purchases come first. Each card shows what you have and
@@ -57,11 +57,10 @@ every pull request.
 
 ## Recipe sources and licenses
 
-- Recipes marked **"From Wikibooks Cookbook"** are adapted from the
-  [Wikibooks Cookbook](https://en.wikibooks.org/wiki/Cookbook:Table_of_Contents) and
-  shared under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Each card
-  links to its original page. You're welcome to reuse them under the same license.
-- The other recipes were written for this project.
+All recipes are adapted from the
+[Wikibooks Cookbook](https://en.wikibooks.org/wiki/Cookbook:Table_of_Contents) and shared
+under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Each card links to its
+original page. You're welcome to reuse them under the same license.
 
 ## Plans
 

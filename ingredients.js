@@ -51,7 +51,7 @@ const OTHER_NAMES = {
 const OTHER_FOODS = [
   "anchovy", "apricot", "artichoke", "arugula", "barley", "bay leaf", "blackberry",
   "blueberry", "brie", "buttermilk", "camembert", "cashew", "chard", "cherry",
-  "chia seed", "chive", "clam", "couscous", "crab", "date", "duck", "fennel", "fig",
+  "chickpea", "chia seed", "chive", "clam", "couscous", "crab", "date", "duck", "fennel", "fig",
   "flaxseed", "gelatin", "grape", "grapefruit", "haddock", "halloumi", "hazelnut",
   "hummus", "kale", "kiwi", "lobster", "mackerel", "mango", "maple syrup", "mascarpone",
   "melon", "mince", "miso", "mussel", "nectarine", "nutella", "oatmeal", "octopus",
