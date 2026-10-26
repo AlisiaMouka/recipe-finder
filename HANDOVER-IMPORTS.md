@@ -11,6 +11,18 @@ Add **150 recipes** from two free sources, so the app has 200 in total:
   Skip any recipe credited to an outside contributor or organization.
 
 ## Decisions already made
+- **Selection:** any recipe with servings, time, an ingredient list and steps is welcome,
+  including sauces, dressings, drinks and basics, long ingredient lists, and dishes we
+  already have. Best Wikibooks ratings first.
+- **Same name as one of our recipes: the imported one replaces ours.**
+- **Long-term plan: remove all 50 of our own recipes once the 150 imports are in.**
+  That is a separate, later step with its own draft and the owner's OK. Then rewrite
+  checks that mention our recipes by name to use made-up test recipes (explain this in
+  the draft; it's a deliberate change, not weakening checks), and retake the README
+  screenshot. Every import must therefore carry complete information (labels,
+  allergens, price, time, servings, steps), or filters and sorting stop working.
+- **Credit line approved** (sketch shown): "From Wikibooks Cookbook · CC BY-SA 4.0",
+  both linked, in small grey text under the facts line. Our own recipes get none.
 - **Credit on each imported card**, linked to the original page, e.g.
   "From Wikibooks Cookbook · CC BY-SA 4.0" or "From USDA MyPlate Kitchen". Sketch it first.
 - **Share-alike:** adapted Wikibooks recipes stay CC BY-SA 4.0. Add a short note to the README.
@@ -24,6 +36,13 @@ Add **150 recipes** from two free sources, so the app has 200 in total:
   labels) and add it only after their OK.
 - New ingredients that come with imported recipes must be **removed from `OTHER_FOODS`**
   in `ingredients.js` (a pantry check will flag doubles), and may belong in a family.
+
+## Status
+- License confirmed on Wikibooks pages and the Hugging Face card: CC BY-SA 4.0.
+- Hugging Face files are served from `us.aws.cdn.hf.co` (not allowed), so recipes are
+  fetched from the Wikibooks API instead (`en.wikibooks.org/w/api.php`, category
+  "Recipes", namespace 102, 50 per request). Wikibooks answers "429" often: wait as asked.
+- MyPlate (`www.myplate.gov`) is still blocked. Do Wikibooks first.
 
 ## Network (set by the owner in the environment settings)
 Allowed: `huggingface.co`, `cdn-lfs.huggingface.co`, `cas-bridge.xethub.hf.co`,
