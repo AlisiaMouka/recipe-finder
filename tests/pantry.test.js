@@ -64,6 +64,14 @@ check('nothing on the "other foods" list is already a known ingredient', () => {
   assert.deepStrictEqual(doubles, [], `already known: ${doubles.join(", ")}`);
 });
 
+check(`no two foods are glued together on the "other foods" list (like "bay leaf nutmeg")`, () => {
+  const known = new Set([...allIngredients(RECIPES), ...OTHER_FOODS]);
+  for (const food of OTHER_FOODS.filter((food) => food.includes(" "))) {
+    const glued = food.split(" ").filter((word) => known.has(word));
+    assert.deepStrictEqual(glued, [], `"${food}" looks like two foods stuck together`);
+  }
+});
+
 check("optional ingredients are written the app's way and aren't also listed as ingredients", () => {
   for (const recipe of RECIPES) {
     for (const item of recipe.optional || []) {
@@ -152,7 +160,7 @@ check("every recipe from Wikibooks names its source, links its page, and says CC
     assert.strictEqual(license, "CC BY-SA 4.0", recipe.name);
     assert.strictEqual(licenseUrl, "https://creativecommons.org/licenses/by-sa/4.0/", recipe.name);
   }
-  assert.ok(imported.length >= 25, `only ${imported.length} imported recipes`);
+  assert.ok(imported.length >= 150, `only ${imported.length} imported recipes`);
 });
 
 check("other names point to a name the app knows", () => {

@@ -231,6 +231,13 @@ check('leaving out "meat" also hides chicken stock (it is in two families)', () 
   assert.deepStrictEqual(namesOf(results), []);
 });
 
+check('leaving out "fish" also hides oysters and smoked salmon', () => {
+  const oysters = fake("Oyster Toast", ["oyster", "bread"]);
+  const bagel = fake("Salmon Bagel", ["smoked salmon", "bread"]);
+  const { results } = find(["bread"], { leaveOut: ["fish"] }, [oysters, bagel]);
+  assert.deepStrictEqual(namesOf(results), []);
+});
+
 // ---- Families ----
 
 check('a specific ingredient counts for its family: cheddar works for "cheese"', () => {
