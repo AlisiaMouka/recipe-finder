@@ -362,8 +362,8 @@ function recipeCard({ recipe, labels, have, missing }) {
         <details class="steps">
           <summary><span class="when-closed">Show steps ▾</span><span class="when-open">Hide steps ▴</span></summary>
           <ol>${recipe.steps.map((step) => `<li>${escapeText(step)}</li>`).join("")}</ol>
+          ${sourceLine(recipe)}
         </details>
-        ${sourceLine(recipe)}
       </div>
     </article>`;
 }
