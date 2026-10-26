@@ -39,6 +39,8 @@
 - Typos: a word we don't know but that is close to a known ingredient (up to 5
   letters: 1 letter change; longer: 2) is suggested while typing ("did you mean?"),
   and pressing Enter asks "Did you mean tomato?" with Yes / No. Never fixed silently.
+  Real foods are never questioned: ingredients from our recipes, plus a list of
+  other foods in `ingredients.js` (`OTHER_FOODS`, e.g. pear, kale, quinoa).
 - If a filter makes one of your ingredients unusable, say so
   (e.g. "Chicken was ignored because Vegetarian is on").
 

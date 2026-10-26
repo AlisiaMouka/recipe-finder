@@ -8,7 +8,7 @@ function cleanIngredient(text) {
   let word = text.trim().toLowerCase().replace(/\s+/g, " ");
   if (word.endsWith("ies")) word = word.slice(0, -3) + "y"; // strawberries -> strawberry
   else if (word.endsWith("oes")) word = word.slice(0, -2); // tomatoes -> tomato
-  else if (word.endsWith("s") && !word.endsWith("ss")) word = word.slice(0, -1); // eggs -> egg
+  else if (word.endsWith("s") && !word.endsWith("ss") && !word.endsWith("us")) word = word.slice(0, -1); // eggs -> egg (not couscous)
   return OTHER_NAMES[word] || word;
 }
 
@@ -42,10 +42,11 @@ function letterChanges(a, b) {
 
 // The known ingredient a typo most likely meant, or null.
 // "Close" means: words of up to 5 letters may be 1 change away, longer words 2.
-// Known words (and words close to nothing) get null.
+// Real foods (known ingredients, or on the OTHER_FOODS list) and words close
+// to nothing get null.
 function closestIngredient(word, recipes) {
   const known = allIngredients(recipes);
-  if (known.includes(word)) return null;
+  if (known.includes(word) || OTHER_FOODS.includes(word)) return null;
   const allowed = word.length <= 5 ? 1 : 2;
   let best = null;
   let bestChanges = allowed + 1;

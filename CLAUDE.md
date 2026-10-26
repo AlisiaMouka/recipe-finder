@@ -28,7 +28,7 @@ This project belongs to someone learning to build apps with AI agents.
 |---|---|
 | `recipes.js` | The pantry: recipe information only, no logic |
 | `images/illustrations/` | The 18 food drawings shown on recipe cards |
-| `ingredients.js` | The reference book: ingredient families and other names |
+| `ingredients.js` | The reference book: ingredient families, other names, other real foods |
 | `matcher.js` | The cook: picks and ranks recipes; knows nothing about the page |
 | `app.js` | The waiter: connects the page to the cook |
 | `index.html`, `style.css` | The dining room: what the page looks like |

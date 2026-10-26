@@ -143,8 +143,9 @@ check("words that aren't close to anything get no guess (pizza, chocolate bar)",
   assert.strictEqual(closestIngredient("chocolate bar", RECIPES), null);
 });
 
-check('"pear" stays "pear" (pear is not a typo of pea)', () => {
+check('real foods are never questioned, even when they\'re close to another one ("pear" isn\'t questioned as "pea")', () => {
   assert.strictEqual(closestIngredient("pear", RECIPES), null);
+  assert.strictEqual(closestIngredient("kale", RECIPES), null);
 });
 
 // ---- Typing style ----
@@ -152,6 +153,10 @@ check('"pear" stays "pear" (pear is not a typo of pea)', () => {
 check('capitals, spaces and plurals don\'t matter ("  Tomatoes " = "tomato")', () => {
   assert.strictEqual(cleanIngredient("  Tomatoes "), "tomato");
   assert.strictEqual(cleanIngredient("Eggs"), "egg");
+});
+
+check('words ending in "-us" aren\'t plurals (couscous, asparagus, hummus stay whole)', () => {
+  for (const word of ["couscous", "asparagus", "hummus"]) assert.strictEqual(cleanIngredient(word), word);
 });
 
 check('"-ies" plurals work too ("strawberries" = "strawberry")', () => {
