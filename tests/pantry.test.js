@@ -3,7 +3,10 @@
 // These catch typos when someone adds or edits a recipe.
 
 const { check, loadCook, runChecks, assert } = require("./checker");
+const fs = require("fs");
+const path = require("path");
 const { RECIPES, FAMILIES, OTHER_NAMES, cleanIngredient } = loadCook();
+const ROOT = path.join(__dirname, "..");
 
 const DIET_LABELS = ["vegetarian", "vegan", "gluten-free"];
 const ALLERGENS = ["gluten", "dairy", "egg", "soy", "peanut", "fish", "shellfish", "sesame"];
@@ -38,6 +41,14 @@ check("every ingredient is mentioned in the cooking steps", () => {
       const mentioned = new RegExp(`\\b(${item}|${item}es|${plural})\\b`).test(text);
       assert.ok(mentioned, `${recipe.name}: the steps never mention "${item}"`);
     }
+  }
+});
+
+check("every recipe has a drawing, and that drawing exists in images/illustrations", () => {
+  for (const recipe of RECIPES) {
+    assert.ok(recipe.illustration, `${recipe.name} has no illustration`);
+    const file = path.join(ROOT, "images", "illustrations", `${recipe.illustration}.svg`);
+    assert.ok(fs.existsSync(file), `${recipe.name}: there is no drawing called "${recipe.illustration}"`);
   }
 });
 
