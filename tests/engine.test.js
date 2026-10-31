@@ -166,6 +166,26 @@ test('quantified recipe servings scale precisely',()=>{
   assert.equal(a.hasQuantities,true);
   assert.deepEqual(E.servingAmounts(a,3).map(r=>r.amount),[225,1.5]);
 });
+test('shown amounts are rounded as little as possible: grams and ml whole, spoons and cups one decimal, items to halves',()=>{
+  assert.equal(E.roundAmount(291.667,'g'),292);
+  assert.equal(E.roundAmount(466.667,'ml'),467);
+  assert.equal(E.roundAmount(0.42,'g'),0.4,'tiny weights are not rounded away');
+  assert.equal(E.roundAmount(1.167,'tsp'),1.2);
+  assert.equal(E.roundAmount(0.583,'cup'),0.6);
+  assert.equal(E.roundAmount(0.125,'tsp'),0.125,'kitchen fractions such as ⅛ stay exact');
+  assert.equal(E.roundAmount(0.75,'cup'),0.75,'kitchen fractions such as ¾ stay exact');
+  assert.equal(E.roundAmount(2.333,'whole'),2.5);
+  assert.equal(E.roundAmount(1.167,'whole'),1);
+  assert.equal(E.roundAmount(0.2,'clove'),0.5,'an item is never rounded down to nothing');
+});
+test('scaled method amounts are shown rounded, while the exact amounts stay inside the app',()=>{
+  const a=recipe('Banoffee test',['biscuit','banana'],{servings:6,amounts:[{ingredient:'biscuit',amount:250,unit:'g'},{ingredient:'banana',amount:2,unit:'whole'}],steps:['Crush 250 g biscuits and add 2 tablespoons butter.']});
+  const seven=E.scaledSteps(a,7)[0];
+  assert.match(seven,/292 g biscuits/);
+  assert.match(seven,/2\.3 tablespoons butter/);
+  assert.equal(E.servingAmounts(a,7)[0].amount,291.667,'the exact amount is kept for further scaling');
+  assert.deepEqual(E.servingAmounts(a,6).map(r=>r.amount),[250,2],'back to 6 servings gives the source amounts');
+});
 test('scaled method measurements use servings but leave time, heat, dimensions and counts alone',()=>{
   const a=recipe('Couscous',['couscous'],{servings:2,amounts:[{ingredient:'couscous',amount:120,unit:'g'}],steps:['Pour over 180 ml boiling water and leave for 5 minutes. Add 2 tablespoons lemon juice and 2–3 tablespoons water. Heat to 200°C. Cut into 2 cm pieces. Make 4 wells.']});
   assert.deepEqual(E.scaledSteps(a,2),a.steps);

@@ -270,6 +270,24 @@ export async function runRecipeBrowserChecks(tab) {
     await click('[data-close-recipe]');
   });
 
+  await check('Scaled amounts are shown rounded as little as possible (292 g, 2.5 bananas)', async () => {
+    await click('.nav-link[data-view="discover"]');
+    await fill('#recipe-query', 'Banoffee Pie');
+    await click('#recipe-grid [data-recipe="banoffee-pie"]');
+    let ui = await read();
+    assert.equal(ui.servings, 6);
+    assert.equal(ui.amounts.find(row => row.ingredient === 'biscuit').amount, '250');
+    await click('[data-servings="1"]');
+    ui = await read();
+    assert.equal(ui.servings, 7);
+    assert.equal(ui.amounts.find(row => row.ingredient === 'biscuit').amount, '292');
+    assert.equal(ui.amounts.find(row => row.ingredient === 'banana').amount, '2.5');
+    await click('[data-servings="-1"]');
+    assert.equal((await read()).amounts.find(row => row.ingredient === 'biscuit').amount, '250', 'Back to 6 servings gives the source amount');
+    await click('[data-close-recipe]');
+    await fill('#recipe-query', '');
+  });
+
   await check('Wednesday planning preserves servings and edits one meal instead of duplicating it', async () => {
     await click('.nav-link[data-view="plan"]');
     await click('[data-plan-day="Wednesday"]');

@@ -319,6 +319,18 @@
       return {ingredient,amount,unit:amount===null?'':String(row.unit||''),note:row?String(row.note||''):'',basis:row?String(row.basis||''):''};
     });
   }
+  // How an amount is SHOWN, rounded as little as possible (owner's rule). The exact
+  // number stays inside the app, so scaling back always returns the source amount.
+  // Grams and ml: whole numbers. Whole items: halves, never down to nothing.
+  // Spoons, cups and the rest: one decimal, but kitchen fractions (¼, ⅛, ¾) stay exact.
+  function roundAmount(value,unit) {
+    if(!Number.isFinite(value)) return value;
+    const u=String(unit||'').toLowerCase(), to=(v,step)=>Math.round(Math.round(v/step)*step*1000)/1000;
+    if(/^(?:g|grams?|ml|millilitres?|milliliters?)$/.test(u)) return value>=1 ? Math.round(value) : to(value,0.1)||value;
+    if(/^(?:whole|cloves?|slices?|stalks?|leaf|leaves|)$/.test(u)) return Math.max(0.5,to(value,0.5));
+    if(Number.isInteger(Math.round(value*8000)/1000)) return value;
+    return to(value,0.1)||value;
+  }
   function scaledSteps(recipe,servings) {
     const steps=Array.isArray(recipe.steps)?recipe.steps:[];
     const base=Number(recipe.servings), count=Number(servings);
@@ -331,7 +343,7 @@
       const component=text=>text.includes('/') ? text.split('/').map(Number).reduce((a,b)=>a/b) : Number(text);
       return parts.reduce((sum,part)=>sum+component(part),0);
     }
-    const formatted=value=>String(Math.round(value*ratio*1000)/1000);
+    const formatted=(value,unit)=>String(roundAmount(Math.round(value*ratio*1000)/1000,unit));
     return steps.map(step=>String(step).replace(measure,(match,prefix,first,separator,last,space,unit,offset,whole)=>{
       const after=whole.slice(offset+match.length);
       // Per-item size, gradual additions and equipment capacities are process
@@ -339,10 +351,10 @@
       if(/^\s*(?:each\b|per\b|at a time\b|capacity\b)/i.test(after)) return match;
       const firstValue=number(first),lastValue=last?number(last):null;
       if(!Number.isFinite(firstValue)||lastValue!==null&&!Number.isFinite(lastValue)) return match;
-      const amount=formatted(firstValue)+(last?separator+formatted(lastValue):'');
+      const amount=formatted(firstValue,unit)+(last?separator+formatted(lastValue,unit):'');
       const lower=unit.toLowerCase(), singular=lower.replace(/s$/,'');
       if(/^(?:millilitre|litre|tablespoon|teaspoon|cup)$/.test(singular)) {
-        const isOne=Number(formatted(firstValue))===1&&(!last||Number(formatted(lastValue))===1);
+        const isOne=Number(formatted(firstValue,unit))===1&&(!last||Number(formatted(lastValue,unit))===1);
         unit=singular+(isOne?'':'s');
       }
       return prefix+amount+space+unit;
@@ -373,5 +385,5 @@
     }
     return [...rows.values()].sort((a,b)=>compareText(a.ingredient,b.ingredient)||compareText(a.basis,b.basis)||compareText(a.unit,b.unit));
   }
-  return {normalizeIngredient,parseIngredients,suggestions,buildCatalog,search,servingAmounts,scaledSteps,shoppingList,covers,coversRequirement,isExcluded,inferredAllergens,knownIngredients,isKnownIngredient,reindexCatalog,FAMILIES};
+  return {normalizeIngredient,parseIngredients,suggestions,buildCatalog,search,servingAmounts,roundAmount,scaledSteps,shoppingList,covers,coversRequirement,isExcluded,inferredAllergens,knownIngredients,isKnownIngredient,reindexCatalog,FAMILIES};
 });

@@ -140,32 +140,34 @@
       3800,
     );
   }
-  function amount(value) {
+  // Shown rounded as little as possible (the cook's roundAmount); exact inside.
+  function amount(value, unit) {
     return value == null
       ? ""
-      : (Math.round(value * 100) / 100).toLocaleString("en", {
-          maximumFractionDigits: 2,
+      : E.roundAmount(value, unit).toLocaleString("en", {
+          maximumFractionDigits: 3,
         });
   }
 
   function quantity(row) {
     if (row.amount == null) return "";
-    return `${amount(row.amount)} ${unitText(row)}`.trim();
+    return `${amount(row.amount, row.unit)} ${unitText(row)}`.trim();
   }
   function unitText(row) {
+    const shown = row.amount == null ? row.amount : E.roundAmount(row.amount, row.unit);
     const unit =
       row.unit === "whole"
         ? ""
         : row.unit === "dessert spoon"
           ? "dsp"
           : row.unit || "";
-    if (row.amount > 1 && unit === "leaf") return "leaves";
-    if (row.amount > 1 && unit === "pinch") return "pinches";
+    if (shown > 1 && unit === "leaf") return "leaves";
+    if (shown > 1 && unit === "pinch") return "pinches";
     return (
       unit +
       (["clove", "slice", "cup", "stalk", "tablespoon", "teaspoon"].includes(
         unit,
-      ) && row.amount > 1
+      ) && shown > 1
         ? "s"
         : "")
     );
@@ -682,7 +684,7 @@
     )
       .map(
         (row, i) =>
-          `<li><label><input type="checkbox" data-ingredient-check="${i}" ${ingredientChecks.has(i) ? "checked" : ""}><span class="ingredient-copy"><span class="ingredient-amount">${row.amount == null ? "—" : esc(amount(row.amount))}</span><span class="ingredient-unit">${esc(unitText(row))}</span><span class="ingredient-name">${esc(row.ingredient)}</span>${row.note ? `<small class="note">${esc(row.note)}</small>` : ""}</span>${match.have.some((h) => h.needed === row.ingredient) ? '<span class="have-mark">In pantry</span>' : ""}</label></li>`,
+          `<li><label><input type="checkbox" data-ingredient-check="${i}" ${ingredientChecks.has(i) ? "checked" : ""}><span class="ingredient-copy"><span class="ingredient-amount">${row.amount == null ? "—" : esc(amount(row.amount, row.unit))}</span><span class="ingredient-unit">${esc(unitText(row))}</span><span class="ingredient-name">${esc(row.ingredient)}</span>${row.note ? `<small class="note">${esc(row.note)}</small>` : ""}</span>${match.have.some((h) => h.needed === row.ingredient) ? '<span class="have-mark">In pantry</span>' : ""}</label></li>`,
       )
       .join(
         "",
