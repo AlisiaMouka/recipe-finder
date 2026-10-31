@@ -31,6 +31,7 @@
       cuisine: "",
       quantified: false,
       pageSize: 0,
+      extras: [],
       timer: null,
       session: null,
     };
@@ -96,6 +97,20 @@
     state.quantified = raw.quantified === true;
     // Recipes per page: 0 means "Fit screen". Anything else falls back to it.
     state.pageSize = [0, 6, 12, 24, 48].includes(raw.pageSize) ? raw.pageSize : 0;
+    // Shopping items added by hand (from a recipe or typed). Damaged entries are dropped.
+    const units = ["", "g", "kg", "ml", "l", "tbsp", "tsp", "cup", "whole", "clove", "slice", "stalk", "leaf", "pinch", "dessert spoon"];
+    const extraKeys = new Set();
+    state.extras = (Array.isArray(raw.extras) ? raw.extras : []).flatMap((x, i) => {
+      if (!x || typeof x !== "object") return [];
+      const ingredient = typeof x.ingredient === "string" ? x.ingredient.trim().slice(0, 100) : "";
+      const amount = x.amount === null ? null : Number(x.amount);
+      if (!ingredient || !units.includes(x.unit)) return [];
+      if (amount !== null && !(Number.isFinite(amount) && amount > 0 && amount <= 100000)) return [];
+      let key = typeof x.key === "string" && x.key && x.key.length < 100 ? x.key : "extra-" + i;
+      while (extraKeys.has(key)) key += "-" + i;
+      extraKeys.add(key);
+      return [{ key, ingredient, amount, unit: amount === null ? "" : x.unit, recipeId: ids.has(x.recipeId) ? x.recipeId : null }];
+    }).slice(0, 300);
     const t = raw.timer;
     if (
       t &&

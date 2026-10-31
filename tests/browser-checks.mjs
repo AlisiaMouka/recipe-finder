@@ -422,6 +422,38 @@ export async function runRecipeBrowserChecks(tab) {
     assert.equal((await read()).timerVisible, false);
   });
 
+  await check('Recipes add to the shopping list (all missing, or one at a time), and you can add your own items', async () => {
+    const count = async () => Number(await p.evaluate(() => document.querySelector('#shopping-count').textContent));
+    const before = await count();
+    if ((await read()).recipeOpen) await click('[data-close-recipe]');
+    await click('.nav-link[data-view="discover"]');
+    await addPantry('chicken, garlic');
+    await fill('#recipe-query', 'Chicken Gyros');
+    await click('#recipe-grid [data-recipe="chicken-gyros"]');
+    assert.match(await p.locator('[data-shop-missing]').textContent(), /Add 3 missing to shopping list/);
+    await click('[data-shop-missing]');
+    assert.equal(await count(), before + 3, 'paprika, olive oil and pita are added');
+    const onList = await p.evaluate(() => Array.from(document.querySelectorAll('[data-shop-add]'), b => b.textContent.trim()));
+    assert.deepEqual(onList, ['+ list', '✓ On list', '✓ On list', '+ list', '✓ On list'], onList.join(' | '));
+    await click('[data-shop-add="3"]');
+    assert.equal(await count(), before + 4, 'one ingredient can be added on its own, even one in the pantry');
+    await click('[data-shop-add="3"]');
+    assert.equal(await count(), before + 3, 'tapping again takes it back off the list');
+    await click('[data-close-recipe]');
+    await click('#shopping-button');
+    await fill('#shopping-add-input', '2 lemons');
+    await click('#shopping-add-form button[type="submit"]');
+    assert.equal(await count(), before + 4);
+    const added = await p.evaluate(() => Array.from(document.querySelectorAll('#shopping-extras li'), li => li.textContent.replace(/\s+/g, ' ').trim()));
+    assert.ok(added.some(text => /^2 lemon/.test(text)), added.join(' | '));
+    assert.ok(added.some(text => /paprika.*for Chicken Gyros/.test(text)), added.join(' | '));
+    while (await p.locator('[data-shop-remove]').count()) await click('[data-shop-remove] >> nth=0');
+    assert.equal(await count(), before, 'the ✕ buttons remove items');
+    await click('#shopping-dialog .close-button');
+    await fill('#recipe-query', '');
+    await click('#clear-pantry');
+  });
+
   await check('Cleanup clears the disposable kitchen through Settings', async () => {
     await reset();
     const ui = await read();

@@ -171,6 +171,15 @@ test('quantified recipe servings scale precisely',()=>{
   assert.equal(a.hasQuantities,true);
   assert.deepEqual(E.servingAmounts(a,3).map(r=>r.amount),[225,1.5]);
 });
+test('a typed shopping item keeps its amount and unit: "2 lemons", "500 g flour", "1.5 l milk", "kitchen paper"',()=>{
+  assert.deepEqual(E.parseShoppingItem('2 lemons'),{ingredient:'lemon',amount:2,unit:'whole'});
+  assert.deepEqual(E.parseShoppingItem('500 g flour'),{ingredient:'flour',amount:500,unit:'g'});
+  assert.deepEqual(E.parseShoppingItem('500g flour'),{ingredient:'flour',amount:500,unit:'g'});
+  assert.deepEqual(E.parseShoppingItem('1,5 l milk'),{ingredient:'milk',amount:1.5,unit:'l'});
+  assert.deepEqual(E.parseShoppingItem('2 tbsp honey'),{ingredient:'honey',amount:2,unit:'tbsp'});
+  assert.deepEqual(E.parseShoppingItem('kitchen paper'),{ingredient:'kitchen paper',amount:null,unit:''});
+  assert.equal(E.parseShoppingItem('   '),null,'an empty entry adds nothing');
+});
 test('shown amounts are rounded as little as possible: grams and ml whole, spoons and cups one decimal, items to halves',()=>{
   assert.equal(E.roundAmount(291.667,'g'),292);
   assert.equal(E.roundAmount(466.667,'ml'),467);

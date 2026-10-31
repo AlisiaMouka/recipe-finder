@@ -18,6 +18,10 @@ owner's approval. The README describes the features in detail. In short:
   Only measured recipes carry a label ("With amounts").
 - **Cookbook:** saved favourite recipes. **Meal plan:** a seven-day planner.
   **Shopping list:** what's missing for planned recipes, combined and downloadable.
+  You can also add to it directly: from a recipe ("Add 3 missing to shopping list",
+  or "+ list" on any single ingredient, even one in your pantry) and by typing an item
+  into the list ("milk", "2 lemons"). These show under "Added by you" with the recipe
+  they came from and an ✕ to remove them. Saved in the browser and in backups.
 - **Cooking:** serving controls (measured recipes only), step-by-step mode, a timer.
   Scaled amounts are shown rounded as little as possible (owner's rule): grams and
   ml to whole numbers, spoons and cups to one decimal (kitchen fractions like ⅛ stay

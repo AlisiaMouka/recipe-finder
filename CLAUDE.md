@@ -21,8 +21,8 @@ This project belongs to someone learning to build apps with AI agents.
 ## Checks (tests)
 - Run the checks **before** changing anything (to know it worked to begin with)
   and **after** (to catch anything you broke):
-  - `npm run check` (every script can be read) and `npm test` (84 checks).
-  - The 15 browser checks: start `PORT=8768 npm start`, then run
+  - `npm run check` (every script can be read) and `npm test` (86 checks).
+  - The 16 browser checks: start `PORT=8768 npm start`, then run
     `node tests/browser-runner.mjs http://127.0.0.1:8768` (needs Playwright).
 - Every new rule or feature gets a new check, with a plain-language name.
 - Never delete or weaken a check to make it pass. If a check is wrong, explain why and ask first.

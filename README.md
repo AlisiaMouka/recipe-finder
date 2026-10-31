@@ -26,7 +26,7 @@ Open **http://127.0.0.1:4173**. Press Ctrl+C in the terminal to stop the preview
 - Search dishes, ingredients and cuisines. Filter by time, dietary style, allergens, cuisine, extra purchases, or measured recipes.
 - Clear ingredient-name matching and missing lists; salt, pepper and water are assumed.
 - A locally saved cookbook independent of pantry matching, an editable seven-day meal planner, and export/restore backups from Kitchen settings.
-- Shopping lists that omit pantry ingredients, combine compatible units, preserve fresh/canned and cooked/dry distinctions, and download as text.
+- Shopping lists that omit pantry ingredients, combine compatible units, preserve fresh/canned and cooked/dry distinctions, and download as text. Add a recipe's missing ingredients (or single ones) from the recipe, or type your own items into the list.
 - Serving controls for measured recipes; measured amounts within the method scale too. Cooking times, temperatures, per-piece sizes and equipment capacities remain unchanged.
 - Step-by-step cooking, checklists, printable recipes, and a timer. Active servings, cooking step, checks and timer survive a reload; replacing a running timer requires an explicit choice.
 

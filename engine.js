@@ -75,6 +75,16 @@
     const list=String(text || '').replace(/^\s*(?:(?:i|we)\s+have(?:\s+got)?|(?:i|we)['’]ve\s+got)(?:\s*:\s*|\s+|$)/i,'');
     return unique(list.split(/[,;\r\n+]+|\s+(?:and|&)\s+/i).map(normalizeIngredient)).slice(0,100);
   }
+  // One item typed into the shopping list: "2 lemons", "500 g flour", "milk".
+  // Unlike the pantry, the shopping list keeps the amount and unit.
+  function parseShoppingItem(text) {
+    const value=String(text||'').trim().slice(0,100);
+    if(!value) return null;
+    const m=value.match(/^(\d+(?:[.,]\d+)?)\s*(g|kg|ml|l|tbsp|tsp|cups?)?\s+(.+)$/i)||value.match(/^(\d+(?:[.,]\d+)?)(g|kg|ml|l)\s*(.+)$/i);
+    if(!m) return {ingredient:normalizeIngredient(value)||value.toLowerCase(),amount:null,unit:''};
+    const amount=Number(m[1].replace(',','.')), unit=m[2]?m[2].toLowerCase().replace(/^cups$/,'cup'):'whole';
+    return {ingredient:normalizeIngredient(m[3])||m[3].toLowerCase(),amount:amount>0?amount:null,unit:amount>0?unit:''};
+  }
   function member(item,family,seen) {
     if(item===family) return true;
     seen=seen || new Set();
@@ -386,5 +396,5 @@
     }
     return [...rows.values()].sort((a,b)=>compareText(a.ingredient,b.ingredient)||compareText(a.basis,b.basis)||compareText(a.unit,b.unit));
   }
-  return {normalizeIngredient,parseIngredients,suggestions,buildCatalog,search,servingAmounts,roundAmount,scaledSteps,shoppingList,covers,coversRequirement,isExcluded,inferredAllergens,knownIngredients,isKnownIngredient,reindexCatalog,FAMILIES};
+  return {normalizeIngredient,parseIngredients,parseShoppingItem,suggestions,buildCatalog,search,servingAmounts,roundAmount,scaledSteps,shoppingList,covers,coversRequirement,isExcluded,inferredAllergens,knownIngredients,isKnownIngredient,reindexCatalog,FAMILIES};
 });

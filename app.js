@@ -269,6 +269,8 @@
       "data-exit-cook",
       "data-start-cook",
       "data-remove-plan",
+      "data-shop-add",
+      "data-shop-missing",
     ];
     for (const key of attrs)
       if (el.hasAttribute(key))
@@ -678,13 +680,13 @@
       `<button class="close-button" data-close-recipe aria-label="Close recipe">${icon("close")}</button><div class="detail-hero"><img class="detail-image" src="${art(r)}" alt="${esc((window.RECIPE_ART || {})[r.id]?.alt || `Illustration representing ${r.name}`)}"><div class="detail-heading"><p class="eyebrow">${esc(r.cuisine)} · ${r.quantitySource === "source-checked" ? "SOURCE-CHECKED AMOUNTS" : "RECIPE COLLECTION"}</p><h2 id="recipe-title">${esc(r.name)}</h2><p>${esc(r.description)}</p><div class="detail-meta"><span>${icon("clock")}${timeLabel(r.minutes)}</span><span>${icon("users")}${currentServings} serving${currentServings === 1 ? "" : "s"}</span><span>${icon("coin")}~€${(r.price / r.servings).toFixed(2)} / serving</span></div></div></div><div class="detail-actions"><button data-detail-save aria-pressed="${saved}">${icon("bookmark")}${saved ? "Saved" : "Save recipe"}</button><button data-plan-picker>${icon("calendar")}${planContext ? "Edit planned meal" : "Add to meal plan"}</button><button data-print>${icon("print")}Print</button><button class="primary" data-start-cook>${icon("play")}Start cooking</button></div><div class="plan-picker" id="plan-picker" hidden><label for="plan-day">Which day?</label><select id="plan-day">${days.map((d) => `<option ${d === (planContext?.day || pendingDay) ? "selected" : ""}>${d}</option>`).join("")}</select><button class="button primary" data-confirm-plan>${planContext ? "Update" : "Add"} ${r.hasQuantities ? currentServings : r.servings} servings</button></div>${cookStep < 0 ? detailBody(r, match) : cookBody(r)}<div class="source-note">${sourceHtml(r)}</div>`;
   }
   function detailBody(r, match) {
-    return `<div class="detail-body"><section class="detail-ingredients"><h3>Ingredients</h3><div class="serving-control"><button data-servings="-1" aria-label="Fewer servings" ${!r.hasQuantities || currentServings <= 1 ? "disabled" : ""}>${icon("minus")}</button><span><strong>${currentServings}</strong> serving${currentServings === 1 ? "" : "s"}</span><button data-servings="1" aria-label="More servings" ${!r.hasQuantities || currentServings >= 100 ? "disabled" : ""}>${icon("plus")}</button></div>${!r.hasQuantities ? `<p class="legacy-note">This original recipe lists ingredients without amounts. ${safeUrl(r.source?.url) ? `<a href="${esc(safeUrl(r.source.url))}" target="_blank" rel="noopener">Open the source for quantities</a>.` : ""} Serving scaling is unavailable.</p>` : '<p class="input-hint">Ingredients and measured method amounts scale with your servings. Times, temperatures and per-piece sizes stay the same; cook in batches when needed.</p>'}<ul class="ingredient-list">${E.servingAmounts(
+    return `<div class="detail-body"><section class="detail-ingredients"><h3>Ingredients</h3><div class="serving-control"><button data-servings="-1" aria-label="Fewer servings" ${!r.hasQuantities || currentServings <= 1 ? "disabled" : ""}>${icon("minus")}</button><span><strong>${currentServings}</strong> serving${currentServings === 1 ? "" : "s"}</span><button data-servings="1" aria-label="More servings" ${!r.hasQuantities || currentServings >= 100 ? "disabled" : ""}>${icon("plus")}</button></div>${!r.hasQuantities ? `<p class="legacy-note">This original recipe lists ingredients without amounts. ${safeUrl(r.source?.url) ? `<a href="${esc(safeUrl(r.source.url))}" target="_blank" rel="noopener">Open the source for quantities</a>.` : ""} Serving scaling is unavailable.</p>` : '<p class="input-hint">Ingredients and measured method amounts scale with your servings. Times, temperatures and per-piece sizes stay the same; cook in batches when needed.</p>'}${shopMissingButton(r, match)}<ul class="ingredient-list">${E.servingAmounts(
       r,
       currentServings,
     )
       .map(
         (row, i) =>
-          `<li><label><input type="checkbox" data-ingredient-check="${i}" ${ingredientChecks.has(i) ? "checked" : ""}><span class="ingredient-copy"><span class="ingredient-amount">${row.amount == null ? "—" : esc(amount(row.amount, row.unit))}</span><span class="ingredient-unit">${esc(unitText(row))}</span><span class="ingredient-name">${esc(row.ingredient)}</span>${row.note ? `<small class="note">${esc(row.note)}</small>` : ""}</span>${match.have.some((h) => h.needed === row.ingredient) ? '<span class="have-mark">In pantry</span>' : ""}</label></li>`,
+          `<li><label><input type="checkbox" data-ingredient-check="${i}" ${ingredientChecks.has(i) ? "checked" : ""}><span class="ingredient-copy"><span class="ingredient-amount">${row.amount == null ? "—" : esc(amount(row.amount, row.unit))}</span><span class="ingredient-unit">${esc(unitText(row))}</span><span class="ingredient-name">${esc(row.ingredient)}</span>${row.note ? `<small class="note">${esc(row.note)}</small>` : ""}</span>${match.have.some((h) => h.needed === row.ingredient) ? '<span class="have-mark">In pantry</span>' : ""}</label>${shopAddButton(r, row, i)}</li>`,
       )
       .join(
         "",
@@ -771,6 +773,34 @@
       ? `${total} meal${total === 1 ? "" : "s"} planned · ${state.plan.reduce((sum, p) => sum + p.servings, 0)} servings in all`
       : "Your week is a blank canvas.";
   }
+  // ---- Shopping items added by hand (from a recipe, or typed into the list) ----
+  function onList(r, ingredient) {
+    return state.extras.some((x) => x.recipeId === r.id && x.ingredient === ingredient);
+  }
+  function shopMissingButton(r, match) {
+    const missing = match.missing.filter((i) => !onList(r, i));
+    if (!match.missing.length) return "";
+    return missing.length
+      ? `<button class="shop-missing" data-shop-missing>${icon("bag")}Add ${missing.length} missing to shopping list</button>`
+      : `<p class="shop-missing done">${icon("bag")}Missing ingredients are on your shopping list</p>`;
+  }
+  function shopAddButton(r, row, i) {
+    const added = onList(r, row.ingredient);
+    return `<button class="shop-add ${added ? "added" : ""}" data-shop-add="${i}" aria-pressed="${added}" aria-label="${added ? "Remove" : "Add"} ${esc(row.ingredient)} ${added ? "from" : "to"} the shopping list">${added ? "✓ On list" : "+ list"}</button>`;
+  }
+  function addExtra(item) {
+    state.extras = [...state.extras, { key: "extra-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7), ...item }];
+  }
+  function extraFromRecipe(r, ingredient) {
+    const row = E.servingAmounts(r, currentServings).find((a) => a.ingredient === ingredient);
+    return { ingredient, amount: row?.amount ?? null, unit: row?.amount == null ? "" : row.unit, recipeId: r.id };
+  }
+  function extrasChanged(message) {
+    persist();
+    renderShopping();
+    renderDetail();
+    if (message) toast(message);
+  }
   function shoppingRows() {
     return E.shoppingList(
       state.plan.map((p) => ({ recipe: byId.get(p.id), servings: p.servings })),
@@ -780,17 +810,28 @@
   function shoppingKey(row) {
     return `${row.key || row.ingredient}|${row.unit}|${row.amount == null ? "unknown" : row.amount}`;
   }
+  function shoppingCounts() {
+    const keys = [...shoppingRows().map(shoppingKey), ...state.extras.map((x) => "extra|" + x.key)];
+    return { total: keys.length, left: keys.filter((k) => !state.checked.includes(k)).length };
+  }
+  function extraRow(x) {
+    const from = x.recipeId && byId.get(x.recipeId);
+    const key = "extra|" + x.key;
+    return `<li><label><input type="checkbox" data-shopping-key="${esc(key)}" ${state.checked.includes(key) ? "checked" : ""}><span><span class="shopping-name"><strong>${esc(quantity(x))}</strong> ${esc(x.ingredient)}</span>${from ? `<small>for ${esc(from.name)}</small>` : ""}</span></label><button class="shop-remove" data-shop-remove="${esc(x.key)}" aria-label="Remove ${esc(x.ingredient)} from the shopping list">${icon("close")}</button></li>`;
+  }
   function renderShopping() {
     const rows = shoppingRows(),
-      unchecked = rows.filter(
-        (row) => !state.checked.includes(shoppingKey(row)),
-      );
-    $("#shopping-count").textContent = unchecked.length;
-    $("#shopping-content").innerHTML = rows.length
-      ? `<p class="input-hint" style="margin-bottom:15px">${unchecked.length} item${unchecked.length === 1 ? "" : "s"} left · ${rows.length} in total</p><ul class="shopping-list">${rows.map((row) => `<li><label><input type="checkbox" data-shopping-key="${esc(shoppingKey(row))}" ${state.checked.includes(shoppingKey(row)) ? "checked" : ""}><span><span class="shopping-name"><strong>${esc(quantity(row))}</strong> ${esc(row.ingredient)}</span><small>${row.amount == null ? "Amount not supplied — check the original recipe. " : ""}${row.note ? esc(row.note) + " · " : ""}${esc(row.recipes.join(" · "))}</small></span></label></li>`).join("")}</ul>`
-      : `<div class="shopping-empty">${icon("bag")}<h3>${state.plan.length ? "Your pantry has every ingredient name." : "A little planning goes a long way."}</h3><p>${state.plan.length ? "Check the recipe amounts against what you have before cooking." : "Add a recipe to your meal planner and its missing ingredients will appear here."}</p><button class="button primary" data-shopping-discover>Explore recipes ${icon("arrow")}</button></div>`;
-    $("#download-shopping").disabled = rows.length === 0;
-    $("#uncheck-shopping").disabled = rows.length === 0;
+      counts = shoppingCounts(),
+      extras = state.extras;
+    $("#shopping-count").textContent = counts.left;
+    const planList = rows.length
+      ? `<ul class="shopping-list">${rows.map((row) => `<li><label><input type="checkbox" data-shopping-key="${esc(shoppingKey(row))}" ${state.checked.includes(shoppingKey(row)) ? "checked" : ""}><span><span class="shopping-name"><strong>${esc(quantity(row))}</strong> ${esc(row.ingredient)}</span><small>${row.amount == null ? "Amount not supplied — check the original recipe. " : ""}${row.note ? esc(row.note) + " · " : ""}${esc(row.recipes.join(" · "))}</small></span></label></li>`).join("")}</ul>`
+      : `<p class="input-hint">${state.plan.length ? "Your pantry has every ingredient name for your planned meals." : "Plan a recipe and its missing ingredients appear here."}</p>`;
+    $("#shopping-content").innerHTML = counts.total
+      ? `<p class="input-hint shopping-summary">${counts.left} item${counts.left === 1 ? "" : "s"} left · ${counts.total} in total</p>${extras.length ? `<p class="eyebrow shopping-section">Added by you · ${extras.length}</p><ul class="shopping-list" id="shopping-extras">${extras.map(extraRow).join("")}</ul>` : ""}<p class="eyebrow shopping-section">From your meal plan · ${rows.length}</p>${planList}`
+      : `<div class="shopping-empty">${icon("bag")}<h3>${state.plan.length ? "Your pantry has every ingredient name." : "A little planning goes a long way."}</h3><p>${state.plan.length ? "Check the recipe amounts against what you have before cooking." : "Add an item above, add a recipe's missing ingredients, or plan a meal."}</p><button class="button primary" data-shopping-discover>Explore recipes ${icon("arrow")}</button></div>`;
+    $("#download-shopping").disabled = counts.total === 0;
+    $("#uncheck-shopping").disabled = counts.total === 0;
   }
   function showDialog(selector) {
     const d = $(selector);
@@ -813,6 +854,7 @@
     const text = [
       "RECIPE FINDER — SHOPPING LIST",
       "",
+      ...(state.extras.length ? ["ADDED BY YOU", ...state.extras.map((x) => `${state.checked.includes("extra|" + x.key) ? "[x]" : "[ ]"} ${quantity(x)} ${x.ingredient}${x.recipeId && byId.get(x.recipeId) ? " (for " + byId.get(x.recipeId).name + ")" : ""}`.replace(/\s+/g, " ")), "", "FROM YOUR MEAL PLAN"] : []),
       ...rows.map(
         (row) =>
           `${state.checked.includes(shoppingKey(row)) ? "[x]" : "[ ]"} ${quantity(row)} ${row.ingredient}${row.note ? " (" + row.note + ")" : ""}${row.amount == null ? " (amount not supplied — check source)" : ""}`,
@@ -1112,6 +1154,29 @@
       $("#recipe-dialog").close();
       return;
     }
+    if (b.hasAttribute("data-shop-missing") && currentRecipe) {
+      const r = currentRecipe,
+        missing = resultFor(r).missing.filter((i) => !onList(r, i));
+      missing.forEach((i) => addExtra(extraFromRecipe(r, i)));
+      extrasChanged(`Added ${missing.length} item${missing.length === 1 ? "" : "s"} to your shopping list.`);
+      return;
+    }
+    if (b.hasAttribute("data-shop-add") && currentRecipe) {
+      const r = currentRecipe,
+        ingredient = r.ingredients[Number(b.dataset.shopAdd)];
+      if (!ingredient) return;
+      if (onList(r, ingredient)) state.extras = state.extras.filter((x) => !(x.recipeId === r.id && x.ingredient === ingredient));
+      else addExtra(extraFromRecipe(r, ingredient));
+      extrasChanged();
+      return;
+    }
+    if (b.hasAttribute("data-shop-remove")) {
+      state.extras = state.extras.filter((x) => x.key !== b.dataset.shopRemove);
+      extrasChanged();
+      const next = $("[data-shop-remove]") || $("#shopping-add-input");
+      if (next) next.focus();
+      return;
+    }
     if (b.hasAttribute("data-detail-save")) {
       toggleSaved(currentRecipe.id);
       return;
@@ -1315,13 +1380,11 @@
         ? [...new Set([...state.checked, key])]
         : state.checked.filter((k) => k !== key);
       persist();
-      const rows = shoppingRows();
-      $("#shopping-count").textContent = rows.filter(
-        (row) => !state.checked.includes(shoppingKey(row)),
-      ).length;
-      const summary = $("#shopping-content>.input-hint");
+      const counts = shoppingCounts();
+      $("#shopping-count").textContent = counts.left;
+      const summary = $("#shopping-content>.shopping-summary");
       if (summary)
-        summary.textContent = `${rows.filter((row) => !state.checked.includes(shoppingKey(row))).length} items left · ${rows.length} in total`;
+        summary.textContent = `${counts.left} item${counts.left === 1 ? "" : "s"} left · ${counts.total} in total`;
     }
   });
   $("#uncheck-shopping").addEventListener("click", () => {
@@ -1330,6 +1393,16 @@
     renderShopping();
   });
   $("#download-shopping").addEventListener("click", downloadList);
+  $("#shopping-add-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const item = E.parseShoppingItem($("#shopping-add-input").value);
+    if (!item) return;
+    addExtra({ ...item, recipeId: null });
+    $("#shopping-add-input").value = "";
+    persist();
+    renderShopping();
+    $("#shopping-add-input").focus();
+  });
   $("#about-button").addEventListener("click", () =>
     showDialog("#about-dialog"),
   );
