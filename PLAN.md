@@ -7,7 +7,9 @@ owner's approval. The README describes the features in detail. In short:
 - **Discover:** a pantry box (with quantities, other names and typo questions), a
   "leave out" list, search by dish, ingredient or cuisine, quick filters and a Filters
   panel (time, diet, allergens, cuisine, extra purchases, measured recipes), sorting,
-  and pages of results.
+  and pages of results. A discreet "Show" menu next to the page count picks how many
+  recipes a page shows: Fit screen (default), 6, 12, 24 or 48. The choice is
+  remembered in the browser.
 - **Cookbook:** saved favourite recipes. **Meal plan:** a seven-day planner.
   **Shopping list:** what's missing for planned recipes, combined and downloadable.
 - **Cooking:** serving controls (measured recipes only), step-by-step mode, a timer.
@@ -25,7 +27,6 @@ owner's approval. The README describes the features in detail. In short:
     Owner's rule: amounts come only from the source. If the source leaves any
     ingredient unmeasured, the recipe stays unmeasured (60 recipes; reasons in
     `docs/SOURCE-CHECKS.md`).
-    (`recipe-enhancements.js`, evidence in `docs/SOURCE-CHECKS.md`).
 - **Labels rule (changed in version 3):** optional ingredients now count for diet
   labels and allergens. Example: Chapati with optional ghee is no longer vegan. This
   is more cautious than before, and matches "hide too much rather than too little".

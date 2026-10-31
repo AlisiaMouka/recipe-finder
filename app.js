@@ -100,6 +100,8 @@
   const motion = () =>
     matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
   function pageCapacity() {
+    // The visitor's "Show" choice wins; 0 means "Fit screen".
+    if (state.pageSize) return state.pageSize;
     if (innerWidth <= 960) return 4;
     return (innerWidth >= 1200 ? 3 : 2) * (innerHeight < 820 ? 1 : 2);
   }
@@ -473,6 +475,8 @@
       .slice(page * pageSize, (page + 1) * pageSize)
       .map(card)
       .join("");
+    $("#page-size").value = state.pageSize ? String(state.pageSize) : "fit";
+    $("#recipe-grid").classList.toggle("chosen-size", state.pageSize > 0);
     $("#previous-page").disabled = page === 0;
     $("#next-page").disabled = page + 1 >= pages;
     $("#page-status").textContent = count
@@ -1284,6 +1288,11 @@
   );
   $("#recipe-query").addEventListener("input", (e) => {
     query = e.target.value.slice(0, 200);
+    updateResults(true);
+  });
+  $("#page-size").addEventListener("change", (e) => {
+    state.pageSize = e.target.value === "fit" ? 0 : Number(e.target.value);
+    persist();
     updateResults(true);
   });
   $("#sort-select").addEventListener("change", (e) => {

@@ -108,3 +108,16 @@ test("cooking progress restores scaled portions, plan context and checked items"
   state.session.cookStep = 500;
   assert.equal(S.validate(state, recipes).session, null);
 });
+test("the recipes-per-page choice survives reload, and unknown values fall back to Fit screen", () => {
+  assert.equal(S.defaults().pageSize, 0, "Fit screen (0) is the default");
+  for (const size of [0, 6, 12, 24, 48]) {
+    const state = S.defaults();
+    state.pageSize = size;
+    assert.equal(S.importBackup(S.backup(state), catalog).pageSize, size);
+  }
+  for (const odd of [5, -12, 1000, "12", null, 12.5]) {
+    const state = S.defaults();
+    state.pageSize = odd;
+    assert.equal(S.importBackup(S.backup(state), catalog).pageSize, 0, String(odd));
+  }
+});
