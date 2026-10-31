@@ -1,10 +1,10 @@
 MIT License — newly authored additions to this Recipe Finder edition (2026)
 
-Applies to the newly authored index.html, style.css, app.js, engine.js, hero.js,
+Applies to the newly authored index.html, style.css, app.js, engine.js,
 serve.js, kitchen-state.js, tests/*, scripts/generate-recipe-art.js,
 recipe-art.js, recipe-art-manifest.json, images/plates/*.svg and images/recipes/*.svg.
 Does not apply to the original recipe collection, recipe text, original code,
-third-party fonts, or the bundled Three.js library, which retain their own terms.
+or third-party fonts, which retain their own terms.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

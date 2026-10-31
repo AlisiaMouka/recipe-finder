@@ -4,21 +4,11 @@ All visual assets and fonts are local. The site makes no network requests for th
 
 ## Original illustrations
 
-`images/plates/*.svg` and the decorative scene in `hero.js` were created for this upgrade. They are stylized dish-category illustrations, not photographs of the individual recipes. Reuse and adapt under the **MIT license** in `LICENSE-ADDITIONS.txt`. Recipe text remains under CC BY-SA 4.0; this separate grant covers the new artwork and scene code.
+`images/plates/*.svg` were created for this upgrade. They are stylized dish-category illustrations, not photographs of the individual recipes. Reuse and adapt under the **MIT license** in `LICENSE-ADDITIONS.txt`. Recipe text remains under CC BY-SA 4.0; this separate grant covers the new artwork.
 
 `images/recipes/*.svg` contains 190 original recipe-specific artwork mappings: 159 dish illustrations and 31 labelled ingredient studies. `scripts/generate-recipe-art.js`, `recipe-art-manifest.json`, and the classic-script `recipe-art.js` mapping were authored for this edition. These new assets are covered by `LICENSE-ADDITIONS.txt` (MIT). Ingredient studies are identified in the mapping, image descriptions and recipe detail, rather than presented as photographs or exact finished dishes. All artwork is local; no external image service is used.
 
 The supplied project's original SVG drawings remain under `images/illustrations/` with their original provenance. Recipe attribution is preserved separately in each recipe record.
-
-## Three.js
-
-- Version: **0.160.1** (r160), locally bundled as `vendor/three.min.js`.
-- Project: https://github.com/mrdoob/three.js
-- Exact package source: https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.min.js
-- License: MIT; complete text is in `vendor/THREE-LICENSE.txt`.
-- The classic-script build is intentional so double-clicking `index.html` works without an HTTP server. It is used only for the decorative hero; all recipe functionality remains available without it.
-
-The scene is loaded only when requested. It caps device pixel ratio at 1.5, batches repeated vegetable geometry, uses a static contact shadow instead of a live shadow-map pass, and is idle when the pointer is not moving. Finite easing stops after pointer movement settles. Off-screen and hidden scenes do not render. Reduced-motion preferences keep a stationary scene; missing WebGL leaves the original illustration visible. `window.RecipeHero.destroy()` releases its renderer and geometry, and `init()` explicitly re-enables it. Recipe functionality never requires the 3D scene.
 
 ## Fonts
 

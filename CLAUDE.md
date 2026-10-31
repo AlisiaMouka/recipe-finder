@@ -21,7 +21,7 @@ This project belongs to someone learning to build apps with AI agents.
 ## Checks (tests)
 - Run the checks **before** changing anything (to know it worked to begin with)
   and **after** (to catch anything you broke):
-  - `npm run check` (every script can be read) and `npm test` (86 checks).
+  - `npm run check` (every script can be read) and `npm test` (83 checks).
   - The 14 browser checks: start `PORT=8768 npm start`, then run
     `node tests/browser-runner.mjs http://127.0.0.1:8768` (needs Playwright).
 - Every new rule or feature gets a new check, with a plain-language name.
@@ -39,7 +39,6 @@ This project belongs to someone learning to build apps with AI agents.
 | `app.js` | The waiter: connects the page to the cook |
 | `index.html`, `style.css`, `fonts/` | The dining room: what the page looks like |
 | `recipe-art.js`, `recipe-art-manifest.json`, `images/` | The drawings for each recipe |
-| `hero.js`, `vendor/three.min.js` | The optional 3D bowl (Three.js, official release) |
 | `serve.js` | Optional local preview server (only on your own computer) |
 | `tests/` | The checks |
 

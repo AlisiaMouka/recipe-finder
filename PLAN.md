@@ -19,7 +19,6 @@ owner's approval. The README describes the features in detail. In short:
   rounded; the exact numbers stay inside, so scaling back gives the source amount.
 - **Kitchen settings:** export and restore a backup. Everything is saved in the
   browser only; nothing is sent anywhere.
-- An optional 3D bowl (Three.js, bundled locally).
 
 ## Recipes
 - 190 recipes:
@@ -37,7 +36,9 @@ owner's approval. The README describes the features in detail. In short:
 - Food families: a specific ingredient counts for its family (parmesan covers
   "cheese"); a family never promises a specific ingredient.
 
-## Earlier decisions (version 1 and 2), kept for history
+## Earlier decisions, kept for history
+- The optional 3D bowl that came with version 3 was removed (owner's choice): its
+  movement was too subtle to notice. A check keeps it from coming back by accident.
 - Our own first 50 recipes were removed once the 150 Wikibooks recipes were in.
 - Live recipe services were ruled out: paid, no storing allowed, or they need a secret
   key a static site can't hide. Copying other websites' recipes isn't allowed;
