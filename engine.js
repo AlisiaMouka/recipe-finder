@@ -297,7 +297,8 @@
     const name=(a,b)=>compareText(a.recipe.name,b.recipe.name)||compareText(a.recipe.id,b.recipe.id)||a.order-b.order;
     const time=recipe=>Number.isFinite(recipe.minutes)&&recipe.minutes>=0?recipe.minutes:Infinity;
     const cost=recipe=>Number.isFinite(recipe.price)&&recipe.price>=0&&recipe.servings>0?recipe.price/recipe.servings:Infinity;
-    const pantryRank=(a,b)=>pantry.length?a.missing.length-b.missing.length||b.have.length-a.have.length:0;
+    // With a pantry: recipes using most of your ingredients first; ties go to fewer to buy (owner's rule).
+    const pantryRank=(a,b)=>pantry.length?b.have.length-a.have.length||a.missing.length-b.missing.length:0;
     const best=(a,b)=>(query.terms.length?b.relevance-a.relevance:0)||pantryRank(a,b)||Number(b.recipe.hasQuantities)-Number(a.recipe.hasQuantities)||time(a.recipe)-time(b.recipe)||name(a,b);
     const sorting={
       recommended:best,

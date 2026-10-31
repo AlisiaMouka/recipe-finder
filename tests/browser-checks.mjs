@@ -156,6 +156,33 @@ export async function runRecipeBrowserChecks(tab) {
     assert.deepEqual((await read()).cards, first.cards);
   });
 
+  await check('Results explain themselves: "You have 3 of 8", what to buy, most of your ingredients first', async () => {
+    await addPantry('chicken, rice, onion, garlic');
+    const ui = await p.evaluate(() => {
+      const cards = Array.from(document.querySelectorAll('.recipe-card'));
+      const first = cards[0], details = first.querySelector('.match-details');
+      return {
+        summaries: cards.map(card => card.querySelector('.match-summary')?.textContent.trim() || ''),
+        detailsVisible: !!details && details.getBoundingClientRect().height > 0 && getComputedStyle(details).display !== 'none',
+        details: details?.textContent.trim() || '',
+        badges: [...new Set(cards.map(card => card.querySelector('.card-badge')?.textContent.trim()).filter(Boolean))],
+        sorts: Array.from(document.querySelectorAll('#sort-select option'), option => option.value),
+        toastTop: document.querySelector('#toast').getBoundingClientRect().top,
+      };
+    });
+    assert.match(ui.summaries[0], /^You have 3 of \d+/, 'The first result uses 3 of your 4 ingredients');
+    assert.ok(ui.summaries.every(text => /^You have \d+ of \d+.*\d+ to buy|Nothing to buy/.test(text)), ui.summaries.join(' | '));
+    assert.ok(ui.detailsVisible, 'The "To add" line is visible on desktop');
+    assert.match(ui.details, /^To add: /);
+    assert.deepEqual(ui.badges.filter(text => text !== 'With amounts'), [], 'Only measured recipes carry a label');
+    assert.ok(!ui.sorts.includes('use-most'), 'Recommended already uses most of your ingredients');
+    assert.ok(ui.toastTop < 200, 'The message appears at the top, away from the page controls');
+    await click('#clear-pantry');
+    await click('.nav-link[data-view="plan"]');
+    assert.equal(await p.evaluate(() => document.querySelectorAll('#planner h2').length), 0, 'The meal plan has one heading, not two');
+    await click('.nav-link[data-view="discover"]');
+  });
+
   await check('Choosing how many recipes to show changes the page and is remembered after reload', async () => {
     const choice = () => p.evaluate(() => document.querySelector('#page-size').value);
     assert.equal(await choice(), 'fit', 'Fit screen is the default');

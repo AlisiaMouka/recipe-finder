@@ -10,6 +10,12 @@ owner's approval. The README describes the features in detail. In short:
   and pages of results. A discreet "Show" menu next to the page count picks how many
   recipes a page shows: Fit screen (default), 6, 12, 24 or 48. The choice is
   remembered in the browser.
+- **Ranking (owner's rule, changed from version 1):** with ingredients in the pantry,
+  "Recommended" puts recipes that use **most of your ingredients** first; ties go to
+  the one with fewer things to buy. (Version 1 put "fewest to buy" first; the owner
+  changed it.) There is no separate "Use most ingredients" choice any more.
+- Cards say "You have 3 of 8 · 5 to buy" and list what to add, on phone and desktop.
+  Only measured recipes carry a label ("With amounts").
 - **Cookbook:** saved favourite recipes. **Meal plan:** a seven-day planner.
   **Shopping list:** what's missing for planned recipes, combined and downloadable.
 - **Cooking:** serving controls (measured recipes only), step-by-step mode, a timer.
