@@ -13,6 +13,10 @@ owner's approval. The README describes the features in detail. In short:
 - **Cookbook:** saved favourite recipes. **Meal plan:** a seven-day planner.
   **Shopping list:** what's missing for planned recipes, combined and downloadable.
 - **Cooking:** serving controls (measured recipes only), step-by-step mode, a timer.
+  Scaled amounts are shown rounded as little as possible (owner's rule): grams and
+  ml to whole numbers, spoons and cups to one decimal (kitchen fractions like ⅛ stay
+  exact), whole items to halves (never down to nothing). Only what's shown is
+  rounded; the exact numbers stay inside, so scaling back gives the source amount.
 - **Kitchen settings:** export and restore a backup. Everything is saved in the
   browser only; nothing is sent anywhere.
 - An optional 3D bowl (Three.js, bundled locally).
