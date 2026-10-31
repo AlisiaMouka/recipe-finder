@@ -12,6 +12,6 @@ If your browser restricts local files, install Node.js 18+ and run:
 Then open http://127.0.0.1:4173
 
 The README has editing instructions, credits, and useful limitations.
-There are 190 recipes: 40 new recipes and 22 source-checked originals have measured ingredients.
+There are 190 recipes: 40 new recipes and 90 source-checked originals have measured ingredients.
 Your pantry, favorites, meal plan and cooking progress stay in your own browser.
 Use Kitchen settings to export a backup or explore the optional 3D bowl.

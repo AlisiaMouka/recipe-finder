@@ -21,7 +21,7 @@ This project belongs to someone learning to build apps with AI agents.
 ## Checks (tests)
 - Run the checks **before** changing anything (to know it worked to begin with)
   and **after** (to catch anything you broke):
-  - `npm run check` (every script can be read) and `npm test` (82 checks).
+  - `npm run check` (every script can be read) and `npm test` (83 checks).
   - The 12 browser checks: start `PORT=8768 npm start`, then run
     `node tests/browser-runner.mjs http://127.0.0.1:8768` (needs Playwright).
 - Every new rule or feature gets a new check, with a plain-language name.
@@ -33,7 +33,7 @@ This project belongs to someone learning to build apps with AI agents.
 |---|---|
 | `recipes.js` | The pantry: the 150 Wikibooks recipes, information only |
 | `recipes-extra.js` | The 40 recipes written for version 3, with measured amounts |
-| `recipe-enhancements.js` | Measured amounts for 22 Wikibooks recipes (originals stay untouched) |
+| `recipe-enhancements.js` | Measured amounts for 90 Wikibooks recipes, from their source pages only (originals stay untouched) |
 | `engine.js` | The cook: food families, matching, labels, search, amounts, shopping list; knows nothing about the page |
 | `kitchen-state.js` | The fridge notes: what's saved in the browser, and backups |
 | `app.js` | The waiter: connects the page to the cook |

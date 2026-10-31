@@ -20,7 +20,7 @@ Open **http://127.0.0.1:4173**. Press Ctrl+C in the terminal to stop the preview
 
 ## What’s new
 
-- 190 recipes: the original 150 plus 40 new recipes. **62 have measured ingredients**, including 22 original recipes checked against their source pages.
+- 190 recipes: the original 150 plus 40 new recipes. **130 have measured ingredients**, including 90 original recipes checked against their source pages.
 - A compact desktop workspace with pagination, a responsive phone layout, 190 recipe-specific artwork mappings, smaller bundled fonts, and an optional Three.js bowl that loads only when opened.
 - Natural pantry lists with quantities and ingredient aliases. Unknown names require correction or an explicit custom choice; cooked, dry and frozen forms retain their meaning.
 - Search dishes, ingredients and cuisines. Filter by time, dietary style, allergens, cuisine, extra purchases, or measured recipes.
@@ -34,7 +34,7 @@ Open **http://127.0.0.1:4173**. Press Ctrl+C in the terminal to stop the preview
 
 **Pantry matching checks names, not stock levels.** Having “egg” does not mean you have all six eggs a recipe needs. Check your quantities before cooking. Food families match in the useful direction: parmesan can cover “cheese”; generic cheese cannot promise parmesan.
 
-**Quantities have a clear origin.** The 40 new recipes have measured amounts but have not been kitchen-tested. Another 22 originals use source-checked quantities, with their exact serving basis and adaptations in [SOURCE-CHECKS.md](docs/SOURCE-CHECKS.md). The remaining 128 original recipes retain unknown amounts and link to their sources; their serving controls stay disabled. Source checks are not kitchen testing.
+**Quantities have a clear origin.** The 40 new recipes have measured amounts but have not been kitchen-tested. Another 90 originals use source-checked quantities, with their exact serving basis and adaptations in [SOURCE-CHECKS.md](docs/SOURCE-CHECKS.md). The remaining 60 original recipes retain unknown amounts (the reason for each is in SOURCE-CHECKS.md) and link to their sources; their serving controls stay disabled. Source checks are not kitchen testing.
 
 **Diet and allergy filters are guides.** Optional ingredients are included conservatively. Product formulations, substitutions and cross-contact vary: check labels and recipes. Costs are rough euro estimates per serving, not live supermarket prices. 159 illustrations represent identified dishes; 31 clearly described ingredient studies show recipe ingredients instead of claiming a finished appearance. They are original artwork, not food photographs.
 
@@ -53,7 +53,7 @@ This is a static site. Upload the contents of this folder to GitHub Pages, Netli
 | `engine.js` / `kitchen-state.js` | Search, safe matching, quantity calculations, validated persistence and backups |
 | `recipes.js` | Original 150-recipe collection and source attribution |
 | `recipes-extra.js` | 40 new measured recipes, written in an editable compact format |
-| `recipe-enhancements.js` | 22 source-checked upgrades; original records remain untouched |
+| `recipe-enhancements.js` | 90 source-checked upgrades (22 with clearer methods, 68 with amounts only); original records remain untouched |
 | `recipe-art.js` / `recipe-art-manifest.json` | Explicit artwork mapping and honest descriptions |
 | `hero.js` / `vendor/` | Optional locally bundled Three.js bowl |
 | `images/recipes/` / `images/plates/` / `fonts/` | Local recipe artwork, decorative bowl and typography |
