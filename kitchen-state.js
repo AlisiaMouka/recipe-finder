@@ -30,6 +30,7 @@
       maxMissing: "",
       cuisine: "",
       quantified: false,
+      pageSize: 0,
       timer: null,
       session: null,
     };
@@ -93,6 +94,8 @@
     state.cuisine =
       typeof raw.cuisine === "string" ? raw.cuisine.slice(0, 100) : "";
     state.quantified = raw.quantified === true;
+    // Recipes per page: 0 means "Fit screen". Anything else falls back to it.
+    state.pageSize = [0, 6, 12, 24, 48].includes(raw.pageSize) ? raw.pageSize : 0;
     const t = raw.timer;
     if (
       t &&

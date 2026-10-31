@@ -248,7 +248,19 @@
               >
                 <span data-icon="back"></span> Previous
               </button>
-              <p id="page-status" aria-live="polite"></p>
+              <div class="page-info">
+                <p id="page-status" aria-live="polite"></p>
+                <label class="page-size-label"
+                  >Show
+                  <select id="page-size" aria-label="Recipes per page">
+                    <option value="fit">Fit screen</option>
+                    <option value="6">6</option>
+                    <option value="12">12</option>
+                    <option value="24">24</option>
+                    <option value="48">48</option>
+                  </select></label
+                >
+              </div>
               <button
                 id="next-page"
                 class="pagination-button"

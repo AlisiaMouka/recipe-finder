@@ -156,6 +156,23 @@ export async function runRecipeBrowserChecks(tab) {
     assert.deepEqual((await read()).cards, first.cards);
   });
 
+  await check('Choosing how many recipes to show changes the page and is remembered after reload', async () => {
+    const choice = () => p.evaluate(() => document.querySelector('#page-size').value);
+    assert.equal(await choice(), 'fit', 'Fit screen is the default');
+    await act('show 12 recipes per page', () => p.locator('#page-size').selectOption('12'));
+    let ui = await read();
+    assert.equal(ui.cards.length, 12);
+    assert.match(ui.pageStatus, /^1–12 of 190 · Page 1 of 16/);
+    const shortest = await p.evaluate(() => Math.min(...Array.from(document.querySelectorAll('.recipe-card'), card => card.getBoundingClientRect().height)));
+    assert.ok(shortest >= 200, `Every card keeps its normal size (shortest is ${Math.round(shortest)}px)`);
+    await act('reload the disposable tab', () => tab.reload());
+    ui = await read();
+    assert.equal(await choice(), '12', 'The choice is remembered');
+    assert.equal(ui.cards.length, 12);
+    await act('back to Fit screen', () => p.locator('#page-size').selectOption('fit'));
+    assert.ok((await read()).cards.length < 12, 'Fit screen shows what fits the window again');
+  });
+
   await check('An unknown name requires an explicit custom-ingredient choice', async () => {
     const nonsense = 'zqxvfribble';
     await addPantry(nonsense);
