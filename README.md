@@ -8,7 +8,7 @@ An expanded edition of **Alisia’s [Recipe Finder](https://alisiamouka.github.i
 2. Double-click **index.html**. Use a current Chrome, Edge, Firefox, or Safari browser.
 3. Add what you have, such as `2 eggs, 200g tomatoes, spinach`.
 
-**No install, API key, account, or internet connection is needed.** Fonts, illustrations, recipes, and Three.js are included. An optional 3D bowl responds to your pointer; a static illustration stays available if WebGL is unavailable. Reduced-motion preferences are respected.
+**No install, API key, account, or internet connection is needed.** Fonts, illustrations and recipes are included.
 
 For a consistent local address and browser storage, with Node.js 18+ installed:
 
@@ -21,7 +21,7 @@ Open **http://127.0.0.1:4173**. Press Ctrl+C in the terminal to stop the preview
 ## What’s new
 
 - 190 recipes: the original 150 plus 40 new recipes. **130 have measured ingredients**, including 90 original recipes checked against their source pages.
-- A compact desktop workspace with pagination, a responsive phone layout, 190 recipe-specific artwork mappings, smaller bundled fonts, and an optional Three.js bowl that loads only when opened.
+- A compact desktop workspace with pagination, a responsive phone layout, 190 recipe-specific artwork mappings, and smaller bundled fonts.
 - Natural pantry lists with quantities and ingredient aliases. Unknown names require correction or an explicit custom choice; cooked, dry and frozen forms retain their meaning.
 - Search dishes, ingredients and cuisines. Filter by time, dietary style, allergens, cuisine, extra purchases, or measured recipes.
 - Clear ingredient-name matching and missing lists; salt, pepper and water are assumed.
@@ -55,7 +55,6 @@ This is a static site. Upload the contents of this folder to GitHub Pages, Netli
 | `recipes-extra.js` | 40 new measured recipes, written in an editable compact format |
 | `recipe-enhancements.js` | 90 source-checked upgrades (22 with clearer methods, 68 with amounts only); original records remain untouched |
 | `recipe-art.js` / `recipe-art-manifest.json` | Explicit artwork mapping and honest descriptions |
-| `hero.js` / `vendor/` | Optional locally bundled Three.js bowl |
 | `images/recipes/` / `images/plates/` / `fonts/` | Local recipe artwork, decorative bowl and typography |
 | `tests/` | Search, scaling, data and source-integrity checks |
 | `serve.js` | Optional local preview, using Node’s built-in modules only |
@@ -75,4 +74,4 @@ See [docs/VERIFICATION.md](docs/VERIFICATION.md) for measured results, checks pe
 
 Original project and code: **Alisia**. Original recipe content is adapted from the **Wikibooks Cookbook**, with each recipe’s source URL retained, and is shared under **[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)**. The 40 new recipes are shared under the same license. Preserve attribution and share-alike requirements when redistributing recipe content. This edition changes design, search, and presentation; it does not claim ownership of the original project.
 
-The original code retains its original licensing status. Newly authored UI/engine/hero code and original SVG plate artwork in this edition may be reused, modified and redistributed under the MIT license in `LICENSE-ADDITIONS.txt`; this grant does not relicense original code or recipe text. Three.js is MIT-licensed; DM Sans and DM Serif Display use the SIL Open Font License. Their notices are included locally. See [ASSET-CREDITS.md](ASSET-CREDITS.md) and [DATA-NOTES.md](DATA-NOTES.md).
+The original code retains its original licensing status. Newly authored UI and engine code and original SVG plate artwork in this edition may be reused, modified and redistributed under the MIT license in `LICENSE-ADDITIONS.txt`; this grant does not relicense original code or recipe text. DM Sans and DM Serif Display use the SIL Open Font License. Their notices are included locally. See [ASSET-CREDITS.md](ASSET-CREDITS.md) and [DATA-NOTES.md](DATA-NOTES.md).

@@ -18,6 +18,8 @@ The collection contains 40 new measured recipes and 22 original recipes with sou
 
 **Update, 26 October 2026:** 68 more original recipes received amounts taken only from their source pages, giving 130 measured recipes; 60 keep unknown quantities. The other figures in this report describe the version 3 delivery and were not re-measured.
 
+**Update, 31 October 2026:** the optional 3D bowl and its Three.js library were removed at the owner's request, together with their 4 tests (a new test checks the bowl stays removed). Statements below about Three.js, WebGL and the decorative scene describe the original delivery.
+
 Scaling checks preserve times, temperatures, dimensions, equipment capacities and per-piece cooking directions. Explicit method water amounts scale. Per-item courgette notes remain coherent. Shopping totals keep fresh/canned tomatoes and dry/cooked/drained forms distinct. The Zacusca adaptation explicitly requires fresh or refrigerated use, not untested room-temperature canning.
 
 Every recipe has an explicit artwork mapping: 159 dish illustrations and 31 ingredient studies. All 40 new recipes have distinct compositions. Mug cake appears in a mug and yogurt cups in glasses. Full illustrations remain visible rather than being cropped into narrow strips. Ingredient studies are described honestly in the detail view. New artwork and its generator are covered by the included MIT additions license.

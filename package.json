@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node serve.js",
     "test": "node --test tests/*.test.js",
-    "check": "node --check app.js && node --check engine.js && node --check kitchen-state.js && node --check recipes-extra.js && node --check recipe-enhancements.js && node --check hero.js && node --check serve.js"
+    "check": "node --check app.js && node --check engine.js && node --check kitchen-state.js && node --check recipes-extra.js && node --check recipe-enhancements.js && node --check serve.js"
   },
   "engines": {
     "node": ">=18"

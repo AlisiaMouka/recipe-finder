@@ -803,7 +803,6 @@
     "#shopping-dialog",
     "#about-dialog",
     "#settings-dialog",
-    "#bowl-dialog",
   ])
     $(selector).addEventListener("close", () => {
       document.body.appendChild($("#timer-dock"));
@@ -1028,57 +1027,6 @@
         $("#pantry-toggle").setAttribute("aria-expanded", "true");
       }
     }, 120);
-  });
-  const loadedScripts = new Map();
-  function loadScript(src) {
-    if (!loadedScripts.has(src))
-      loadedScripts.set(
-        src,
-        new Promise((resolve, reject) => {
-          const el = document.createElement("script");
-          el.src = src;
-          el.onload = resolve;
-          el.onerror = () => {
-            loadedScripts.delete(src);
-            el.remove();
-            reject(new Error("Could not load the 3D bowl."));
-          };
-          document.head.appendChild(el);
-        }),
-      );
-    return loadedScripts.get(src);
-  }
-  async function openBowl() {
-    const fallback=$("#hero-scene img");
-    if(!fallback.getAttribute("src")) fallback.src=fallback.dataset.src;
-    showDialog("#bowl-dialog");
-    $("#bowl-status").textContent = "Loading the optional 3D bowl…";
-    try {
-      await loadScript("vendor/three.min.js");
-      await loadScript("hero.js");
-      if (!$("#bowl-dialog").open) return;
-      const active = window.RecipeHero?.init();
-      $("#bowl-status").textContent = active
-        ? "Move your pointer over the bowl to explore. The scene rests when you stop."
-        : "Your browser is showing the illustrated bowl instead.";
-      $("#hero-animation-toggle").setAttribute(
-        "aria-pressed",
-        String(!!active),
-      );
-    } catch {
-      $("#bowl-status").textContent =
-        "The 3D bowl could not load. The illustration is still available.";
-    }
-  }
-  $("#hero-animation-toggle").addEventListener("click", openBowl);
-  $("#settings-bowl").addEventListener("click", () => {
-    $("#settings-dialog").addEventListener("close", openBowl, { once: true });
-    $("#settings-dialog").close();
-  });
-
-  $("#bowl-dialog").addEventListener("close", () => {
-    window.RecipeHero?.destroy();
-    $("#hero-animation-toggle").setAttribute("aria-pressed", "false");
   });
   // Events use delegation so newly rendered recipe and planner controls behave identically.
   document.addEventListener("click", (event) => {
