@@ -1483,6 +1483,54 @@ dialog .close-button {
   text-decoration: line-through;
   opacity: 0.6;
 }
+/* Shopping list additions from a recipe. */
+.ingredient-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.ingredient-list li > label {
+  flex: 1;
+  min-width: 0;
+}
+.shop-add {
+  flex: none;
+  min-height: 32px;
+  padding: 4px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--paper);
+  color: var(--green);
+  font-size: 12px;
+  white-space: nowrap;
+}
+.shop-add.added {
+  background: var(--sage-light);
+  border-color: transparent;
+}
+.shop-missing {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin: 12px 0 2px;
+  min-height: 40px;
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--paper);
+  color: var(--green);
+  font-size: 13px;
+}
+.shop-missing.done {
+  border: 0;
+  background: none;
+  padding-left: 0;
+  color: var(--muted);
+}
+.shop-missing .icon {
+  width: 16px;
+  height: 16px;
+}
 .have-mark {
   color: #486d32;
   font-size: 10px;
@@ -1915,6 +1963,46 @@ dialog .close-button {
   font-size: 12px;
   color: var(--muted);
   margin-top: 4px;
+}
+.shopping-add {
+  display: flex;
+  gap: 8px;
+  margin: 16px 0 6px;
+}
+.shopping-add input {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
+  font: inherit;
+  font-size: 14px;
+}
+.shopping-section {
+  margin: 18px 0 4px;
+}
+.shopping-list li:has(.shop-remove) {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.shopping-list li > label {
+  flex: 1;
+}
+.shop-remove {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  background: none;
+  color: var(--muted);
+}
+.shop-remove .icon {
+  width: 15px;
+  height: 15px;
 }
 .shopping-list {
   list-style: none;

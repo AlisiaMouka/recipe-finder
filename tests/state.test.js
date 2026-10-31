@@ -121,3 +121,22 @@ test("the recipes-per-page choice survives reload, and unknown values fall back 
     assert.equal(S.importBackup(S.backup(state), catalog).pageSize, 0, String(odd));
   }
 });
+test("items added to the shopping list by hand survive reload and backups; damaged entries are dropped", () => {
+  assert.deepEqual(S.defaults().extras, [], "the list starts empty");
+  const state = S.defaults();
+  state.extras = [
+    { key: "a", ingredient: "pita", amount: null, unit: "", recipeId: "recipe-3" },
+    { key: "b", ingredient: "milk", amount: 1, unit: "l", recipeId: null },
+    { key: "c", ingredient: "", amount: 2, unit: "g", recipeId: null },
+    { key: "d", ingredient: "salt", amount: -1, unit: "g", recipeId: null },
+    { key: "e", ingredient: "egg", amount: 2, unit: "parsecs", recipeId: null },
+    { key: "f", ingredient: "flour", amount: 500, unit: "g", recipeId: "no-such-recipe" },
+    "nonsense",
+    null,
+  ];
+  const restored = S.importBackup(S.backup(state), catalog).extras;
+  assert.deepEqual(restored.map((x) => x.ingredient), ["pita", "milk", "flour"]);
+  assert.equal(restored[0].recipeId, "recipe-3", "the recipe it came from is kept");
+  assert.equal(restored[2].recipeId, null, "an unknown recipe is forgotten, the item is kept");
+  assert.equal(new Set(restored.map((x) => x.key)).size, 3, "every item has its own key");
+});

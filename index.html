@@ -377,9 +377,17 @@
       <p class="eyebrow">A LITTLE LIST, A LOVELY WEEK</p>
       <h2 id="shopping-title">The shopping <em>list.</em></h2>
       <p class="muted">
-        For the recipes in your meal planner. Ingredients in your pantry are
-        left out, so check you have enough.
+        Missing ingredients from your meal plan, plus anything you add.
+        Ingredients in your pantry are left out, so check you have enough.
       </p>
+      <form id="shopping-add-form" class="shopping-add" autocomplete="off">
+        <label class="sr-only" for="shopping-add-input">Add an item</label>
+        <input
+          id="shopping-add-input"
+          maxlength="100"
+          placeholder="Add an item, e.g. milk or 2 lemons"
+        /><button type="submit" class="button primary">Add</button>
+      </form>
       <div id="shopping-content"></div>
       <div class="dialog-bottom">
         <button class="text-button" id="uncheck-shopping">Uncheck all</button
