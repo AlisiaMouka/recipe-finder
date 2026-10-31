@@ -966,6 +966,9 @@ kbd {
   color: var(--green);
   font-size: 10px;
 }
+.card-badge:empty {
+  display: none;
+}
 .save-button {
   position: absolute;
   right: 8px;
@@ -1082,7 +1085,7 @@ kbd {
 }
 .match-details {
   color: var(--muted);
-  font-size: 10px;
+  font-size: 12px;
   margin-top: 4px;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -1678,9 +1681,9 @@ dialog .close-button {
 }
 .toast {
   position: fixed;
-  bottom: 20px;
+  top: 20px;
   left: 50%;
-  transform: translate(-50%, 15px);
+  transform: translate(-50%, -15px);
   opacity: 0;
   pointer-events: none;
   background: var(--green-deep);
@@ -1806,9 +1809,10 @@ dialog .close-button {
 .week-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  grid-template-rows: repeat(2, minmax(150px, 1fr));
+  grid-template-rows: repeat(2, auto);
+  align-content: start;
   gap: 14px;
-  flex: 1;
+  flex: 0 1 auto;
   min-height: 0;
   overflow: auto;
 }
@@ -2519,7 +2523,7 @@ dialog .close-button {
     padding: 7px 11px;
   }
   .toast {
-    bottom: 15px;
+    top: 12px;
     font-size: 13px;
   }
   .about-dialog {
@@ -2743,9 +2747,6 @@ dialog .close-button {
   }
   .card-match {
     margin-bottom: 7px;
-  }
-  .match-details {
-    display: none;
   }
   .match-summary {
     font-size: 12px;

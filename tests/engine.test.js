@@ -97,7 +97,12 @@ test('no pantry means browse everything, stable ids, and no fake matches',()=>{
   assert.equal(new Set(catalog.map(r=>r.id)).size,150);
   assert.ok(found.every(r=>r.match===0&&r.have.length===0));
 });
-test('fewest missing ranks first and recipes using no selected food stay out',()=>{
+test('with a pantry, Recommended puts recipes using most of your ingredients first; ties go to fewer to buy',()=>{
+  const usesOne=recipe('Uses one',['egg']), usesTwo=recipe('Uses two',['egg','flour','sugar']), usesTwoBuysMore=recipe('Uses two, buys more',['egg','flour','sugar','milk']);
+  const found=E.search([usesOne,usesTwoBuysMore,usesTwo],{pantry:['egg','flour']});
+  assert.deepEqual(names(found),['Uses two','Uses two, buys more','Uses one']);
+});
+test('when recipes use equally many of your ingredients, fewest missing ranks first; recipes using none stay out',()=>{
   const one=recipe('One',['egg','flour']), two=recipe('Two',['egg']), none=recipe('None',['rice']);
   const found=E.search([one,two,none],{pantry:['2 eggs']});
   assert.deepEqual(names(found),['Two','One']);
